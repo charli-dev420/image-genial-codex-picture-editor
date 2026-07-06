@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "codex_image_editor": {
+      "command": "node",
+      "args": [
+        "./mcp/server.mjs"
+      ],
+      "cwd": "."
+    }
+  }
+}

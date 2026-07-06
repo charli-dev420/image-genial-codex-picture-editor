@@ -1,0 +1,1998 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inline Codex Image Editor</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1117;
+      --panel: #151b24;
+      --panel2: #0f141c;
+      --line: #2a3443;
+      --text: #f5f8fc;
+      --muted: #9aa7b7;
+      --accent: #2563eb;
+      --correct: #ef4444;
+      --freeze: #3b82f6;
+      --error: #f59e0b;
+      --reference: #22c55e;
+      --bad: #dc2626;
+      --good: #16a34a;
+      --warn: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { min-height: 100vh; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+    header, .workflow, footer { background: #0a0e14; border-bottom: 1px solid var(--line); padding: 10px 12px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; background: #05070a; border: 1px solid rgba(6,182,212,.35); }
+    h1 { margin: 0; font-size: 16px; letter-spacing: 0; }
+    .workflow { display: flex; gap: 6px; overflow: auto; }
+    .step { flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; font-size: 12px; color: var(--muted); }
+    .step.active { border-color: var(--accent); color: #dbeafe; background: rgba(37,99,235,.16); }
+    .status { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); }
+    .shell { min-height: 0; display: grid; grid-template-columns: 280px minmax(0, 1fr) 360px; }
+    aside { min-height: 0; overflow: auto; padding: 10px; background: var(--panel); border-right: 1px solid var(--line); }
+    aside.right { border-right: 0; border-left: 1px solid var(--line); }
+    section.canvas-wrap { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); background: #070a0f; }
+    .toolbar, footer { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar { padding: 8px; border-bottom: 1px solid var(--line); background: var(--panel2); }
+    .viewport { min-width: 0; min-height: 0; display: grid; place-items: center; overflow: hidden; position: relative; }
+    canvas { max-width: 100%; max-height: 100%; background: #111827; box-shadow: 0 12px 38px rgba(0,0,0,.48); cursor: crosshair; }
+    label { display: grid; gap: 5px; margin: 0 0 9px; color: var(--muted); font-size: 12px; }
+    input, textarea, select, button { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 6px; background: #0c1118; color: var(--text); padding: 7px; font: inherit; letter-spacing: 0; }
+    input[type="checkbox"] { width: auto; min-width: 0; }
+    textarea { resize: vertical; min-height: 58px; line-height: 1.35; }
+    button { cursor: pointer; min-height: 34px; font-weight: 650; background: #1d2633; }
+    button.primary { background: var(--accent); border-color: var(--accent); }
+    button.good { background: #166534; border-color: #166534; }
+    button.bad { background: #7f1d1d; border-color: #7f1d1d; }
+    button.active { outline: 2px solid var(--accent); }
+    button:disabled { opacity: .45; cursor: default; }
+    .panel { border: 1px solid var(--line); border-radius: 8px; padding: 9px; background: rgba(255,255,255,.025); margin-bottom: 10px; }
+    .panel h2 { margin: 0 0 8px; font-size: 13px; }
+    .row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .row > * { flex: 1 1 88px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .pill { border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; color: var(--muted); font-size: 12px; }
+    .list { display: grid; gap: 6px; max-height: 230px; overflow: auto; }
+    .item { border: 1px solid var(--line); border-radius: 7px; padding: 7px; background: #0d121a; color: var(--muted); font-size: 12px; }
+    .item.selected { border-color: var(--accent); background: rgba(37,99,235,.12); }
+    .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #05070a; border: 1px solid var(--line); border-radius: 5px; }
+    .layer-row { display: grid; grid-template-columns: 70px 42px 42px 1fr; gap: 6px; align-items: center; margin-bottom: 7px; }
+    .layer-row span { font-size: 12px; color: var(--muted); }
+    pre { white-space: pre-wrap; word-break: break-word; margin: 0; max-height: 260px; overflow: auto; font-size: 12px; line-height: 1.35; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
+    .tabs button { min-height: 30px; padding: 5px; font-size: 12px; }
+    .request-view { display: none; }
+    .request-view.active { display: block; }
+    .notice { border: 1px solid var(--line); border-radius: 6px; padding: 7px; margin: 6px 0; color: var(--muted); font-size: 12px; background: #0a0f16; }
+    .notice.bad { border-color: var(--bad); color: #fecaca; }
+    .notice.warn { border-color: var(--warn); color: #fde68a; }
+    .image-role-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 7px; align-items: start; }
+    .image-role-row .thumb { aspect-ratio: 1 / 1; }
+    .tag-editor textarea { min-height: 42px; }
+    .check-row { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+    .check-row input { flex: 0 0 auto; }
+    @media (max-width: 1120px) {
+      .shell { grid-template-columns: 1fr; }
+      aside, aside.right { border: 0; border-bottom: 1px solid var(--line); }
+      .viewport { min-height: 480px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <img class="brand-logo" src="__PLUGIN_LOGO_DATA_URL__" alt="Codex Image Editor logo" />
+      <h1>Inline Codex Image Editor</h1>
+    </div>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">ready</span></div>
+  </header>
+  <div class="workflow" id="workflow">
+    <span class="step active" data-step="state_saved">state_saved</span>
+    <span class="step" data-step="context_exported">context_exported</span>
+    <span class="step" data-step="view_image_required">view_image_required</span>
+    <span class="step" data-step="codex_imagegen_requested">codex_imagegen_requested</span>
+    <span class="step" data-step="waiting_for_codex_image_gen">waiting_for_codex_image_gen</span>
+    <span class="step" data-step="artifact_candidate_received">artifact_candidate_received</span>
+    <span class="step" data-step="artifact_received">artifact_received</span>
+    <span class="step" data-step="review_ready">review_ready</span>
+    <span class="step" data-step="drift_detected">drift_detected</span>
+    <span class="step" data-step="host_blocked">host_blocked</span>
+  </div>
+
+  <div class="shell">
+    <aside>
+      <div class="panel">
+        <h2>Image</h2>
+        <label>Workspace root <input id="workspaceRoot" placeholder="optional; MCP cwd by default" /></label>
+        <label>Session <input id="sessionId" value="default" /></label>
+        <label>Target path for Codex <input id="baseImagePath" placeholder="C:\\path\\inside\\workspace\\image.png" /></label>
+        <label>Import target <input id="file" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+        <label>Request <textarea id="userRequest" placeholder="Describe the Image Gen edit"></textarea></label>
+        <div class="row">
+          <button id="loadState">Load</button>
+          <button id="saveState">Save state</button>
+          <button id="fit">Fit</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Tools</h2>
+        <div class="row" id="toolButtons">
+          <button class="active" data-tool="select">Select</button>
+          <button data-tool="brush">Brush</button>
+          <button data-tool="lasso">Lasso</button>
+          <button data-tool="polygon">Polygon</button>
+          <button data-tool="rectangle">Rect</button>
+          <button data-tool="ellipse">Ellipse</button>
+          <button data-tool="precision">Precision</button>
+          <button data-tool="eraser">Gomme</button>
+          <button data-tool="pan">Pan</button>
+        </div>
+        <label>Brush size <input id="brushSize" type="range" min="4" max="80" value="18" /></label>
+        <label>Note for next mark <textarea id="markNote" placeholder="Instruction for this region"></textarea></label>
+        <div class="row">
+          <button id="duplicateShape">Duplicate</button>
+          <button class="bad" id="deleteShape">Delete</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Layers</h2>
+        <div class="row" id="layerButtons">
+          <button class="active" data-layer="correct">Corriger</button>
+          <button data-layer="freeze">Figer</button>
+          <button data-layer="error">Erreur</button>
+          <button data-layer="reference">Reference</button>
+        </div>
+        <div id="layerSettings"></div>
+      </div>
+    </aside>
+
+    <section class="canvas-wrap">
+      <div class="toolbar">
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clearLayer">Clear layer</button>
+        <button id="zoomOut">-</button>
+        <button id="zoomIn">+</button>
+        <span class="pill" id="zoomLabel">100%</span>
+        <span class="pill" id="shapeCount">0 zones</span>
+        <span class="pill" id="mode">select / correct</span>
+      </div>
+      <div class="viewport">
+        <canvas id="canvas" width="1280" height="800"></canvas>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="panel">
+        <h2>Zones</h2>
+        <div class="list" id="zoneList"><div class="item">No zones</div></div>
+        <label>Label <input id="shapeLabel" /></label>
+        <label>Note <textarea id="shapeNote"></textarea></label>
+        <div class="grid2">
+          <label>Constraint <select id="shapeConstraint"><option>correct</option><option>freeze</option><option>error</option><option>reference</option></select></label>
+          <label>Priority <select id="shapePriority"><option>low</option><option selected>medium</option><option>high</option></select></label>
+        </div>
+        <div class="row">
+          <button id="applyShape">Apply zone</button>
+          <button id="jumpShape">Jump</button>
+        </div>
+      </div>
+
+      <div class="panel" id="precisionPanel">
+        <h2>Precision Controls</h2>
+        <div class="row">
+          <button id="precisionModeToggle">Precision mode</button>
+          <button id="validatePrecision">Validate</button>
+          <button id="precisionPreview">Preview</button>
+        </div>
+        <div class="grid2">
+          <label>X <input id="precisionX" type="number" step="1" /></label>
+          <label>Y <input id="precisionY" type="number" step="1" /></label>
+          <label>Width <input id="precisionW" type="number" step="1" /></label>
+          <label>Height <input id="precisionH" type="number" step="1" /></label>
+        </div>
+        <div class="grid2">
+          <label>Subtype <select id="precisionSubtype"><option>include</option><option>exclude</option><option>protect</option></select></label>
+          <label>Edge <select id="edgeMode"><option>soft</option><option>hard</option></select></label>
+          <label>Safety px <input id="safetyMarginPx" type="number" min="0" max="512" value="0" /></label>
+          <label>Feather px <input id="featherPx" type="number" min="0" max="512" value="0" /></label>
+          <label>Grid px <input id="gridSize" type="number" min="2" max="128" value="16" /></label>
+          <label>Nudge px <input id="nudgePx" type="number" min="1" max="128" value="1" /></label>
+        </div>
+        <label><input id="snapGrid" type="checkbox" checked /> snap to grid</label>
+        <label>Source zone <input id="precisionSourceShape" placeholder="shape id for subtract/merge" /></label>
+        <div class="row">
+          <button id="setGeometry">Set geometry</button>
+          <button id="refineContract">Contract</button>
+          <button id="refineDilate">Dilate</button>
+          <button id="refineSimplify">Simplify</button>
+          <button id="refineSubtract">Subtract</button>
+          <button id="refineMerge">Merge</button>
+          <button id="duplicateProtect">Protect copy</button>
+        </div>
+        <div class="notice" id="precisionWarnings">No precision validation yet.</div>
+        <h2>Presets</h2>
+        <div class="grid2">
+          <label>Kind <select id="presetKind"><option>zone</option><option>layer</option><option>prompt</option><option>review</option></select></label>
+          <label>Preset <select id="presetSelect"></select></label>
+        </div>
+        <label>Preset label <input id="presetLabel" placeholder="local preset label" /></label>
+        <div class="row">
+          <button id="loadPresets">Load presets</button>
+          <button id="applyPreset">Apply preset</button>
+          <button id="savePreset">Save preset</button>
+          <button class="bad" id="deletePreset">Delete preset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>References</h2>
+        <label>Reference import <input id="referenceFile" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+        <label>Reference note <textarea id="referenceNote"></textarea></label>
+        <label>Weight <select id="referenceWeight"><option>low</option><option selected>medium</option><option>high</option></select></label>
+        <button id="addReference">Add reference</button>
+        <div class="list" id="referenceList"><div class="item">No references</div></div>
+      </div>
+
+      <div class="panel" id="promptPanel">
+        <h2>Prompt</h2>
+        <div class="tabs" id="promptTabs">
+          <button class="active" id="promptOriginalTab" data-prompt-view="original">Original</button>
+          <button id="promptNormalizedTab" data-prompt-view="normalized">Normalise</button>
+          <button id="promptFinalTab" data-prompt-view="final">Final $imagegen</button>
+        </div>
+        <div class="request-view active" id="promptViewOriginal">
+          <label>Prompt original <textarea id="promptOriginal" placeholder="Prompt recu dans la conversation"></textarea></label>
+        </div>
+        <div class="request-view" id="promptViewNormalized">
+          <pre id="normalizedPrompt">No normalized request yet.</pre>
+        </div>
+        <div class="request-view" id="promptViewFinal">
+          <pre id="finalImagegenRequest">No final $imagegen request yet.</pre>
+        </div>
+        <label>Working translation from Codex <textarea id="workingTranslation" placeholder="Optional English working version supplied by Codex"></textarea></label>
+        <h2>Image roles</h2>
+        <div class="list" id="imageRoleTable"><div class="item">No conversation images</div></div>
+        <h2>Constraints</h2>
+        <div id="constraintsEditor" class="tag-editor">
+          <label>Conserver <textarea id="mustKeepInput" placeholder="One constraint per line"></textarea></label>
+          <label>Changer <textarea id="mustChangeInput" placeholder="One requested change per line"></textarea></label>
+          <label>Eviter <textarea id="mustAvoidInput" placeholder="One avoidance per line"></textarea></label>
+          <label>Texte exact <textarea id="textVerbatimInput" placeholder="Exact in-image text, one item per line"></textarea></label>
+          <label>Style <textarea id="styleConstraintsInput"></textarea></label>
+          <label>Composition <textarea id="compositionConstraintsInput"></textarea></label>
+          <label>Identite <textarea id="identityConstraintsInput"></textarea></label>
+          <label>Sortie <textarea id="outputUseInput"></textarea></label>
+        </div>
+        <div class="row">
+          <button id="buildRequest">Build request</button>
+          <button class="primary" id="useFinalRequest">Use final request</button>
+        </div>
+        <div id="requestWarnings" class="notice">No request validation yet.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Codex workflow</h2>
+        <button class="primary" id="createRequest">Create $imagegen request</button>
+        <button id="createCodexHandoff">Create handoff</button>
+        <label>Context id <input id="contextId" /></label>
+        <label>Artifact path <input id="artifactPath" placeholder="path saved from Codex Image Gen" /></label>
+        <div class="row">
+          <button id="recordNativeImageGenRequested">Native Image Gen requested</button>
+          <button class="good" id="saveResult">Save result</button>
+          <button id="versions">Versions</button>
+        </div>
+      </div>
+
+      <div class="panel" id="artifactBridgePanel">
+        <h2>Artifact Bridge</h2>
+        <div id="hostCapabilities" class="grid2">
+          <label class="check-row"><input id="capInlineMcpWidget" type="checkbox" /> inline widget</label>
+          <label class="check-row"><input id="capCallToolBridge" type="checkbox" /> callTool bridge</label>
+          <label class="check-row"><input id="capVisibleConversationImages" type="checkbox" /> visible images</label>
+          <label class="check-row"><input id="capArtifactBridge" type="checkbox" /> artifact bridge</label>
+          <label class="check-row"><input id="capWorkspaceArtifactSave" type="checkbox" /> workspace save</label>
+          <label class="check-row"><input id="capCanAttachLocalImages" type="checkbox" /> attach local</label>
+          <label class="check-row"><input id="capCanCallNativeImageGen" type="checkbox" /> native image_gen</label>
+        </div>
+        <div class="row">
+          <button id="recordHostCapabilities">Record capabilities</button>
+          <button id="listPendingGenerations">Refresh pending</button>
+        </div>
+        <div class="list" id="pendingGenerations"><div class="item">No pending handoff</div></div>
+        <label>Candidate id <input id="candidateId" /></label>
+        <label>Candidate context <input id="candidateContextId" /></label>
+        <label>Candidate artifact path <input id="candidateArtifactPath" placeholder="workspace-local artifact path" /></label>
+        <label>Candidate artifact id <input id="candidateArtifactId" placeholder="optional Codex artifact id" /></label>
+        <label>Codex turn <input id="candidateCodexTurnId" /></label>
+        <label>Origin
+          <select id="candidateOrigin">
+            <option value="codex-image-gen">codex-image-gen</option>
+            <option value="external">external</option>
+          </select>
+        </label>
+        <label>Resolution note <textarea id="candidateReason"></textarea></label>
+        <div class="row">
+          <button id="registerArtifactCandidate">Register candidate</button>
+          <button class="good" id="acceptArtifactCandidate">Accept candidate</button>
+          <button class="bad" id="rejectArtifactCandidate">Reject candidate</button>
+        </div>
+        <div class="list" id="artifactCandidateList"><div class="item">No artifact candidates</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Review</h2>
+        <div class="row">
+          <button id="viewBefore">Before</button>
+          <button id="viewAfter">After</button>
+          <button id="viewSplit">Slider</button>
+          <button id="viewSide">Side by side</button>
+        </div>
+        <label>Before/after <input id="reviewSlider" type="range" min="0" max="100" value="50" /></label>
+        <div class="row">
+          <button id="compareVersion">Compare</button>
+          <button id="retryVersion">Retry request</button>
+        </div>
+        <div class="list" id="versionList"><div class="item">No versions</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Output</h2>
+        <pre id="output">Ready.</pre>
+      </div>
+    </aside>
+  </div>
+  <footer>
+    <span class="small">Conversation-native boundary: Codex Image Gen only. No external image API, no key, no simulated result.</span>
+    <span class="small mono" id="selectedInfo">no selection</span>
+  </footer>
+</main>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const layerNames = ['correct', 'freeze', 'error', 'reference'];
+const workflowSteps = ['state_saved', 'context_exported', 'view_image_required', 'codex_imagegen_requested', 'waiting_for_codex_image_gen', 'artifact_candidate_received', 'artifact_received', 'review_ready', 'drift_detected', 'host_blocked'];
+const imageRoles = ['edit_target', 'reference', 'style_reference', 'insert_source', 'previous_result', 'rejected_result'];
+const zoneSubtypes = ['include', 'exclude', 'protect'];
+const constraintFields = {
+  must_keep: 'mustKeepInput',
+  must_change: 'mustChangeInput',
+  must_avoid: 'mustAvoidInput',
+  text_verbatim: 'textVerbatimInput',
+  style_constraints: 'styleConstraintsInput',
+  composition_constraints: 'compositionConstraintsInput',
+  identity_constraints: 'identityConstraintsInput',
+  output_use: 'outputUseInput'
+};
+const colors = { correct: '#ef4444', freeze: '#3b82f6', error: '#f59e0b', reference: '#22c55e' };
+const fills = { correct: 'rgba(239,68,68,.16)', freeze: 'rgba(59,130,246,.14)', error: 'rgba(245,158,11,.18)', reference: 'rgba(34,197,94,.14)' };
+const $ = (id) => document.getElementById(id);
+
+const state = {
+  schemaVersion: 1,
+  sessionId: 'default',
+  baseImagePath: '',
+  imageInfo: null,
+  userRequest: '',
+  activeTool: 'select',
+  activeLayer: 'correct',
+  selectedShapeId: '',
+  layers: { correct: [], freeze: [], error: [], reference: [] },
+  layerSettings: {
+    correct: { visible: true, locked: false, opacity: 1 },
+    freeze: { visible: true, locked: false, opacity: 1 },
+    error: { visible: true, locked: false, opacity: 1 },
+    reference: { visible: true, locked: false, opacity: 1 }
+  },
+  annotations: [],
+  references: [],
+  events: [],
+  versions: [],
+  generationRequests: [],
+  reviewReports: [],
+  artifactHashes: {},
+  conversationInputs: [],
+  imageRoles: {},
+  promptDrafts: [],
+  translations: [],
+  constraintSets: [],
+  requestValidationReports: [],
+  precisionReports: [],
+  precisionPreviews: [],
+  presets: [],
+  appliedPresets: [],
+  hostCapabilities: {},
+  handoffs: [],
+  pendingGenerations: [],
+  artifactCandidates: [],
+  handoffEvents: [],
+  activeInputPackageId: '',
+  activePromptDraftId: '',
+  promptView: 'original',
+  precisionMode: false,
+  image: null,
+  resultImage: null,
+  imageName: '',
+  previewImageDataUrl: '',
+  activeVersionId: '',
+  displayMode: 'before',
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  drawing: false,
+  panning: false,
+  dragMode: '',
+  current: null,
+  dragStart: null,
+  undo: [],
+  redo: [],
+  lastReferenceDataUrl: '',
+  lastReferenceName: ''
+};
+
+function setStatus(text, kind = 'ok') {
+  $('status').textContent = text;
+  $('dot').style.background = kind === 'bad' ? 'var(--bad)' : kind === 'warn' ? 'var(--warn)' : 'var(--good)';
+}
+
+function setWorkflow(step) {
+  document.querySelectorAll('.step').forEach((item) => item.classList.toggle('active', item.dataset.step === step));
+  const bad = step === 'drift_detected' || step === 'host_blocked';
+  const warn = ['view_image_required', 'codex_imagegen_requested', 'waiting_for_codex_image_gen', 'artifact_candidate_received'].includes(step);
+  setStatus(step, bad ? 'bad' : warn ? 'warn' : 'ok');
+}
+
+function uid(prefix = 'shape') {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') return prefix + '-' + window.crypto.randomUUID();
+  return prefix + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+}
+
+function syncInputsToState() {
+  state.sessionId = $('sessionId').value.trim() || 'default';
+  state.baseImagePath = $('baseImagePath').value.trim();
+  state.userRequest = $('promptOriginal').value.trim() || $('userRequest').value.trim();
+  if ($('promptOriginal').value.trim() && $('userRequest').value.trim() !== $('promptOriginal').value.trim()) $('userRequest').value = $('promptOriginal').value.trim();
+}
+
+function argsBase() {
+  syncInputsToState();
+  return { workspaceRoot: $('workspaceRoot').value.trim(), sessionId: state.sessionId };
+}
+
+function serializableState() {
+  syncInputsToState();
+  return {
+    schemaVersion: 2,
+    sessionId: state.sessionId,
+    baseImagePath: state.baseImagePath,
+    imageInfo: state.imageInfo,
+    userRequest: state.userRequest,
+    activeTool: state.activeTool,
+    activeLayer: state.activeLayer,
+    precisionMode: state.precisionMode,
+    selectedShapeId: state.selectedShapeId,
+    layers: state.layers,
+    layerSettings: state.layerSettings,
+    annotations: state.annotations,
+    references: state.references,
+    events: state.events,
+    versions: state.versions,
+    generationRequests: state.generationRequests,
+    reviewReports: state.reviewReports,
+    artifactHashes: state.artifactHashes,
+    conversationInputs: state.conversationInputs,
+    imageRoles: state.imageRoles,
+    promptDrafts: state.promptDrafts,
+    translations: state.translations,
+    constraintSets: state.constraintSets,
+    requestValidationReports: state.requestValidationReports,
+    precisionReports: state.precisionReports,
+    precisionPreviews: state.precisionPreviews,
+    presets: state.presets,
+    appliedPresets: state.appliedPresets,
+    hostCapabilities: state.hostCapabilities,
+    handoffs: state.handoffs,
+    pendingGenerations: state.pendingGenerations,
+    artifactCandidates: state.artifactCandidates,
+    handoffEvents: state.handoffEvents,
+    activeInputPackageId: state.activeInputPackageId,
+    activePromptDraftId: state.activePromptDraftId,
+    imageName: state.imageName,
+    previewImageDataUrl: state.previewImageDataUrl,
+    canvasWidth: canvas.width,
+    canvasHeight: canvas.height,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function callTool(name, args) {
+  if (!window.openai || typeof window.openai.callTool !== 'function') {
+    $('output').textContent = 'Host callTool unavailable. Ask Codex to call ' + name + ' with:\n' + JSON.stringify(args, null, 2);
+    return Promise.reject(new Error('callTool unavailable'));
+  }
+  setStatus(name, 'warn');
+  return window.openai.callTool(name, args).then((res) => {
+    $('output').textContent = JSON.stringify(res, null, 2);
+    return res;
+  }).catch((err) => {
+    setStatus('error', 'bad');
+    $('output').textContent = err?.stack || String(err);
+    throw err;
+  });
+}
+
+function loadImageFromFile(file, target) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = String(reader.result || '');
+    if (target === 'reference') {
+      state.lastReferenceDataUrl = dataUrl;
+      state.lastReferenceName = file.name;
+      setStatus('reference_selected');
+      return;
+    }
+    state.previewImageDataUrl = dataUrl;
+    state.imageName = file.name;
+    loadBaseImageFromDataUrl(dataUrl, 'image_loaded');
+  };
+  reader.readAsDataURL(file);
+}
+
+function imageFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Image preview could not be loaded.'));
+    img.src = dataUrl;
+  });
+}
+
+function loadBaseImageFromDataUrl(dataUrl, label = 'image_loaded') {
+  return imageFromDataUrl(dataUrl).then((img) => {
+    state.image = img;
+    state.resultImage = null;
+    state.displayMode = 'before';
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+    draw();
+    setStatus(label);
+  });
+}
+
+function loadResultImageFromDataUrl(dataUrl, label = 'artifact_received') {
+  return imageFromDataUrl(dataUrl).then((img) => {
+    state.resultImage = img;
+    state.displayMode = 'after';
+    draw();
+    setWorkflow(label);
+  });
+}
+
+function latest(list, filter = () => true) {
+  for (let i = (list || []).length - 1; i >= 0; i -= 1) {
+    if (filter(list[i])) return list[i];
+  }
+  return null;
+}
+
+function splitLines(value) {
+  return String(value || '').split(/\n|;/).map((item) => item.trim()).filter(Boolean);
+}
+
+function constraintsOverride() {
+  const out = {};
+  for (const [key, id] of Object.entries(constraintFields)) out[key] = splitLines($(id).value);
+  return out;
+}
+
+function latestInputPackage() {
+  return latest(state.conversationInputs || []);
+}
+
+function latestDraft() {
+  return latest(state.promptDrafts || [], (draft) => !state.activeInputPackageId || draft.inputPackageId === state.activeInputPackageId) || latest(state.promptDrafts || []);
+}
+
+function latestValidation() {
+  const draft = latestDraft();
+  return latest(state.requestValidationReports || [], (report) => !draft || report.draftId === draft.draftId);
+}
+
+function latestTranslation() {
+  const draft = latestDraft();
+  return latest(state.translations || [], (translation) => !draft || translation.draftId === draft.draftId);
+}
+
+function ensurePrecisionShape(shape) {
+  if (!shape) return null;
+  const b = shape.bounds || bounds(shape.points || []);
+  shape.geometryVersion = shape.geometryVersion || 2;
+  shape.include = shape.include || {
+    id: shape.id + '-include',
+    subtype: 'include',
+    kind: shape.kind || 'rectangle',
+    points: shape.points || pointsForBounds(b),
+    bounds: b,
+    closed: shape.closed !== false,
+    visible: true,
+    locked: false
+  };
+  shape.exclude = Array.isArray(shape.exclude) ? shape.exclude : [];
+  shape.protect = Array.isArray(shape.protect) ? shape.protect : [];
+  shape.edgeMode = shape.edgeMode || 'soft';
+  shape.safetyMarginPx = Number(shape.safetyMarginPx || 0);
+  shape.featherPx = Number(shape.featherPx || 0);
+  shape.precisionScore = Number(shape.precisionScore || 0);
+  shape.warnings = Array.isArray(shape.warnings) ? shape.warnings : [];
+  return shape;
+}
+
+function pointsForBounds(b) {
+  if (!b) return [];
+  return [
+    { x: b.x, y: b.y },
+    { x: b.x + b.width, y: b.y },
+    { x: b.x + b.width, y: b.y + b.height },
+    { x: b.x, y: b.y + b.height }
+  ];
+}
+
+function selectedBoundsForPrecision() {
+  const shape = ensurePrecisionShape(getSelectedShape());
+  const subtype = $('precisionSubtype').value;
+  if (!shape) return null;
+  if (subtype === 'include') return shape.include?.bounds || shape.bounds;
+  const list = shape[subtype] || [];
+  return list[list.length - 1]?.bounds || shape.include?.bounds || shape.bounds;
+}
+
+function precisionBoundsFromInputs() {
+  return {
+    x: Number($('precisionX').value || 0),
+    y: Number($('precisionY').value || 0),
+    width: Math.max(0, Number($('precisionW').value || 0)),
+    height: Math.max(0, Number($('precisionH').value || 0))
+  };
+}
+
+function snapValue(value) {
+  if (!$('snapGrid').checked) return value;
+  const grid = Math.max(1, Number($('gridSize').value || 16));
+  return Math.round(value / grid) * grid;
+}
+
+function fillPrecisionEditor() {
+  const shape = ensurePrecisionShape(getSelectedShape());
+  const b = selectedBoundsForPrecision();
+  $('precisionX').value = b ? Math.round(b.x) : '';
+  $('precisionY').value = b ? Math.round(b.y) : '';
+  $('precisionW').value = b ? Math.round(b.width) : '';
+  $('precisionH').value = b ? Math.round(b.height) : '';
+  $('edgeMode').value = shape?.edgeMode || 'soft';
+  $('safetyMarginPx').value = shape?.safetyMarginPx ?? 0;
+  $('featherPx').value = shape?.featherPx ?? 0;
+  renderPrecisionWarnings(shape);
+}
+
+function renderPrecisionWarnings(shape) {
+  const warnings = shape?.warnings || [];
+  $('precisionWarnings').className = 'notice ' + (warnings.length ? 'warn' : '');
+  $('precisionWarnings').textContent = shape ? [
+    'Score: ' + (shape.precisionScore || 0),
+    warnings.length ? 'Warnings: ' + warnings.join(' | ') : 'Warnings: none'
+  ].join('\n') : 'No selected zone.';
+}
+
+function precisionPresetValues() {
+  return {
+    edgeMode: $('edgeMode').value,
+    safetyMarginPx: Number($('safetyMarginPx').value || 0),
+    featherPx: Number($('featherPx').value || 0),
+    priority: $('shapePriority').value,
+    constraintType: $('shapeConstraint').value
+  };
+}
+
+function gatherConversationImages() {
+  const images = [];
+  const targetRole = state.imageRoles['current-target'] || 'edit_target';
+  if (state.baseImagePath || state.previewImageDataUrl) {
+    images.push({
+      imageId: 'current-target',
+      sourceType: state.baseImagePath ? 'local_file' : 'inline_import',
+      role: targetRole,
+      path: state.baseImagePath,
+      imageDataUrl: state.baseImagePath ? '' : state.previewImageDataUrl,
+      fileName: state.imageName || 'target.png',
+      caption: 'Current editor target',
+      userNote: 'Primary image associated from the inline editor.',
+      visibleInConversation: false
+    });
+  }
+  for (const ref of (state.references || []).filter((item) => item.removed !== true)) {
+    images.push({
+      imageId: ref.referenceId,
+      sourceType: 'editor_reference',
+      role: state.imageRoles[ref.referenceId] || 'reference',
+      path: ref.path,
+      caption: ref.note || 'Editor reference',
+      userNote: ref.note || '',
+      visibleInConversation: false,
+      weight: ref.weight || 'medium'
+    });
+  }
+  return images;
+}
+
+function requestImagesForPanel() {
+  const input = latestInputPackage();
+  const ingested = input?.images || [];
+  if (ingested.length) return ingested;
+  return gatherConversationImages().map((image) => {
+    if (image.imageId === 'current-target') image.previewDataUrl = state.previewImageDataUrl;
+    const ref = (state.references || []).find((item) => item.referenceId === image.imageId);
+    if (ref?.previewDataUrl) image.previewDataUrl = ref.previewDataUrl;
+    if (ref?.sha256) image.sha256 = ref.sha256;
+    return image;
+  });
+}
+
+function collectRoleOverrides() {
+  return requestImagesForPanel().map((image) => {
+    const role = document.querySelector('[data-role-select="' + cssEscape(image.imageId) + '"]')?.value || image.role || 'reference';
+    const note = document.querySelector('[data-role-note="' + cssEscape(image.imageId) + '"]')?.value || image.userNote || '';
+    const visible = document.querySelector('[data-role-visible="' + cssEscape(image.imageId) + '"]')?.checked === true;
+    return { imageId: image.imageId, role, userNote: note, visibleInConversation: visible };
+  });
+}
+
+function renderPromptPanel() {
+  const draft = latestDraft();
+  const validation = latestValidation();
+  const translation = latestTranslation();
+  if (!$('promptOriginal').value) $('promptOriginal').value = state.userRequest || '';
+  $('normalizedPrompt').textContent = draft?.normalizedPrompt || 'No normalized request yet.';
+  const finalRequest = latest(state.generationRequests || [], (request) => request.promptDraftId === draft?.draftId) || latest(state.generationRequests || []);
+  $('finalImagegenRequest').textContent = finalRequest ? JSON.stringify({
+    contextId: finalRequest.contextId,
+    promptPath: finalRequest.promptPath,
+    expectedResultPath: finalRequest.expectedResultPath,
+    inputPackageId: finalRequest.inputPackageId,
+    promptDraftId: finalRequest.promptDraftId,
+    validation: finalRequest.requestValidation ? { executable: finalRequest.requestValidation.executable, blockingErrors: finalRequest.requestValidation.blockingErrors, warnings: finalRequest.requestValidation.warnings } : null
+  }, null, 2) : 'No final $imagegen request yet.';
+  if (translation?.workingTranslation && !$('workingTranslation').value) $('workingTranslation').value = translation.workingTranslation;
+  if (draft?.constraints) fillConstraintsFromDraft(draft.constraints);
+  renderImageRoleTable();
+  renderRequestWarnings(validation);
+  switchPromptView(state.promptView || 'original', false);
+}
+
+function fillConstraintsFromDraft(constraints) {
+  for (const [key, id] of Object.entries(constraintFields)) {
+    const input = $(id);
+    if (!input.value && Array.isArray(constraints[key]) && constraints[key].length) input.value = constraints[key].join('\n');
+  }
+}
+
+function renderImageRoleTable() {
+  const images = requestImagesForPanel();
+  if (!images.length) {
+    $('imageRoleTable').innerHTML = '<div class="item">No conversation images</div>';
+    return;
+  }
+  $('imageRoleTable').innerHTML = images.map((image) => {
+    const role = state.imageRoles[image.imageId] || image.role || 'reference';
+    return `<div class="item image-role-row">
+      <div>${image.previewDataUrl ? `<img class="thumb" src="${image.previewDataUrl}" alt="image role" />` : '<div class="thumb"></div>'}</div>
+      <div>
+        <div class="mono">${escapeHtml((image.sha256 || image.imageId || '').slice(0, 18))}</div>
+        <label>Role <select data-role-select="${escapeHtml(image.imageId)}">${imageRoles.map((item) => `<option value="${item}" ${item === role ? 'selected' : ''}>${item}</option>`).join('')}</select></label>
+        <label>Note <textarea data-role-note="${escapeHtml(image.imageId)}">${escapeHtml(image.userNote || image.caption || '')}</textarea></label>
+        <label><input data-role-visible="${escapeHtml(image.imageId)}" type="checkbox" ${image.visibleInConversation === true ? 'checked' : ''} /> visible in conversation</label>
+        <div class="row">
+          <button data-set-target="${escapeHtml(image.imageId)}">cible</button>
+          <button data-set-reference="${escapeHtml(image.imageId)}">reference</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('[data-role-select]').forEach((select) => select.onchange = () => {
+    state.imageRoles[select.dataset.roleSelect] = select.value;
+    updatePackageRole(select.dataset.roleSelect, { role: select.value });
+    autosave();
+  });
+  document.querySelectorAll('[data-role-note]').forEach((input) => input.onchange = () => {
+    updatePackageRole(input.dataset.roleNote, { userNote: input.value });
+    autosave();
+  });
+  document.querySelectorAll('[data-role-visible]').forEach((input) => input.onchange = () => {
+    updatePackageRole(input.dataset.roleVisible, { visibleInConversation: input.checked });
+    autosave();
+  });
+  document.querySelectorAll('[data-set-target]').forEach((btn) => btn.onclick = () => setImageRole(btn.dataset.setTarget, 'edit_target'));
+  document.querySelectorAll('[data-set-reference]').forEach((btn) => btn.onclick = () => setImageRole(btn.dataset.setReference, 'reference'));
+}
+
+function updatePackageRole(imageId, patch) {
+  state.imageRoles[imageId] = patch.role || state.imageRoles[imageId] || '';
+  for (const input of state.conversationInputs || []) {
+    const image = (input.images || []).find((item) => item.imageId === imageId);
+    if (image) Object.assign(image, patch);
+  }
+}
+
+function setImageRole(imageId, role) {
+  updatePackageRole(imageId, { role });
+  renderImageRoleTable();
+  autosave();
+}
+
+function renderRequestWarnings(report) {
+  if (!report) {
+    $('requestWarnings').className = 'notice';
+    $('requestWarnings').textContent = 'No request validation yet.';
+    return;
+  }
+  const blockers = report.blockingErrors || [];
+  const warnings = report.warnings || [];
+  $('requestWarnings').className = 'notice ' + (blockers.length ? 'bad' : warnings.length ? 'warn' : '');
+  $('requestWarnings').textContent = [
+    blockers.length ? 'Blocking: ' + blockers.join(' | ') : 'Blocking: none',
+    warnings.length ? 'Warnings: ' + warnings.join(' | ') : 'Warnings: none'
+  ].join('\n');
+}
+
+function switchPromptView(view, render = true) {
+  state.promptView = view;
+  document.querySelectorAll('[data-prompt-view]').forEach((btn) => btn.classList.toggle('active', btn.dataset.promptView === view));
+  $('promptViewOriginal').classList.toggle('active', view === 'original');
+  $('promptViewNormalized').classList.toggle('active', view === 'normalized');
+  $('promptViewFinal').classList.toggle('active', view === 'final');
+  if (render) renderPromptPanel();
+}
+
+function cssEscape(value) {
+  return String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function applyRequestStateFromResult(res) {
+  const loaded = res?.structuredContent?.state;
+  if (loaded) applyLoadedState(loaded, false);
+  const draft = res?.structuredContent?.draft;
+  if (draft) state.activePromptDraftId = draft.draftId;
+  const input = res?.structuredContent?.inputPackage;
+  if (input) state.activeInputPackageId = input.inputPackageId;
+  const report = res?.structuredContent?.report;
+  if (report) renderRequestWarnings(report);
+  renderPromptPanel();
+  return res;
+}
+
+function hostCapabilityMap() {
+  return {
+    inlineMcpWidget: 'capInlineMcpWidget',
+    callToolBridge: 'capCallToolBridge',
+    visibleConversationImages: 'capVisibleConversationImages',
+    artifactBridge: 'capArtifactBridge',
+    workspaceArtifactSave: 'capWorkspaceArtifactSave',
+    canAttachLocalImages: 'capCanAttachLocalImages',
+    canCallNativeImageGen: 'capCanCallNativeImageGen'
+  };
+}
+
+function collectHostCapabilities() {
+  const caps = {};
+  for (const [key, id] of Object.entries(hostCapabilityMap())) caps[key] = $(id).checked === true;
+  return caps;
+}
+
+function fillHostCapabilities() {
+  const caps = state.hostCapabilities || {};
+  for (const [key, id] of Object.entries(hostCapabilityMap())) $(id).checked = caps[key] === true;
+}
+
+function upsertLocal(list, key, item) {
+  return [...(list || []).filter((entry) => entry?.[key] !== item?.[key]), item];
+}
+
+function applyBridgeStateFromResult(res) {
+  const data = res?.structuredContent || {};
+  if (data.state) {
+    applyLoadedState(data.state, false);
+  } else {
+    if (data.hostCapabilities) state.hostCapabilities = data.hostCapabilities;
+    if (data.pendingGenerations) state.pendingGenerations = data.pendingGenerations;
+    if (data.handoffs) state.handoffs = data.handoffs;
+    if (data.artifactCandidates) state.artifactCandidates = data.artifactCandidates;
+  }
+  if (data.handoff) {
+    state.handoffs = upsertLocal(state.handoffs, 'handoffId', data.handoff);
+    if (data.handoff.contextId) {
+      $('contextId').value = data.handoff.contextId;
+      $('candidateContextId').value = data.handoff.contextId;
+    }
+    if (data.handoff.expectedResultPath) {
+      $('artifactPath').value = data.handoff.expectedResultPath;
+      $('candidateArtifactPath').value = data.handoff.expectedResultPath;
+    }
+    setWorkflow(data.handoff.status || 'context_exported');
+  }
+  if (data.candidate) {
+    state.artifactCandidates = upsertLocal(state.artifactCandidates, 'candidateId', data.candidate);
+    $('candidateId').value = data.candidate.candidateId || '';
+    if (data.candidate.contextId) $('candidateContextId').value = data.candidate.contextId;
+    setWorkflow(data.candidate.status === 'registered' ? 'artifact_received' : 'artifact_candidate_received');
+  }
+  if (data.version) {
+    state.versions = data.versions || state.versions;
+    showVersion(data.version);
+  }
+  renderArtifactInbox();
+  return res;
+}
+
+function renderArtifactInbox() {
+  fillHostCapabilities();
+  const pending = state.pendingGenerations || [];
+  $('pendingGenerations').innerHTML = pending.length ? pending.map((item) => `
+    <div class="item ${item.contextId === $('contextId').value ? 'selected' : ''}">
+      <div class="mono">${escapeHtml(item.contextId || item.handoffId)}</div>
+      <div>${escapeHtml(item.status || '')}</div>
+      <div class="mono">${escapeHtml(item.expectedResultPath || '')}</div>
+      ${item.hostBlockers?.length ? `<div class="notice bad">${escapeHtml(item.hostBlockers.join(' | '))}</div>` : ''}
+      <button data-use-handoff="${escapeHtml(item.handoffId)}" data-context="${escapeHtml(item.contextId)}" data-expected="${escapeHtml(item.expectedResultPath || '')}">Use</button>
+    </div>`).join('') : '<div class="item">No pending handoff</div>';
+  document.querySelectorAll('[data-use-handoff]').forEach((btn) => btn.onclick = () => {
+    $('contextId').value = btn.dataset.context || '';
+    $('candidateContextId').value = btn.dataset.context || '';
+    if (btn.dataset.expected) {
+      $('artifactPath').value = btn.dataset.expected;
+      $('candidateArtifactPath').value = btn.dataset.expected;
+    }
+  });
+  const candidates = state.artifactCandidates || [];
+  $('artifactCandidateList').innerHTML = candidates.length ? candidates.map((candidate) => `
+    <div class="item ${candidate.candidateId === $('candidateId').value ? 'selected' : ''}">
+      ${candidate.previewDataUrl ? `<img class="thumb" src="${candidate.previewDataUrl}" alt="artifact candidate" />` : ''}
+      <div class="mono">${escapeHtml(candidate.candidateId)}</div>
+      <div>${escapeHtml(candidate.status || '')} / ${escapeHtml(candidate.origin || '')}</div>
+      <div class="mono">${escapeHtml((candidate.sha256 || '').slice(0, 16))}</div>
+      <button data-use-candidate="${escapeHtml(candidate.candidateId)}" data-context="${escapeHtml(candidate.contextId)}" data-path="${escapeHtml(candidate.artifactPath || '')}" data-origin="${escapeHtml(candidate.origin || '')}">Use</button>
+    </div>`).join('') : '<div class="item">No artifact candidates</div>';
+  document.querySelectorAll('[data-use-candidate]').forEach((btn) => btn.onclick = () => {
+    $('candidateId').value = btn.dataset.useCandidate || '';
+    $('candidateContextId').value = btn.dataset.context || '';
+    $('candidateArtifactPath').value = btn.dataset.path || '';
+    if (btn.dataset.origin) $('candidateOrigin').value = btn.dataset.origin;
+  });
+}
+
+function buildRequest() {
+  syncInputsToState();
+  const images = gatherConversationImages();
+  return saveState(false)
+    .then(() => callTool('ingest_conversation_inputs', {
+      ...argsBase(),
+      userText: $('promptOriginal').value.trim() || $('userRequest').value.trim(),
+      images,
+      notes: 'inline Request Builder',
+      editorState: serializableState()
+    }))
+    .then((res) => {
+      applyRequestStateFromResult(res);
+      return callTool('classify_image_roles', {
+        ...argsBase(),
+        inputPackageId: res?.structuredContent?.inputPackage?.inputPackageId || state.activeInputPackageId,
+        imageRoles: collectRoleOverrides()
+      });
+    })
+    .then(applyRequestStateFromResult)
+    .then((res) => callTool('normalize_prompt_request', {
+      ...argsBase(),
+      inputPackageId: res?.structuredContent?.inputPackage?.inputPackageId || state.activeInputPackageId,
+      userText: $('promptOriginal').value.trim() || $('userRequest').value.trim(),
+      constraintsOverride: constraintsOverride()
+    }))
+    .then(applyRequestStateFromResult)
+    .then((res) => {
+      const draft = res?.structuredContent?.draft;
+      if (!$('workingTranslation').value.trim()) return res;
+      return callTool('translate_prompt_request', {
+        ...argsBase(),
+        inputPackageId: draft?.inputPackageId || state.activeInputPackageId,
+        draftId: draft?.draftId || state.activePromptDraftId,
+        targetLanguage: 'en',
+        workingTranslation: $('workingTranslation').value.trim()
+      }).then(applyRequestStateFromResult);
+    })
+    .then(() => callTool('validate_imagegen_request', { ...argsBase(), inputPackageId: state.activeInputPackageId, draftId: state.activePromptDraftId }))
+    .then((res) => {
+      applyRequestStateFromResult(res);
+      switchPromptView('normalized');
+      return res;
+    });
+}
+
+function useFinalRequest() {
+  return saveState(false).then(() => callTool('create_imagegen_request_from_inputs', {
+    ...argsBase(),
+    inputPackageId: state.activeInputPackageId,
+    draftId: state.activePromptDraftId,
+    editorState: serializableState()
+  })).then((res) => {
+    const data = res?.structuredContent || {};
+    if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
+    if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
+    if (data.prompt) $('finalImagegenRequest').textContent = data.prompt;
+    applyRequestStateFromResult(res);
+    applyBridgeStateFromResult(res);
+    switchPromptView('final');
+    setWorkflow(data.handoff?.status || 'context_exported');
+    return res;
+  });
+}
+
+function validatePrecision() {
+  return saveState(false).then(() => callTool('validate_zone_precision', {
+    ...argsBase(),
+    shapeId: state.selectedShapeId,
+    editorState: serializableState()
+  })).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    const report = res?.structuredContent?.reports?.[0];
+    if (report) {
+      $('precisionWarnings').className = 'notice ' + (report.blockingErrors?.length ? 'bad' : report.warnings?.length ? 'warn' : '');
+      $('precisionWarnings').textContent = [
+        'Status: ' + report.status,
+        'Score: ' + report.precisionScore,
+        report.blockingErrors?.length ? 'Blocking: ' + report.blockingErrors.join(' | ') : 'Blocking: none',
+        report.warnings?.length ? 'Warnings: ' + report.warnings.join(' | ') : 'Warnings: none'
+      ].join('\n');
+    }
+    return res;
+  });
+}
+
+function setGeometry() {
+  if (!state.selectedShapeId) return setStatus('no_zone', 'warn');
+  const raw = precisionBoundsFromInputs();
+  const snapped = {
+    x: snapValue(raw.x),
+    y: snapValue(raw.y),
+    width: raw.width,
+    height: raw.height
+  };
+  return callTool('set_zone_geometry', {
+    ...argsBase(),
+    shapeId: state.selectedShapeId,
+    subtype: $('precisionSubtype').value,
+    bounds: snapped,
+    edgeMode: $('edgeMode').value,
+    safetyMarginPx: Number($('safetyMarginPx').value || 0),
+    featherPx: Number($('featherPx').value || 0),
+    editorState: serializableState()
+  }).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    renderAll();
+    return res;
+  });
+}
+
+function refineSelected(operation) {
+  if (!state.selectedShapeId) return setStatus('no_zone', 'warn');
+  return callTool('refine_zone', {
+    ...argsBase(),
+    shapeId: state.selectedShapeId,
+    operation,
+    amountPx: Number($('nudgePx').value || 1),
+    sourceShapeId: $('precisionSourceShape').value.trim(),
+    targetSubtype: $('precisionSubtype').value,
+    editorState: serializableState()
+  }).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    renderAll();
+    return res;
+  });
+}
+
+function createPrecisionPreview() {
+  return saveState(false).then(() => callTool('create_precision_preview', {
+    ...argsBase(),
+    shapeId: state.selectedShapeId,
+    editorState: serializableState()
+  })).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    return res;
+  });
+}
+
+function loadPresets() {
+  return callTool('list_zone_presets', { ...argsBase(), kind: $('presetKind').value }).then((res) => {
+    state.presets = res?.structuredContent?.presets || [];
+    renderPresetSelect();
+    return res;
+  });
+}
+
+function renderPresetSelect() {
+  const kind = $('presetKind').value;
+  const presets = (state.presets || []).filter((preset) => preset.kind === kind);
+  $('presetSelect').innerHTML = presets.map((preset) => `<option value="${escapeHtml(preset.presetId)}">${escapeHtml(preset.label || preset.presetId)}${preset.builtIn ? ' *' : ''}</option>`).join('');
+}
+
+function applyPreset() {
+  return callTool('apply_zone_preset', {
+    ...argsBase(),
+    kind: $('presetKind').value,
+    presetId: $('presetSelect').value,
+    shapeId: state.selectedShapeId,
+    editorState: serializableState()
+  }).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    renderAll();
+    return res;
+  });
+}
+
+function savePreset() {
+  const kind = $('presetKind').value;
+  const values = kind === 'zone' ? precisionPresetValues() : kind === 'layer' ? { layer: state.activeLayer, ...(state.layerSettings[state.activeLayer] || {}) } : kind === 'prompt' ? constraintsOverride() : { requiresHumanReview: true };
+  return callTool('save_zone_preset', {
+    ...argsBase(),
+    kind,
+    label: $('presetLabel').value.trim() || 'local-' + kind + '-preset',
+    values
+  }).then((res) => {
+    state.presets = res?.structuredContent?.presets || state.presets;
+    renderPresetSelect();
+    return res;
+  });
+}
+
+function deletePreset() {
+  return callTool('delete_zone_preset', { ...argsBase(), kind: $('presetKind').value, presetId: $('presetSelect').value }).then((res) => {
+    state.presets = res?.structuredContent?.presets || [];
+    renderPresetSelect();
+    return res;
+  });
+}
+
+function nudgeSelected(dx, dy) {
+  const shape = ensurePrecisionShape(getSelectedShape());
+  if (!shape) return;
+  const b = { ...shape.include.bounds, x: shape.include.bounds.x + dx, y: shape.include.bounds.y + dy };
+  $('precisionX').value = Math.round(b.x);
+  $('precisionY').value = Math.round(b.y);
+  $('precisionW').value = Math.round(b.width);
+  $('precisionH').value = Math.round(b.height);
+  setGeometry();
+}
+
+function pushUndo() {
+  state.undo.push(JSON.stringify({ layers: state.layers, annotations: state.annotations, layerSettings: state.layerSettings, selectedShapeId: state.selectedShapeId }));
+  if (state.undo.length > 100) state.undo.shift();
+  state.redo = [];
+}
+
+function restore(snapshot) {
+  const parsed = JSON.parse(snapshot);
+  state.layers = parsed.layers;
+  state.annotations = parsed.annotations || [];
+  state.layerSettings = parsed.layerSettings || state.layerSettings;
+  state.selectedShapeId = parsed.selectedShapeId || '';
+  renderAll();
+  autosave();
+}
+
+function point(evt) {
+  const rect = canvas.getBoundingClientRect();
+  return { x: (evt.clientX - rect.left) * canvas.width / rect.width, y: (evt.clientY - rect.top) * canvas.height / rect.height };
+}
+
+function begin(evt) {
+  const p = point(evt);
+  if (state.activeTool === 'pan' || evt.button === 1 || evt.altKey) {
+    state.panning = true;
+    state.dragStart = { x: evt.clientX, y: evt.clientY, panX: state.panX, panY: state.panY };
+    canvas.setPointerCapture?.(evt.pointerId);
+    return;
+  }
+  if (!state.image) return;
+  if (state.activeTool === 'select') {
+    const picked = pickShape(p);
+    state.selectedShapeId = picked?.id || '';
+    state.dragMode = picked ? (nearHandle(picked, p) ? 'resize' : 'move') : '';
+    state.dragStart = picked ? { point: p, shape: cloneShape(picked) } : null;
+    renderAll();
+    return;
+  }
+  if (state.layerSettings[state.activeLayer]?.locked) {
+    setStatus('layer_locked', 'warn');
+    return;
+  }
+  pushUndo();
+  state.drawing = true;
+  const kind = state.activeTool;
+  const drawKind = kind === 'precision' ? 'rectangle' : kind;
+  state.current = {
+    id: uid(),
+    kind: drawKind,
+    layer: state.activeLayer,
+    label: '',
+    note: $('markNote').value.trim(),
+    constraintType: state.activeLayer,
+    priority: 'medium',
+    size: Number($('brushSize').value),
+    points: [p],
+    bounds: { x: p.x, y: p.y, width: 0, height: 0 },
+    closed: drawKind !== 'brush',
+    visible: true,
+    locked: false
+  };
+  if (kind === 'eraser') eraseAt(p);
+}
+
+function move(evt) {
+  const p = point(evt);
+  if (state.panning && state.dragStart) {
+    state.panX = state.dragStart.panX + evt.clientX - state.dragStart.x;
+    state.panY = state.dragStart.panY + evt.clientY - state.dragStart.y;
+    applyTransform();
+    return;
+  }
+  if (state.activeTool === 'select' && state.selectedShapeId && state.dragMode && state.dragStart) {
+    const selected = getSelectedShape();
+    if (!selected || selected.locked) return;
+    if (state.dragMode === 'move') moveShape(selected, p.x - state.dragStart.point.x, p.y - state.dragStart.point.y, state.dragStart.shape);
+    if (state.dragMode === 'resize') resizeShape(selected, p, state.dragStart.shape);
+    draw();
+    return;
+  }
+  if (!state.drawing || !state.current) return;
+  if (state.activeTool === 'eraser') eraseAt(p);
+  else if (state.current.kind === 'rectangle' || state.current.kind === 'ellipse') {
+    state.current.points = [state.current.points[0], p];
+    state.current.bounds = normalizeBounds(state.current.points[0], p);
+  } else {
+    state.current.points.push(p);
+    state.current.bounds = bounds(state.current.points);
+  }
+  draw();
+}
+
+function end() {
+  if (state.panning) {
+    state.panning = false;
+    state.dragStart = null;
+    return;
+  }
+  if (state.activeTool === 'select' && state.dragMode) {
+    state.dragMode = '';
+    state.dragStart = null;
+    renderAll();
+    autosave();
+    return;
+  }
+  if (!state.drawing || !state.current) return;
+  state.drawing = false;
+  if (state.activeTool !== 'eraser' && validShape(state.current)) {
+    state.current.bounds = state.current.bounds || bounds(state.current.points);
+    ensurePrecisionShape(state.current);
+    state.layers[state.activeLayer].push(state.current);
+    state.selectedShapeId = state.current.id;
+    if (state.current.note) state.annotations.push({ id: state.current.id, layer: state.activeLayer, text: state.current.note, bounds: state.current.bounds });
+  }
+  state.current = null;
+  renderAll();
+  autosave();
+}
+
+function validShape(shape) {
+  if (!shape?.points?.length) return false;
+  if (shape.kind === 'rectangle' || shape.kind === 'ellipse') return Math.abs(shape.bounds.width) > 2 && Math.abs(shape.bounds.height) > 2;
+  return shape.points.length > 1;
+}
+
+function normalizeBounds(a, b) {
+  return { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(b.x - a.x), height: Math.abs(b.y - a.y) };
+}
+
+function bounds(points) {
+  const xs = points.map(p => p.x);
+  const ys = points.map(p => p.y);
+  return { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs) - Math.min(...xs), height: Math.max(...ys) - Math.min(...ys) };
+}
+
+function eraseAt(p) {
+  const radius = Number($('brushSize').value);
+  for (const layer of layerNames) {
+    if (state.layerSettings[layer]?.locked) continue;
+    state.layers[layer] = state.layers[layer].filter((shape) => !shape.points.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < radius));
+  }
+}
+
+function allShapes() {
+  return layerNames.flatMap((layer) => (state.layers[layer] || []).map((shape) => ({ ...shape, layer })));
+}
+
+function getShapeById(id) {
+  for (const layer of layerNames) {
+    const shape = state.layers[layer].find((item) => item.id === id);
+    if (shape) return shape;
+  }
+  return null;
+}
+
+function getSelectedShape() {
+  return getShapeById(state.selectedShapeId);
+}
+
+function pickShape(p) {
+  const shapes = allShapes().filter((shape) => shape.visible !== false && state.layerSettings[shape.layer]?.visible !== false).reverse();
+  return shapes.find((shape) => hitShape(shape, p));
+}
+
+function hitShape(shape, p) {
+  const b = shape.bounds || bounds(shape.points || []);
+  if (!b) return false;
+  if (shape.kind === 'brush' || shape.kind === 'lasso' || shape.kind === 'polygon') {
+    return p.x >= b.x - 8 && p.x <= b.x + b.width + 8 && p.y >= b.y - 8 && p.y <= b.y + b.height + 8;
+  }
+  return p.x >= b.x && p.x <= b.x + b.width && p.y >= b.y && p.y <= b.y + b.height;
+}
+
+function nearHandle(shape, p) {
+  const b = shape.bounds || bounds(shape.points || []);
+  return Math.hypot(p.x - (b.x + b.width), p.y - (b.y + b.height)) < 22;
+}
+
+function cloneShape(shape) {
+  return JSON.parse(JSON.stringify(shape));
+}
+
+function moveShape(shape, dx, dy, original) {
+  shape.points = original.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+  shape.bounds = original.bounds ? { x: original.bounds.x + dx, y: original.bounds.y + dy, width: original.bounds.width, height: original.bounds.height } : bounds(shape.points);
+  ensurePrecisionShape(shape);
+  shape.include.points = shape.points;
+  shape.include.bounds = shape.bounds;
+}
+
+function resizeShape(shape, p, original) {
+  const start = original.points[0] || { x: original.bounds.x, y: original.bounds.y };
+  if (shape.kind === 'rectangle' || shape.kind === 'ellipse') {
+    shape.points = [start, p];
+    shape.bounds = normalizeBounds(start, p);
+    ensurePrecisionShape(shape);
+    shape.include.points = shape.points;
+    shape.include.bounds = shape.bounds;
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (state.displayMode === 'side' && state.image && state.resultImage) drawSideBySide();
+  else if (state.displayMode === 'split' && state.image && state.resultImage) drawSplit();
+  else {
+    const img = state.displayMode === 'after' && state.resultImage ? state.resultImage : state.image;
+    if (img) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    else drawEmpty();
+  }
+  if (state.precisionMode) drawPrecisionGrid();
+  for (const layer of layerNames) {
+    const settings = state.layerSettings[layer] || { visible: true, opacity: 1 };
+    if (settings.visible === false) continue;
+    for (const shape of state.layers[layer] || []) drawShape(shape, layer, settings.opacity ?? 1);
+  }
+  if (state.current && state.activeTool !== 'eraser') drawShape(state.current, state.activeLayer, state.layerSettings[state.activeLayer]?.opacity ?? 1);
+  drawSelected();
+  $('shapeCount').textContent = allShapes().length + ' zones';
+}
+
+function drawPrecisionGrid() {
+  const grid = Math.max(2, Number($('gridSize').value || 16));
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,.12)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= canvas.width; x += grid) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= canvas.height; y += grid) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+  ctx.restore();
+  for (const sub of shape.exclude || []) drawSubZone(sub, '#f97316', 'rgba(249,115,22,.12)', opacity, [8, 5]);
+  for (const sub of shape.protect || []) drawSubZone(sub, '#38bdf8', 'rgba(56,189,248,.12)', opacity, [3, 4]);
+}
+
+function drawSubZone(sub, stroke, fill, opacity, dash) {
+  const b = sub.bounds || bounds(sub.points || []);
+  if (!b) return;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.strokeStyle = stroke;
+  ctx.fillStyle = fill;
+  ctx.lineWidth = 3;
+  ctx.setLineDash(dash || []);
+  ctx.beginPath();
+  if (sub.kind === 'ellipse') ctx.ellipse(b.x + b.width / 2, b.y + b.height / 2, Math.max(1, b.width / 2), Math.max(1, b.height / 2), 0, 0, Math.PI * 2);
+  else ctx.rect(b.x, b.y, b.width, b.height);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawEmpty() {
+  ctx.fillStyle = '#111827';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '26px sans-serif';
+  ctx.fillText('Import an image, then mark edit zones.', 40, 70);
+}
+
+function drawSideBySide() {
+  const half = canvas.width / 2;
+  ctx.drawImage(state.image, 0, 0, half, canvas.height);
+  ctx.drawImage(state.resultImage, half, 0, half, canvas.height);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(half, 0);
+  ctx.lineTo(half, canvas.height);
+  ctx.stroke();
+}
+
+function drawSplit() {
+  const splitX = canvas.width * Number($('reviewSlider').value) / 100;
+  ctx.drawImage(state.image, 0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(splitX, 0, canvas.width - splitX, canvas.height);
+  ctx.clip();
+  ctx.drawImage(state.resultImage, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(splitX, 0);
+  ctx.lineTo(splitX, canvas.height);
+  ctx.stroke();
+}
+
+function drawShape(shape, layer, opacity) {
+  if (shape.visible === false) return;
+  const b = shape.bounds || bounds(shape.points || []);
+  if (!b) return;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.lineWidth = shape.size || 10;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = colors[layer];
+  ctx.fillStyle = fills[layer];
+  ctx.beginPath();
+  if (shape.kind === 'rectangle') {
+    ctx.rect(b.x, b.y, b.width, b.height);
+    ctx.fill();
+    ctx.stroke();
+  } else if (shape.kind === 'ellipse') {
+    ctx.ellipse(b.x + b.width / 2, b.y + b.height / 2, Math.max(1, b.width / 2), Math.max(1, b.height / 2), 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  } else {
+    shape.points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+    if (shape.closed) {
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.stroke();
+  }
+  if (shape.label || shape.note) {
+    ctx.globalAlpha = 1;
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = colors[layer];
+    ctx.fillText((shape.label || shape.note).slice(0, 34), b.x, Math.max(18, b.y - 8));
+  }
+  ctx.restore();
+}
+
+function drawSelected() {
+  const shape = getSelectedShape();
+  if (!shape) return;
+  const b = shape.bounds || bounds(shape.points || []);
+  ctx.save();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 5]);
+  ctx.strokeRect(b.x, b.y, b.width, b.height);
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(b.x + b.width - 6, b.y + b.height - 6, 12, 12);
+  ctx.restore();
+}
+
+function renderAll() {
+  renderLayerSettings();
+  renderZones();
+  renderReferences();
+  renderVersions(state.versions);
+  renderPromptPanel();
+  renderArtifactInbox();
+  fillShapeEditor();
+  fillPrecisionEditor();
+  renderPresetSelect();
+  draw();
+  $('mode').textContent = state.activeTool + ' / ' + state.activeLayer;
+  $('selectedInfo').textContent = state.selectedShapeId || 'no selection';
+}
+
+function renderLayerSettings() {
+  $('layerSettings').innerHTML = layerNames.map((layer) => {
+    const s = state.layerSettings[layer] || { visible: true, locked: false, opacity: 1 };
+    return `<div class="layer-row">
+      <span>${layer}</span>
+      <button data-vis="${layer}">${s.visible === false ? 'show' : 'hide'}</button>
+      <button data-lock="${layer}">${s.locked ? 'unlock' : 'lock'}</button>
+      <input data-opacity="${layer}" type="range" min="5" max="100" value="${Math.round((s.opacity ?? 1) * 100)}" />
+    </div>`;
+  }).join('');
+  document.querySelectorAll('[data-vis]').forEach((btn) => btn.onclick = () => {
+    const layer = btn.dataset.vis;
+    state.layerSettings[layer].visible = state.layerSettings[layer].visible === false;
+    renderAll();
+    autosave();
+  });
+  document.querySelectorAll('[data-lock]').forEach((btn) => btn.onclick = () => {
+    const layer = btn.dataset.lock;
+    state.layerSettings[layer].locked = !state.layerSettings[layer].locked;
+    renderAll();
+    autosave();
+  });
+  document.querySelectorAll('[data-opacity]').forEach((input) => input.oninput = () => {
+    state.layerSettings[input.dataset.opacity].opacity = Number(input.value) / 100;
+    draw();
+  });
+}
+
+function renderZones() {
+  const shapes = allShapes();
+  if (!shapes.length) {
+    $('zoneList').innerHTML = '<div class="item">No zones</div>';
+    return;
+  }
+  $('zoneList').innerHTML = shapes.map((shape) => `
+    <div class="item ${shape.id === state.selectedShapeId ? 'selected' : ''}" data-zone="${escapeHtml(shape.id)}">
+      <div><strong>${escapeHtml(shape.label || shape.kind)}</strong> <span>${escapeHtml(shape.layer)}</span></div>
+      <div>${escapeHtml(shape.priority || 'medium')} / ${escapeHtml(shape.constraintType || shape.layer)}</div>
+      <div>${escapeHtml(shape.note || '')}</div>
+      <div class="row">
+        <button data-select-zone="${escapeHtml(shape.id)}">Select</button>
+        <button data-toggle-zone="${escapeHtml(shape.id)}">${shape.visible === false ? 'Show' : 'Hide'}</button>
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('[data-select-zone]').forEach((btn) => btn.onclick = () => {
+    state.selectedShapeId = btn.dataset.selectZone;
+    renderAll();
+  });
+  document.querySelectorAll('[data-toggle-zone]').forEach((btn) => btn.onclick = () => {
+    const shape = getShapeById(btn.dataset.toggleZone);
+    if (shape) shape.visible = shape.visible === false;
+    renderAll();
+    autosave();
+  });
+}
+
+function fillShapeEditor() {
+  const shape = getSelectedShape();
+  $('shapeLabel').value = shape?.label || '';
+  $('shapeNote').value = shape?.note || '';
+  $('shapeConstraint').value = shape?.constraintType || shape?.layer || 'correct';
+  $('shapePriority').value = shape?.priority || 'medium';
+}
+
+function renderReferences() {
+  const refs = (state.references || []).filter((ref) => ref.removed !== true);
+  if (!refs.length) {
+    $('referenceList').innerHTML = '<div class="item">No references</div>';
+    return;
+  }
+  $('referenceList').innerHTML = refs.map((ref) => `
+    <div class="item">
+      ${ref.previewDataUrl ? `<img class="thumb" src="${ref.previewDataUrl}" alt="reference" />` : ''}
+      <div>${escapeHtml(ref.weight || 'medium')} / ${escapeHtml(ref.note || '')}</div>
+      <div class="mono">${escapeHtml((ref.sha256 || '').slice(0, 16))}</div>
+      <button class="bad" data-remove-ref="${escapeHtml(ref.referenceId)}">Remove</button>
+    </div>`).join('');
+  document.querySelectorAll('[data-remove-ref]').forEach((btn) => btn.onclick = () => callTool('remove_reference_image', { ...argsBase(), referenceId: btn.dataset.removeRef }).then((res) => {
+    state.references = res?.structuredContent?.references || [];
+    renderAll();
+    setWorkflow('state_saved');
+  }));
+}
+
+function renderVersions(list) {
+  const versions = list || [];
+  if (!versions.length) {
+    $('versionList').innerHTML = '<div class="item">No versions</div>';
+    return;
+  }
+  $('versionList').innerHTML = versions.map((version) => `
+    <div class="item ${version.versionId === state.activeVersionId ? 'selected' : ''}">
+      <div class="mono">${escapeHtml(version.versionId)}</div>
+      <div>${escapeHtml(version.status || '')} / ${escapeHtml(version.invariantCheck?.status || '')}</div>
+      <div class="mono">${escapeHtml((version.resultSha256 || '').slice(0, 16))}</div>
+      <div class="row">
+        <button data-view-version="${escapeHtml(version.versionId)}">View</button>
+        <button data-commit-version="${escapeHtml(version.versionId)}">Accept</button>
+        <button class="bad" data-reject-version="${escapeHtml(version.versionId)}">Reject</button>
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('[data-view-version]').forEach((btn) => btn.onclick = () => showVersion(versions.find((v) => v.versionId === btn.dataset.viewVersion)));
+  document.querySelectorAll('[data-commit-version]').forEach((btn) => btn.onclick = () => callTool('commit_version', { ...argsBase(), versionId: btn.dataset.commitVersion }).then(loadVersions));
+  document.querySelectorAll('[data-reject-version]').forEach((btn) => btn.onclick = () => callTool('reject_version', { ...argsBase(), versionId: btn.dataset.rejectVersion, reason: 'Rejected in inline review.' }).then(loadVersions));
+}
+
+function showVersion(version) {
+  if (!version) return;
+  state.activeVersionId = version.versionId;
+  if (!version.previewDataUrl) {
+    $('output').textContent = version.previewUnavailableReason || 'No inline preview for this version.';
+    setStatus('preview_unavailable', 'warn');
+    return;
+  }
+  loadResultImageFromDataUrl(version.previewDataUrl, version.invariantCheck?.status === 'drift_detected' ? 'drift_detected' : 'review_ready');
+}
+
+function applyTransform() {
+  canvas.style.transform = 'translate(' + state.panX + 'px,' + state.panY + 'px) scale(' + state.zoom + ')';
+  canvas.style.transformOrigin = 'center center';
+  $('zoomLabel').textContent = Math.round(state.zoom * 100) + '%';
+}
+
+function zoomBy(factor) {
+  state.zoom = Math.max(0.15, Math.min(8, state.zoom * factor));
+  applyTransform();
+}
+
+let autosaveTimer = null;
+function autosave() {
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => saveState(false), 350);
+}
+
+function saveState(verbose = true) {
+  return callTool('update_editor_state', { ...argsBase(), editorState: serializableState() }).then((res) => {
+    const loaded = res?.structuredContent?.state;
+    if (loaded) applyLoadedState(loaded, false);
+    setWorkflow('state_saved');
+    if (verbose) $('output').textContent = JSON.stringify(res, null, 2);
+    return res;
+  });
+}
+
+function applyLoadedState(loaded, loadImagePreview = true) {
+  $('sessionId').value = loaded.sessionId || 'default';
+  $('baseImagePath').value = loaded.baseImagePath || '';
+  $('userRequest').value = loaded.userRequest || '';
+  $('promptOriginal').value = loaded.userRequest || '';
+  state.layers = loaded.layers || state.layers;
+  for (const layer of layerNames) state.layers[layer] = (state.layers[layer] || []).map(ensurePrecisionShape);
+  state.layerSettings = loaded.layerSettings || state.layerSettings;
+  state.annotations = loaded.annotations || [];
+  state.references = loaded.references || [];
+  state.events = loaded.events || [];
+  state.versions = loaded.versions || [];
+  state.generationRequests = loaded.generationRequests || [];
+  state.reviewReports = loaded.reviewReports || [];
+  state.artifactHashes = loaded.artifactHashes || {};
+  state.conversationInputs = loaded.conversationInputs || [];
+  state.imageRoles = loaded.imageRoles || {};
+  state.promptDrafts = loaded.promptDrafts || [];
+  state.translations = loaded.translations || [];
+  state.constraintSets = loaded.constraintSets || [];
+  state.requestValidationReports = loaded.requestValidationReports || [];
+  state.precisionReports = loaded.precisionReports || [];
+  state.precisionPreviews = loaded.precisionPreviews || [];
+  state.presets = loaded.presets || [];
+  state.appliedPresets = loaded.appliedPresets || [];
+  state.hostCapabilities = loaded.hostCapabilities || {};
+  state.handoffs = loaded.handoffs || [];
+  state.pendingGenerations = loaded.pendingGenerations || [];
+  state.artifactCandidates = loaded.artifactCandidates || [];
+  state.handoffEvents = loaded.handoffEvents || [];
+  state.precisionMode = loaded.precisionMode === true;
+  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
+  state.activeInputPackageId = loaded.activeInputPackageId || '';
+  state.activePromptDraftId = loaded.activePromptDraftId || '';
+  state.selectedShapeId = loaded.selectedShapeId || '';
+  if (loadImagePreview && loaded.baseImageDataUrl) loadBaseImageFromDataUrl(loaded.baseImageDataUrl, 'state_loaded');
+  renderAll();
+}
+
+function loadVersions() {
+  return callTool('list_versions', argsBase()).then((res) => {
+    state.versions = res?.structuredContent?.versions || [];
+    renderVersions(state.versions);
+    return state.versions;
+  });
+}
+
+function refreshPendingGenerations() {
+  return callTool('list_pending_generations', argsBase()).then(applyBridgeStateFromResult);
+}
+
+function recordHostCapabilitiesFromWidget() {
+  return callTool('record_host_capabilities', {
+    ...argsBase(),
+    capabilities: collectHostCapabilities(),
+    reportedBy: 'inline-widget'
+  }).then(applyBridgeStateFromResult);
+}
+
+function createHandoffFromWidget() {
+  return saveState(false).then(() => callTool('create_codex_handoff', {
+    ...argsBase(),
+    contextId: $('contextId').value.trim(),
+    hostCapabilities: collectHostCapabilities()
+  })).then(applyBridgeStateFromResult);
+}
+
+function recordNativeImageGenRequested() {
+  const handoffs = state.handoffs || [];
+  const handoff = handoffs.find((item) => item.contextId === $('contextId').value.trim()) || handoffs[handoffs.length - 1];
+  return callTool('record_handoff_event', {
+    ...argsBase(),
+    handoffId: handoff?.handoffId || '',
+    contextId: $('contextId').value.trim(),
+    status: 'codex_imagegen_requested',
+    message: 'Codex native Image Gen request was triggered from the conversation.'
+  }).then(applyBridgeStateFromResult);
+}
+
+function registerCandidateFromWidget() {
+  return callTool('register_artifact_candidate', {
+    ...argsBase(),
+    contextId: $('candidateContextId').value.trim() || $('contextId').value.trim(),
+    artifactPath: $('candidateArtifactPath').value.trim() || $('artifactPath').value.trim(),
+    artifactId: $('candidateArtifactId').value.trim(),
+    codexTurnId: $('candidateCodexTurnId').value.trim(),
+    origin: $('candidateOrigin').value,
+    notes: $('candidateReason').value.trim()
+  }).then(applyBridgeStateFromResult);
+}
+
+function resolveCandidateFromWidget(decision) {
+  return callTool('resolve_artifact_candidate', {
+    ...argsBase(),
+    candidateId: $('candidateId').value.trim(),
+    decision,
+    reason: $('candidateReason').value.trim() || (decision === 'reject' ? 'Rejected in Artifact Bridge.' : 'Accepted in Artifact Bridge.')
+  }).then(applyBridgeStateFromResult);
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+}
+
+$('file').addEventListener('change', (evt) => evt.target.files?.[0] && loadImageFromFile(evt.target.files[0], 'target'));
+$('referenceFile').addEventListener('change', (evt) => evt.target.files?.[0] && loadImageFromFile(evt.target.files[0], 'reference'));
+$('userRequest').addEventListener('input', () => { if (!$('promptOriginal').value.trim()) $('promptOriginal').value = $('userRequest').value; });
+$('promptOriginal').addEventListener('input', () => { $('userRequest').value = $('promptOriginal').value; state.userRequest = $('promptOriginal').value.trim(); });
+canvas.addEventListener('pointerdown', begin);
+canvas.addEventListener('pointermove', move);
+canvas.addEventListener('pointerup', end);
+canvas.addEventListener('pointerleave', end);
+canvas.addEventListener('wheel', (evt) => { evt.preventDefault(); zoomBy(evt.deltaY < 0 ? 1.08 : 0.92); }, { passive: false });
+$('reviewSlider').addEventListener('input', draw);
+
+document.querySelectorAll('[data-tool]').forEach((btn) => btn.onclick = () => {
+  state.activeTool = btn.dataset.tool;
+  state.precisionMode = state.activeTool === 'precision' ? true : state.precisionMode;
+  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
+  document.querySelectorAll('[data-tool]').forEach((item) => item.classList.toggle('active', item === btn));
+  renderAll();
+});
+document.querySelectorAll('[data-layer]').forEach((btn) => btn.onclick = () => {
+  state.activeLayer = btn.dataset.layer;
+  document.querySelectorAll('[data-layer]').forEach((item) => item.classList.toggle('active', item === btn));
+  renderAll();
+});
+document.querySelectorAll('[data-prompt-view]').forEach((btn) => btn.onclick = () => switchPromptView(btn.dataset.promptView));
+$('presetKind').onchange = () => loadPresets();
+$('precisionSubtype').onchange = fillPrecisionEditor;
+$('gridSize').oninput = draw;
+$('snapGrid').onchange = draw;
+document.addEventListener('keydown', (evt) => {
+  const tag = document.activeElement?.tagName;
+  if (!state.precisionMode || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  const amount = Number($('nudgePx').value || 1) * (evt.shiftKey ? 10 : 1);
+  if (evt.key === 'ArrowLeft') { evt.preventDefault(); nudgeSelected(-amount, 0); }
+  if (evt.key === 'ArrowRight') { evt.preventDefault(); nudgeSelected(amount, 0); }
+  if (evt.key === 'ArrowUp') { evt.preventDefault(); nudgeSelected(0, -amount); }
+  if (evt.key === 'ArrowDown') { evt.preventDefault(); nudgeSelected(0, amount); }
+});
+
+$('undo').onclick = () => { if (state.undo.length) { state.redo.push(JSON.stringify({ layers: state.layers, annotations: state.annotations, layerSettings: state.layerSettings, selectedShapeId: state.selectedShapeId })); restore(state.undo.pop()); } };
+$('redo').onclick = () => { if (state.redo.length) { state.undo.push(JSON.stringify({ layers: state.layers, annotations: state.annotations, layerSettings: state.layerSettings, selectedShapeId: state.selectedShapeId })); restore(state.redo.pop()); } };
+$('fit').onclick = () => { state.zoom = 1; state.panX = 0; state.panY = 0; applyTransform(); draw(); };
+$('zoomIn').onclick = () => zoomBy(1.25);
+$('zoomOut').onclick = () => zoomBy(0.8);
+$('saveState').onclick = () => saveState(true);
+$('loadState').onclick = () => callTool('get_editor_state', argsBase()).then((res) => applyLoadedState(res?.structuredContent?.state || {}, true));
+$('clearLayer').onclick = () => {
+  if (state.layerSettings[state.activeLayer]?.locked) return setStatus('layer_locked', 'warn');
+  pushUndo();
+  state.layers[state.activeLayer] = [];
+  state.selectedShapeId = '';
+  renderAll();
+  autosave();
+};
+$('duplicateShape').onclick = () => {
+  const shape = getSelectedShape();
+  if (!shape) return;
+  pushUndo();
+  const copy = cloneShape(shape);
+  copy.id = uid();
+  copy.label = (copy.label || copy.kind) + ' copy';
+  moveShape(copy, 24, 24, shape);
+  state.layers[copy.layer || state.activeLayer].push(copy);
+  state.selectedShapeId = copy.id;
+  renderAll();
+  autosave();
+};
+$('deleteShape').onclick = () => {
+  if (!state.selectedShapeId) return;
+  pushUndo();
+  for (const layer of layerNames) state.layers[layer] = state.layers[layer].filter((shape) => shape.id !== state.selectedShapeId);
+  state.selectedShapeId = '';
+  renderAll();
+  autosave();
+};
+$('applyShape').onclick = () => {
+  const shape = getSelectedShape();
+  if (!shape) return;
+  pushUndo();
+  shape.label = $('shapeLabel').value.trim();
+  shape.note = $('shapeNote').value.trim();
+  shape.constraintType = $('shapeConstraint').value;
+  shape.priority = $('shapePriority').value;
+  shape.edgeMode = $('edgeMode').value;
+  shape.safetyMarginPx = Number($('safetyMarginPx').value || 0);
+  shape.featherPx = Number($('featherPx').value || 0);
+  ensurePrecisionShape(shape);
+  renderAll();
+  autosave();
+};
+$('jumpShape').onclick = () => {
+  const shape = getSelectedShape();
+  if (!shape?.bounds) return;
+  state.panX = 0;
+  state.panY = 0;
+  state.zoom = 1;
+  applyTransform();
+  draw();
+};
+$('addReference').onclick = () => {
+  if (!state.lastReferenceDataUrl) return setStatus('no_reference_file', 'warn');
+  callTool('add_reference_image', {
+    ...argsBase(),
+    imageDataUrl: state.lastReferenceDataUrl,
+    fileName: state.lastReferenceName || 'reference.png',
+    note: $('referenceNote').value.trim(),
+    weight: $('referenceWeight').value
+  }).then((res) => {
+    state.references = res?.structuredContent?.references || [];
+    state.lastReferenceDataUrl = '';
+    state.lastReferenceName = '';
+    $('referenceNote').value = '';
+    renderAll();
+    setWorkflow('state_saved');
+  });
+};
+$('buildRequest').onclick = () => buildRequest();
+$('useFinalRequest').onclick = () => useFinalRequest();
+$('precisionModeToggle').onclick = () => {
+  state.precisionMode = !state.precisionMode;
+  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
+  state.activeTool = state.precisionMode ? 'precision' : state.activeTool;
+  draw();
+};
+$('validatePrecision').onclick = validatePrecision;
+$('precisionPreview').onclick = createPrecisionPreview;
+$('setGeometry').onclick = setGeometry;
+$('refineContract').onclick = () => refineSelected('contract');
+$('refineDilate').onclick = () => refineSelected('dilate');
+$('refineSimplify').onclick = () => refineSelected('simplify');
+$('refineSubtract').onclick = () => refineSelected('subtract');
+$('refineMerge').onclick = () => refineSelected('merge');
+$('duplicateProtect').onclick = () => refineSelected('duplicate_as_protect');
+$('loadPresets').onclick = loadPresets;
+$('applyPreset').onclick = applyPreset;
+$('savePreset').onclick = savePreset;
+$('deletePreset').onclick = deletePreset;
+$('createRequest').onclick = () => saveState(false).then(() => callTool('create_generation_request', {
+  ...argsBase(),
+  baseImagePath: $('baseImagePath').value.trim(),
+  userRequest: $('userRequest').value.trim(),
+  editorState: serializableState()
+})).then((res) => {
+  const data = res?.structuredContent || {};
+  if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
+  if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
+  applyBridgeStateFromResult(res);
+  setWorkflow(data.handoff?.status || 'context_exported');
+  return res;
+});
+$('createCodexHandoff').onclick = createHandoffFromWidget;
+$('recordNativeImageGenRequested').onclick = recordNativeImageGenRequested;
+$('recordHostCapabilities').onclick = recordHostCapabilitiesFromWidget;
+$('listPendingGenerations').onclick = refreshPendingGenerations;
+$('registerArtifactCandidate').onclick = registerCandidateFromWidget;
+$('acceptArtifactCandidate').onclick = () => resolveCandidateFromWidget('accept');
+$('rejectArtifactCandidate').onclick = () => resolveCandidateFromWidget('reject');
+$('saveResult').onclick = () => callTool('save_generated_result', { ...argsBase(), artifactPath: $('artifactPath').value.trim(), contextId: $('contextId').value.trim(), origin: 'codex-image-gen' }).then((res) => {
+  const version = res?.structuredContent?.version;
+  state.versions = res?.structuredContent?.versions || state.versions;
+  applyBridgeStateFromResult(res);
+  renderVersions(state.versions);
+  if (version) showVersion(version);
+});
+$('versions').onclick = loadVersions;
+$('viewBefore').onclick = () => { state.displayMode = 'before'; draw(); };
+$('viewAfter').onclick = () => { state.displayMode = 'after'; draw(); };
+$('viewSplit').onclick = () => { state.displayMode = 'split'; draw(); };
+$('viewSide').onclick = () => { state.displayMode = 'side'; draw(); };
+$('compareVersion').onclick = () => {
+  if (!state.activeVersionId) return setStatus('no_version', 'warn');
+  callTool('compare_version', { ...argsBase(), versionId: state.activeVersionId, contextId: $('contextId').value.trim() }).then((res) => {
+    const version = res?.structuredContent?.version;
+    if (version) {
+      const idx = state.versions.findIndex((item) => item.versionId === version.versionId);
+      if (idx >= 0) state.versions[idx] = version;
+      renderVersions(state.versions);
+      setWorkflow(version.invariantCheck?.status === 'drift_detected' ? 'drift_detected' : 'review_ready');
+    }
+  });
+};
+$('retryVersion').onclick = () => {
+  if (!state.activeVersionId) return setStatus('no_version', 'warn');
+  callTool('create_retry_request', { ...argsBase(), versionId: state.activeVersionId, reason: 'Retry from inline review.' }).then((res) => {
+    const data = res?.structuredContent || {};
+    if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
+    if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
+    applyBridgeStateFromResult(res);
+    setWorkflow(data.handoff?.status || 'context_exported');
+  });
+};
+
+renderAll();
+applyTransform();
+</script>
+</body>
+</html>

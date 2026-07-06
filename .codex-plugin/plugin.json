@@ -1,0 +1,42 @@
+{
+  "name": "codex-image-editor",
+  "version": "0.1.0",
+  "description": "Conversation-native Codex image editor for preparing, reviewing, and iterating native Image Gen requests inline.",
+  "author": {
+    "name": "charli-dev420"
+  },
+  "homepage": "https://github.com/charli-dev420/image-genial-codex-picture-editor",
+  "repository": "https://github.com/charli-dev420/image-genial-codex-picture-editor",
+  "license": "UNLICENSED",
+  "keywords": [
+    "codex",
+    "imagegen",
+    "image-editor",
+    "mcp",
+    "local-first"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "apps": "./.app.json",
+  "interface": {
+    "displayName": "Image Genial Codex Picture Editor",
+    "shortDescription": "Mark image edits directly in the Codex conversation.",
+    "longDescription": "Image Genial Codex Picture Editor renders an inline editor inside the Codex discussion when the conversation contains an image-editing task. The user can mark corrections, frozen regions, generation errors, references, prompt constraints, handoffs, artifact candidates, and review decisions without leaving the thread. The plugin persists edit context, references, real workflow events, hashes, diagnostics, retry requests, and result versions locally, exposes them to Codex through MCP, and requires Codex to use the built-in Image Gen path instead of any external image API or key-based fallback.",
+    "developerName": "charli-dev420",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use the inline Image Editor for this image.",
+      "Prepare a precise Image Gen edit from the image in this thread.",
+      "Save this Codex Image Gen result as a reviewed version."
+    ],
+    "brandColor": "#06B6D4",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo.png"
+  }
+}
