@@ -42,12 +42,27 @@ skills/image-editor/SKILL.md   Codex workflow instructions
 
 ## Install For Local Codex Development
 
-1. Clone the repository into a local plugin source directory.
-2. Install or expose the plugin through your Codex local plugin workflow.
-3. Open a new Codex thread and ask for an image edit or image generation workflow.
-4. Codex should select the `image-editor` skill and call `get_editor_state` to render the inline editor.
+The supported local deployment path is the personal Codex marketplace. It keeps the skill, MCP server, widget, and logo installed as one bundle.
 
-The exact plugin installation command depends on the Codex host and marketplace setup. The plugin manifest and MCP config are self-contained in this repository.
+Prerequisites: Git, Python, Node `>=22 <25`, a writable personal marketplace at `~/.agents/plugins/marketplace.json`, and a Codex desktop session authenticated with ChatGPT/Codex. No API key is used.
+
+From the source checkout, run a read-only preflight first:
+
+```powershell
+npm run preflight:local-deploy
+```
+
+Then create or update the dedicated local deployment checkout and personal marketplace entry:
+
+```powershell
+.\scripts\deploy-local.ps1 -Apply
+```
+
+The script clones or fast-forwards `~/.agents/plugins/plugins/codex-image-editor`, validates it, applies a local-only Codex cachebuster, atomically adds the `personal` marketplace entry, and writes a preflight report under `~/.agents/plugins/reports/`.
+
+Open the printed Codex deep link, install or enable the plugin in the desktop app, and start a new thread. The current CLI may not expose `codex plugin`; in that case the desktop install flow is the supported path.
+
+For later updates, rerun the same `-Apply` command. It rejects user changes in the deployment checkout and only resets the generated manifest-only cachebuster before pulling a new revision.
 
 ## Validation
 
@@ -56,6 +71,7 @@ Run the local validation suite from the repository root:
 ```powershell
 npm run test
 npm run check
+npm run preflight:local-deploy
 python <path-to-plugin-creator>/scripts/validate_plugin.py .
 ```
 
