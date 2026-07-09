@@ -95,7 +95,7 @@ const unsupportedNode = createPreflightReport({
 assert.equal(unsupportedNode.localReady, false);
 
 const deploymentScript = readFileSync(path.join(root, "scripts", "deploy-local.ps1"), "utf8");
-for (const token of ["[switch]$Apply", "update_plugin_cachebuster.py", "--write-marketplace", "codex://plugins/"]) {
+for (const token of ["[switch]$Apply", "Split-Path -Parent $PSScriptRoot", "update_plugin_cachebuster.py", "--write-marketplace", "codex://plugins/"]) {
   assert.ok(deploymentScript.includes(token), `deployment script missing ${token}`);
 }
 for (const banned of ["OPENAI" + "_API_KEY", "openai.images." + "generate", "openai.images." + "edit", "api.openai.com" + "/v1/images"]) {
