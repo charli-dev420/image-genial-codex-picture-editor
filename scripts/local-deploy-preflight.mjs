@@ -243,20 +243,25 @@ function gitStatus(repoRoot, commandRunner, allowLocalCachebuster) {
 
 export function inspectCodexHost(commandRunner = runSystemCommand) {
   const help = commandRunner("codex", ["--help"]);
+  const pluginHelp = help.status === 0 && /^\s+plugin\s/m.test(help.stdout)
+    ? commandRunner("codex", ["plugin", "--help"])
+    : { status: 1, stdout: "", stderr: "", error: "" };
   const login = commandRunner("codex", ["login", "status"]);
-  const pluginCommandAvailable = help.status === 0 && /^\s+plugin\s/m.test(help.stdout);
+  const pluginManagementAvailable = pluginHelp.status === 0;
+  const pluginCommandAvailable = pluginManagementAvailable && /^\s+add\s/m.test(pluginHelp.stdout);
   const cliAuthenticated = login.status === 0;
   const manualGates = [
     "Open a new Codex desktop thread and verify the inline MCP widget.",
     "Verify native Image Gen in the same ChatGPT/Codex session.",
     "Verify that a real Codex Image Gen artifact can return to the workspace."
   ];
-  if (!pluginCommandAvailable) manualGates.unshift("The installed CLI does not expose codex plugin; install from the Codex desktop plugin manager.");
+  if (!pluginCommandAvailable) manualGates.unshift("The installed CLI does not expose codex plugin add; install from the Codex desktop plugin manager.");
   if (!cliAuthenticated) manualGates.unshift("The terminal Codex CLI is not authenticated; desktop authentication must be checked separately.");
 
   return {
     cliAvailable: help.status === 0,
     cliAuthenticated,
+    pluginManagementAvailable,
     pluginCommandAvailable,
     desktopVerificationRequired: true,
     imageGenVerificationRequired: true,

@@ -60,7 +60,7 @@ Then create or update the dedicated local deployment checkout and personal marke
 
 The script clones or fast-forwards `~/.agents/plugins/plugins/codex-image-editor`, validates it, applies a local-only Codex cachebuster, atomically adds the `personal` marketplace entry, and writes a preflight report under `~/.agents/plugins/reports/`.
 
-Open the printed Codex deep link, install or enable the plugin in the desktop app, and start a new thread. The current CLI may not expose `codex plugin`; in that case the desktop install flow is the supported path.
+Open the printed Codex deep link, install or enable the plugin in the desktop app, and start a new thread. The current CLI may expose marketplace management without `codex plugin add`; in that case the desktop install flow is the supported path.
 
 For later updates, rerun the same `-Apply` command. It rejects user changes in the deployment checkout and only resets the generated manifest-only cachebuster before pulling a new revision.
 

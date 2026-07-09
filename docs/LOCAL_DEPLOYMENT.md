@@ -27,7 +27,7 @@ It writes the current report to:
 %USERPROFILE%\.agents\plugins\reports\codex-image-editor.json
 ```
 
-The script prints a `codex://` detail link. Install or enable the plugin from that desktop page, then open a new thread. When the installed CLI later exposes `codex plugin`, the optional command is:
+The script prints a `codex://` detail link. Install or enable the plugin from that desktop page, then open a new thread. When the installed CLI later exposes `codex plugin add`, the optional command is:
 
 ```powershell
 .\scripts\deploy-local.ps1 -Apply -InstallPlugin

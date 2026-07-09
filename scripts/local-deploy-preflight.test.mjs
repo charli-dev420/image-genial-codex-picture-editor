@@ -48,6 +48,7 @@ assert.equal(marketplace.plugins[1].name, PLUGIN_NAME);
 const ready = createPreflightReport({ sourceRoot, checkoutPath, marketplacePath, nodeVersion: "24.14.0", commandRunner: cleanRunner });
 assert.equal(ready.localReady, true);
 assert.equal(ready.releaseReady, false);
+assert.equal(ready.host.pluginManagementAvailable, true);
 assert.equal(ready.host.pluginCommandAvailable, false);
 assert.ok(ready.host.manualGates.some((gate) => gate.includes("desktop")));
 
@@ -134,7 +135,8 @@ function commandRunner({ gitStatus = "", dirtyRepository = "", baselineManifest 
       return { status: 0, stdout: isDirtyRepository ? gitStatus : "", stderr: "", error: "" };
     }
     if (command === "git" && joined.includes(" show HEAD:.codex-plugin/plugin.json")) return { status: 0, stdout: JSON.stringify(baselineManifest), stderr: "", error: "" };
-    if (command === "codex" && args[0] === "--help") return { status: 0, stdout: "Commands:\n  mcp\n", stderr: "", error: "" };
+    if (command === "codex" && args[0] === "--help") return { status: 0, stdout: "Commands:\n  plugin\n", stderr: "", error: "" };
+    if (command === "codex" && args[0] === "plugin") return { status: 0, stdout: "Commands:\n  marketplace\n", stderr: "", error: "" };
     if (command === "codex" && args[0] === "login") return { status: 1, stdout: "", stderr: "Not logged in", error: "" };
     return { status: 0, stdout: "", stderr: "", error: "" };
   };
