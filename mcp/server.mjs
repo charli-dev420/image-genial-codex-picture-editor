@@ -9,7 +9,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pluginRoot = path.resolve(__dirname, "..");
 const manifestPath = path.join(pluginRoot, ".codex-plugin", "plugin.json");
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-const widgetUri = "ui://codex-image-editor/editor.html";
+const widgetUri = "ui://codex-image-editor/editor-v2.html";
+const widgetResourceMeta = {
+  ui: {
+    prefersBorder: true,
+    csp: {
+      connectDomains: [],
+      resourceDomains: []
+    }
+  },
+  "openai/widgetDescription": "Conversation-native image editor for importing a target image, marking precise edit and protected zones, preparing a native Image Gen handoff, and reviewing returned versions without leaving the conversation.",
+  "openai/widgetPrefersBorder": true
+};
 const editorDirName = ".codex-image-editor";
 const previewMaxBytes = 8 * 1024 * 1024;
 const invariantSampleLimit = 250000;
@@ -463,13 +474,22 @@ const tools = [
   t(
     "get_editor_state",
     "Show Inline Codex Image Editor",
-    "Render the conversation-native editor card and read the current local canvas state.",
+    "Use this when the user needs to open or resume the conversation-native image editor. Render the mounted editor and return its current workspace state.",
     s({
       workspaceRoot: p("Workspace root where editor state is stored."),
-      sessionId: p("Optional editor session id.")
-    }),
+      sessionId: p("Optional editor session id."),
+      baseImagePath: p("Optional workspace-local image to load immediately in the editor."),
+      userRequest: p("Optional initial edit request shown in the command field."),
+      editorState: { type: "object", additionalProperties: true }
+    }, ["workspaceRoot"]),
     true,
-    { "openai/outputTemplate": widgetUri }
+    {
+      ui: { resourceUri: widgetUri, visibility: ["model", "app"] },
+      "openai/outputTemplate": widgetUri,
+      "openai/widgetAccessible": true,
+      "openai/toolInvocation/invoking": "Opening image editor…",
+      "openai/toolInvocation/invoked": "Image editor ready."
+    }
   ),
   t(
     "export_image_context",
@@ -690,6 +710,7 @@ function appendEvent(root, id, eventType, payload = {}) {
   appendFileSync(eventLogPath(root, id), `${JSON.stringify(event)}\n`, "utf8");
   const state = loadState(root, id);
   state.events = [...(state.events || []), event].slice(-250);
+  state.stateRevision = Number(state.stateRevision || 0) + 1;
   state.updatedAt = now();
   writeJson(statePath(root, id), state);
   return event;
@@ -701,7 +722,8 @@ function defaultState(root, id) {
     layerSettings[layer] = { visible: true, locked: false, opacity: 1 };
   }
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
+    stateRevision: 0,
     sessionId: id,
     workspaceRoot: root,
     baseImagePath: "",
@@ -789,6 +811,7 @@ function normalizeState(input = {}) {
   state.handoffEvents = Array.isArray(state.handoffEvents) ? state.handoffEvents : [];
   state.activeInputPackageId = String(state.activeInputPackageId || "");
   state.activePromptDraftId = String(state.activePromptDraftId || "");
+  state.stateRevision = Math.max(0, Number.parseInt(state.stateRevision || 0, 10) || 0);
   state.layerSettings = { ...base.layerSettings, ...(input.layerSettings || {}) };
   for (const key of ["correct", "freeze", "error", "reference"]) {
     state.layerSettings[key] = { ...base.layerSettings[key], ...(state.layerSettings[key] || {}) };
@@ -2576,8 +2599,13 @@ function removeReferenceImage(args) {
 function getEditorState(args) {
   const root = workspaceRoot(args);
   const id = sessionId(args);
+  if (args.baseImagePath || args.userRequest || args.editorState) saveStateFromArgs(root, id, args);
   const clientState = normalizedStateForClient(root, id);
-  return result({ state: clientState, storageDir: sessionDir(root, id), widget: widgetUri }, "Codex Image Editor state loaded.", { "openai/outputTemplate": widgetUri });
+  return result(
+    { state: clientState, storageDir: sessionDir(root, id), widget: widgetUri },
+    "Codex Image Editor state loaded.",
+    { ui: { resourceUri: widgetUri }, "openai/outputTemplate": widgetUri }
+  );
 }
 
 function recordHostCapabilities(args) {
@@ -3422,10 +3450,10 @@ function recordGenerationEvent(args) {
   return result({ event, handoff, state: normalizedStateForClient(root, id) }, "Generation event recorded.");
 }
 
-function pluginLogoDataUrl() {
-  const logoPath = path.join(pluginRoot, "assets", "logo.png");
-  if (!existsSync(logoPath)) return "";
-  const data = readFileSync(logoPath);
+function pluginAssetDataUrl(fileName) {
+  const assetPath = path.join(pluginRoot, "assets", fileName);
+  if (!existsSync(assetPath)) return "";
+  const data = readFileSync(assetPath);
   return `data:image/png;base64,${data.toString("base64")}`;
 }
 
@@ -3461,7 +3489,8 @@ function updateVersionStatus(args, status) {
 
 function widgetHtml() {
   return readFileSync(path.join(pluginRoot, "mcp", "image-editor-widget.html"), "utf8")
-    .replace("__PLUGIN_LOGO_DATA_URL__", pluginLogoDataUrl());
+    .replace("__PLUGIN_LOGO_DATA_URL__", pluginAssetDataUrl("dawww-unicorn-mark.png"))
+    .replace("__BLUEPRINT_SURFACE_DATA_URL__", pluginAssetDataUrl("dawww-blueprint-surface.png"));
 }
 
 function result(data, text, meta = {}) {
@@ -3495,12 +3524,12 @@ async function handle(message) {
     if (method === "tools/list") return respond(id, { tools });
     if (method === "resources/list") {
       return respond(id, {
-        resources: [{ uri: widgetUri, name: "codex-image-editor", title: "Codex Image Editor", mimeType: "text/html;profile=mcp-app" }]
+        resources: [{ uri: widgetUri, name: "codex-image-editor", title: "Codex Image Editor", mimeType: "text/html;profile=mcp-app", _meta: widgetResourceMeta }]
       });
     }
     if (method === "resources/read") {
       if (params?.uri !== widgetUri) throw new Error(`Unknown resource: ${params?.uri}`);
-      return respond(id, { contents: [{ uri: widgetUri, mimeType: "text/html;profile=mcp-app", text: widgetHtml() }] });
+      return respond(id, { contents: [{ uri: widgetUri, mimeType: "text/html;profile=mcp-app", text: widgetHtml(), _meta: widgetResourceMeta }] });
     }
     if (method !== "tools/call") return fail(id, -32601, `Unknown method: ${method}`);
     const name = params?.name;

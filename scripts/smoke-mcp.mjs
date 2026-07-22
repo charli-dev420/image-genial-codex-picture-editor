@@ -118,8 +118,37 @@ try {
     if (!toolNames.includes(required)) throw new Error(`missing tool ${required}`);
   }
 
-  const state = await send("tools/call", { name: "get_editor_state", arguments: { workspaceRoot: tmp, sessionId: "smoke" } });
+  const renderTool = listed.tools.find((tool) => tool.name === "get_editor_state");
+  const widgetUri = renderTool?._meta?.ui?.resourceUri;
+  if (!widgetUri || widgetUri !== renderTool?._meta?.["openai/outputTemplate"]) throw new Error("render tool resource metadata mismatch");
+  if (!widgetUri.endsWith("/editor-v2.html")) throw new Error("widget resource URI is not versioned");
+  if (!renderTool.inputSchema?.required?.includes("workspaceRoot")) throw new Error("render tool workspaceRoot must be required");
+  if (!renderTool.inputSchema?.properties?.baseImagePath || !renderTool.inputSchema?.properties?.userRequest) {
+    throw new Error("render tool must accept an initial image and request");
+  }
+
+  const resources = await send("resources/list");
+  const widgetResource = resources.resources?.find((resource) => resource.uri === widgetUri);
+  if (!widgetResource || widgetResource.mimeType !== "text/html;profile=mcp-app") throw new Error("widget resource missing from resources/list");
+  const resourceRead = await send("resources/read", { uri: widgetUri });
+  const widgetContent = resourceRead.contents?.[0];
+  if (!widgetContent?.text?.includes('id="conversationForm"') || !widgetContent.text.includes("ui/initialize") || !widgetContent.text.includes("launchNativeImageGen")) {
+    throw new Error("widget resource does not contain the conversation/native Image Gen bridge");
+  }
+  if (!widgetContent?._meta?.["openai/widgetDescription"] || !Array.isArray(widgetContent?._meta?.ui?.csp?.connectDomains) || widgetContent._meta.ui.csp.connectDomains.length) {
+    throw new Error("widget resource metadata or network CSP is invalid");
+  }
+
+  const state = await send("tools/call", {
+    name: "get_editor_state",
+    arguments: { workspaceRoot: tmp, sessionId: "smoke", baseImagePath: basePng, userRequest: "Improve the selected subject details." }
+  });
   if (!state.structuredContent?.state) throw new Error("missing state");
+  if (state.structuredContent.state.baseImagePath !== basePng || !state.structuredContent.state.baseImageDataUrl?.startsWith("data:image/png;base64,")) {
+    throw new Error("initial image was not loaded into the editor state");
+  }
+  if (state.structuredContent.state.userRequest !== "Improve the selected subject details.") throw new Error("initial request was not loaded");
+  if (state?._meta?.ui?.resourceUri !== widgetUri || state?._meta?.["openai/outputTemplate"] !== widgetUri) throw new Error("render result resource metadata mismatch");
 
   const editorState = {
     selectedShapeId: "freeze-box",

@@ -1,8 +1,8 @@
 {
   "name": "image-genial-codex-picture-editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Conversation-native Codex plugin for preparing precise native Image Gen edits inline.",
+  "description": "Focused conversation-native image editing for Codex native Image Gen.",
   "license": "UNLICENSED",
   "type": "module",
   "engines": {
@@ -15,7 +15,9 @@
   "homepage": "https://github.com/charli-dev420/image-genial-codex-picture-editor",
   "scripts": {
     "check": "node --check mcp/server.mjs",
+    "harness:widget": "node scripts/widget-host-harness.mjs",
+    "privacy:check": "node scripts/validate-repo-privacy.mjs",
     "preflight:local-deploy": "node scripts/local-deploy-preflight.mjs --source-only",
-    "test": "node scripts/validate-no-openai-api.mjs && node scripts/widget-contract.mjs && node scripts/local-deploy-preflight.test.mjs && node scripts/smoke-mcp.mjs"
+    "test": "node scripts/validate-repo-privacy.mjs && node scripts/validate-no-openai-api.mjs && node scripts/widget-script-syntax.mjs && node scripts/widget-contract.mjs && node scripts/local-deploy-preflight.test.mjs && node scripts/smoke-mcp.mjs"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "codex-image-editor",
-  "version": "0.1.0",
-  "description": "Conversation-native Codex image editor for preparing, reviewing, and iterating native Image Gen requests inline.",
+  "version": "0.2.0",
+  "description": "A focused Codex workspace for marking any image and launching native Image Gen edits.",
   "author": {
     "name": "charli-dev420"
   },
@@ -17,11 +17,10 @@
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
-  "apps": "./.app.json",
   "interface": {
-    "displayName": "Image Genial Codex Picture Editor",
-    "shortDescription": "Mark image edits directly in the Codex conversation.",
-    "longDescription": "Image Genial Codex Picture Editor renders an inline editor inside the Codex discussion when the conversation contains an image-editing task. The user can mark corrections, frozen regions, generation errors, references, prompt constraints, handoffs, artifact candidates, and review decisions without leaving the thread. The plugin persists edit context, references, real workflow events, hashes, diagnostics, retry requests, and result versions locally, exposes them to Codex through MCP, and requires Codex to use the built-in Image Gen path instead of any external image API or key-based fallback.",
+    "displayName": "Codex Image Editor",
+    "shortDescription": "Mark any image and launch native Image Gen.",
+    "longDescription": "Codex Image Editor embeds a focused Zone, Request, and Send workflow in the Codex conversation. Draw or select a region on any image, describe the intended change, add optional references, then send an exact handoff to Codex native Image Gen. Advanced precision and review controls stay available on demand. Workflow state remains local and the plugin never calls an external image API.",
     "developerName": "charli-dev420",
     "category": "Productivity",
     "capabilities": [
@@ -34,9 +33,8 @@
       "Prepare a precise Image Gen edit from the image in this thread.",
       "Save this Codex Image Gen result as a reviewed version."
     ],
-    "brandColor": "#06B6D4",
-    "composerIcon": "./assets/logo.png",
-    "logo": "./assets/logo.png",
-    "logoDark": "./assets/logo.png"
+    "brandColor": "#A56532",
+    "composerIcon": "./assets/dawww-unicorn-mark.png",
+    "logo": "./assets/dawww-unicorn-mark.png"
   }
 }

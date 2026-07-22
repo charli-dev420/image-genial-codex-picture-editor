@@ -3,7 +3,7 @@ param(
   [switch]$Apply,
   [switch]$InstallPlugin,
   [string]$SourceRepository,
-  [string]$CheckoutPath = (Join-Path $env:USERPROFILE ".agents\plugins\plugins\codex-image-editor"),
+  [string]$CheckoutPath = (Join-Path $env:USERPROFILE "plugins\codex-image-editor"),
   [string]$MarketplacePath = (Join-Path $env:USERPROFILE ".agents\plugins\marketplace.json"),
   [string]$ReportPath = (Join-Path $env:USERPROFILE ".agents\plugins\reports\codex-image-editor.json")
 )

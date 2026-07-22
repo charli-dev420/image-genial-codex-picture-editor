@@ -21,40 +21,78 @@
       --bad: #dc2626;
       --good: #16a34a;
       --warn: #f59e0b;
+      --chrome: #0a0e14;
+      --control: #0c1118;
+      --button: #1d2633;
+      --item: #0d121a;
+      --notice: #0a0f16;
+      --canvas-shell: #070a0f;
+      --active-text: #dbeafe;
+      --success-text: #86efac;
+      --warning-text: #fde68a;
+      --danger-text: #fecaca;
+      --primary-text: #ffffff;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel2: #eef3f8;
+      --line: #cbd5e1;
+      --text: #111827;
+      --muted: #526174;
+      --chrome: #ffffff;
+      --control: #ffffff;
+      --button: #e2e8f0;
+      --item: #f8fafc;
+      --notice: #f8fafc;
+      --canvas-shell: #dbe3ee;
+      --active-text: #1d4ed8;
+      --success-text: #166534;
+      --warning-text: #92400e;
+      --danger-text: #991b1b;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    main { min-height: 100vh; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
-    header, .workflow, footer { background: #0a0e14; border-bottom: 1px solid var(--line); padding: 10px 12px; }
-    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    body { height: 100vh; margin: 0; overflow: hidden; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { height: 100vh; min-height: 0; overflow: hidden; display: grid; grid-template-rows: auto auto minmax(0, 1fr); }
+    header { background: var(--chrome); border-bottom: 1px solid var(--line); padding: 9px 14px; }
+    header { min-height: 58px; display: grid; grid-template-columns: minmax(180px, auto) 1fr auto; align-items: center; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .brand-logo { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; background: #05070a; border: 1px solid rgba(6,182,212,.35); }
-    h1 { margin: 0; font-size: 16px; letter-spacing: 0; }
-    .workflow { display: flex; gap: 6px; overflow: auto; }
-    .step { flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; font-size: 12px; color: var(--muted); }
-    .step.active { border-color: var(--accent); color: #dbeafe; background: rgba(37,99,235,.16); }
-    .status { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; }
+    .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; flex-wrap: wrap; }
+    .header-actions button { width: auto; min-height: 30px; padding: 5px 9px; }
+    .brand-logo { width: 36px; height: 36px; object-fit: contain; border-radius: 9px; background: #05070a; border: 1px solid rgba(6,182,212,.35); }
+    h1 { margin: 0; font-size: 15px; letter-spacing: -.01em; }
+    .status { display: none; }
     .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); }
-    .shell { min-height: 0; display: grid; grid-template-columns: 280px minmax(0, 1fr) 360px; }
-    aside { min-height: 0; overflow: auto; padding: 10px; background: var(--panel); border-right: 1px solid var(--line); }
+    .shell { min-height: 0; overflow: hidden; display: grid; grid-template-columns: 252px minmax(0, 1fr) 324px; }
+    aside { min-height: 0; overflow: auto; padding: 12px; background: var(--bg); border-right: 1px solid var(--line); }
     aside.right { border-right: 0; border-left: 1px solid var(--line); }
-    section.canvas-wrap { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); background: #070a0f; }
-    .toolbar, footer { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    section.canvas-wrap { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--canvas-shell); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .toolbar { padding: 8px; border-bottom: 1px solid var(--line); background: var(--panel2); }
+    .toolbar button { width: auto; min-width: 44px; padding-inline: 10px; }
     .viewport { min-width: 0; min-height: 0; display: grid; place-items: center; overflow: hidden; position: relative; }
     canvas { max-width: 100%; max-height: 100%; background: #111827; box-shadow: 0 12px 38px rgba(0,0,0,.48); cursor: crosshair; }
     label { display: grid; gap: 5px; margin: 0 0 9px; color: var(--muted); font-size: 12px; }
-    input, textarea, select, button { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 6px; background: #0c1118; color: var(--text); padding: 7px; font: inherit; letter-spacing: 0; }
+    input, textarea, select, button { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--control); color: var(--text); padding: 8px; font: inherit; letter-spacing: 0; }
     input[type="checkbox"] { width: auto; min-width: 0; }
     textarea { resize: vertical; min-height: 58px; line-height: 1.35; }
-    button { cursor: pointer; min-height: 34px; font-weight: 650; background: #1d2633; }
-    button.primary { background: var(--accent); border-color: var(--accent); }
-    button.good { background: #166534; border-color: #166534; }
-    button.bad { background: #7f1d1d; border-color: #7f1d1d; }
+    button { cursor: pointer; min-height: 34px; font-weight: 650; background: var(--button); }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--primary-text); }
+    button.good { background: #166534; border-color: #166534; color: #ffffff; }
+    button.bad { background: #7f1d1d; border-color: #7f1d1d; color: #ffffff; }
     button.active { outline: 2px solid var(--accent); }
     button:disabled { opacity: .45; cursor: default; }
-    .panel { border: 1px solid var(--line); border-radius: 8px; padding: 9px; background: rgba(255,255,255,.025); margin-bottom: 10px; }
+    [hidden] { display: none !important; }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--panel); margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
     .panel h2 { margin: 0 0 8px; font-size: 13px; }
+    details.panel > summary { cursor: pointer; color: var(--text); font-size: 13px; font-weight: 700; list-style-position: inside; }
+    details.panel[open] > summary { margin-bottom: 10px; }
+    details.subdetails { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line); }
+    details.subdetails > summary { cursor: pointer; color: var(--muted); font-size: 12px; font-weight: 700; }
+    details.subdetails[open] > summary { margin-bottom: 9px; }
+    .section-title { margin: 10px 0 7px; color: var(--text); font-size: 12px; font-weight: 700; }
     .row { display: flex; gap: 7px; flex-wrap: wrap; }
     .row > * { flex: 1 1 88px; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
@@ -62,113 +100,1176 @@
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .pill { border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; color: var(--muted); font-size: 12px; }
     .list { display: grid; gap: 6px; max-height: 230px; overflow: auto; }
-    .item { border: 1px solid var(--line); border-radius: 7px; padding: 7px; background: #0d121a; color: var(--muted); font-size: 12px; }
+    .item { border: 1px solid var(--line); border-radius: 7px; padding: 7px; background: var(--item); color: var(--muted); font-size: 12px; }
     .item.selected { border-color: var(--accent); background: rgba(37,99,235,.12); }
     .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #05070a; border: 1px solid var(--line); border-radius: 5px; }
-    .layer-row { display: grid; grid-template-columns: 70px 42px 42px 1fr; gap: 6px; align-items: center; margin-bottom: 7px; }
-    .layer-row span { font-size: 12px; color: var(--muted); }
     pre { white-space: pre-wrap; word-break: break-word; margin: 0; max-height: 260px; overflow: auto; font-size: 12px; line-height: 1.35; }
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
     .tabs button { min-height: 30px; padding: 5px; font-size: 12px; }
     .request-view { display: none; }
     .request-view.active { display: block; }
-    .notice { border: 1px solid var(--line); border-radius: 6px; padding: 7px; margin: 6px 0; color: var(--muted); font-size: 12px; background: #0a0f16; }
-    .notice.bad { border-color: var(--bad); color: #fecaca; }
-    .notice.warn { border-color: var(--warn); color: #fde68a; }
+    .notice { border: 1px solid var(--line); border-radius: 6px; padding: 7px; margin: 6px 0; color: var(--muted); font-size: 12px; background: var(--notice); }
+    .notice.bad { border-color: var(--bad); color: var(--danger-text); }
+    .notice.warn { border-color: var(--warn); color: var(--warning-text); }
     .image-role-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 7px; align-items: start; }
     .image-role-row .thumb { aspect-ratio: 1 / 1; }
     .tag-editor textarea { min-height: 42px; }
     .check-row { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
     .check-row input { flex: 0 0 auto; }
+    .conversation-dock { border-bottom: 1px solid var(--line); background: var(--chrome); }
+    .conversation-dock > summary { min-height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; color: var(--text); list-style-position: inside; }
+    .conversation-dock > summary .small { margin-left: 8px; }
+    .conversation-body { padding: 0 14px 12px; }
+    .conversation-compose { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: stretch; }
+    .conversation-compose textarea { min-height: 54px; margin: 0; }
+    .conversation-compose button { width: auto; min-width: 128px; }
+    .bridge-state { border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; font-size: 11px; color: var(--muted); }
+    .bridge-state.ok { border-color: var(--good); color: var(--success-text); }
+    .bridge-state.warn { border-color: var(--warn); color: var(--warning-text); }
+    .editor-tabs { justify-self: center; display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel2); }
+    .editor-tabs button { width: auto; min-height: 30px; padding: 5px 12px; border: 0; background: transparent; color: var(--muted); }
+    .editor-tabs button.active { outline: 0; background: var(--panel); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .workflow-summary { width: auto; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; color: var(--muted); font-size: 11px; }
+    [data-editor-view] { display: none !important; }
+    body[data-active-view="edit"] [data-editor-view~="edit"],
+    body[data-active-view="prepare"] [data-editor-view~="prepare"],
+    body[data-active-view="review"] [data-editor-view~="review"] { display: block !important; }
+    body[data-active-view="prepare"] .toolbar,
+    body[data-active-view="review"] .toolbar { display: none; }
+    body[data-active-view="review"] .shell { grid-template-columns: minmax(0, 1fr) 324px; }
+    body[data-active-view="review"] aside.left { display: none; }
+    body [hidden] { display: none !important; }
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .tool-grid button { min-height: 36px; }
+    .layer-current { margin-top: 9px; }
+    .layer-current-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; color: var(--muted); font-size: 12px; }
+    .zone-empty { min-height: 108px; display: grid; place-items: center; text-align: center; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .zone-actions > summary { text-align: center; }
+    .toolbar-spacer { flex: 1 1 auto; }
+    .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+    .primary-flow { display: grid; gap: 8px; }
+    #generationPanel { order: -3; }
+    #referencePanel { order: -2; }
+    #promptPanel { order: -1; }
+    aside.right { display: flex; flex-direction: column; }
     @media (max-width: 1120px) {
-      .shell { grid-template-columns: 1fr; }
-      aside, aside.right { border: 0; border-bottom: 1px solid var(--line); }
-      .viewport { min-height: 480px; }
+      .shell { grid-template-columns: 1fr; grid-auto-rows: max-content; overflow-x: hidden; overflow-y: auto; }
+      body[data-active-view="review"] .shell { grid-template-columns: 1fr; }
+      aside, aside.right { min-height: auto; overflow: visible; border: 0; border-bottom: 1px solid var(--line); }
+      section.canvas-wrap { order: -1; }
+      section.canvas-wrap { min-height: 460px; }
+      .viewport { min-height: 360px; }
+    }
+    @media (max-width: 680px) {
+      header { grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+      .brand { width: auto; }
+      h1 { display: none; }
+      .brand-logo { width: 36px; height: 36px; }
+      .editor-tabs { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; }
+      .editor-tabs button { flex: 1 1 0; }
+      .header-actions { width: auto; justify-content: flex-end; }
+      .header-actions #inlineMode, .header-actions .status { display: none; }
+      .status { width: auto; justify-content: flex-start; }
+      .conversation-dock > summary .small { display: none; }
+      .conversation-compose { grid-template-columns: 1fr; }
+      .conversation-compose button { width: 100%; }
+      .toolbar { flex-wrap: nowrap; gap: 6px; overflow-x: auto; }
+      .toolbar button { min-width: 36px; padding-inline: 8px; }
+      .toolbar-spacer, .toolbar .pill { display: none; }
+      .viewport { min-height: 360px; }
+    }
+
+    /* DAWWWCORE / UnicornWhoDev — selected “Table lumineuse” direction. */
+    :root,
+    :root[data-theme="light"] {
+      color-scheme: dark;
+      --bg: #0d1012;
+      --panel: #0d1418;
+      --panel2: #081218;
+      --line: rgba(180, 122, 60, .42);
+      --text: #e2ccae;
+      --muted: #aca191;
+      --accent: #8b582f;
+      --correct: #2c8d9e;
+      --freeze: #356f8f;
+      --error: #d18b3a;
+      --reference: #4caf50;
+      --bad: #e35d4a;
+      --good: #4caf50;
+      --warn: #d18b3a;
+      --chrome: #0a1013;
+      --control: #091116;
+      --button: #111b21;
+      --item: #0b1419;
+      --notice: #091116;
+      --canvas-shell: #081218;
+      --active-text: #e2ccae;
+      --success-text: #82c885;
+      --warning-text: #e3b879;
+      --danger-text: #ef9a8e;
+      --primary-text: #f1dfc5;
+      --copper: #8b582f;
+      --copper-bright: #b47a3c;
+      --cyan: #2c8d9e;
+      --cyan-soft: #447b8a;
+      --deep-blueprint: #081218;
+      --midnight-steel: #0f1f2e;
+      --carbon-navy: #213946;
+      --bone: #e2ccae;
+      --dust: #aca191;
+      --edit-command-height: 306px;
+    }
+
+    html,
+    body {
+      min-width: 0;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: Bahnschrift, "Segoe UI Variable", "Arial Narrow", Inter, sans-serif;
+      letter-spacing: .01em;
+    }
+
+    main {
+      position: relative;
+      grid-template-rows: auto minmax(0, 1fr);
+      background: var(--bg);
+      border: 1px solid rgba(180, 122, 60, .55);
+    }
+
+    header {
+      min-height: 144px;
+      padding: 0 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: 74px 70px;
+      gap: 0 20px;
+      border-bottom: 1px solid rgba(180, 122, 60, .38);
+      background: var(--chrome);
+      position: relative;
+      z-index: 20;
+    }
+
+    .brand {
+      min-width: 0;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      padding: 2px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      filter: drop-shadow(0 0 10px rgba(44, 141, 158, .18));
+    }
+
+    .brand-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    h1 {
+      display: block;
+      color: var(--bone);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: clamp(18px, 3.1vw, 26px);
+      font-stretch: condensed;
+      font-weight: 600;
+      letter-spacing: .105em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .image-file-name {
+      max-width: min(52vw, 360px);
+      overflow: hidden;
+      color: rgba(172, 161, 145, .7);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .header-actions {
+      align-self: center;
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+
+    .header-actions #workflowSummary,
+    .header-actions #fullscreenMode,
+    .header-actions #inlineMode,
+    .header-actions .status {
+      display: none;
+    }
+
+    .bridge-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      color: var(--cyan);
+      font-family: Consolas, "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+
+    .bridge-state::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(44, 141, 158, .8);
+    }
+
+    .bridge-state.warn::before {
+      background: var(--warn);
+      box-shadow: 0 0 10px rgba(209, 139, 58, .55);
+    }
+
+    .bridge-state.ok {
+      color: var(--cyan);
+      border: 0;
+    }
+
+    .editor-tabs {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: stretch;
+      justify-self: stretch;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      padding: 0 6%;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      isolation: isolate;
+    }
+
+    .editor-tabs::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      left: 12.5%;
+      right: 12.5%;
+      top: 47px;
+      height: 1px;
+      background: rgba(172, 161, 145, .32);
+    }
+
+    .editor-tabs button {
+      position: relative;
+      width: 100%;
+      min-height: 68px;
+      padding: 12px 6px 32px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: rgba(172, 161, 145, .48);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 13px;
+      font-stretch: condensed;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      box-shadow: none;
+    }
+
+    .editor-tabs button::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 42px;
+      width: 10px;
+      height: 10px;
+      border: 1px solid rgba(172, 161, 145, .48);
+      border-radius: 50%;
+      background: var(--chrome);
+      transform: translateX(-50%);
+    }
+
+    .editor-tabs button.active {
+      outline: 0;
+      background: transparent;
+      color: var(--copper-bright);
+      box-shadow: none;
+    }
+
+    .editor-tabs button.active::after {
+      border-color: var(--copper-bright);
+      background: var(--copper);
+      box-shadow: 0 0 10px rgba(180, 122, 60, .35);
+    }
+
+    .editor-tabs button.active:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 47px;
+      width: 100%;
+      height: 1px;
+      background: var(--copper-bright);
+    }
+
+    .shell {
+      position: relative;
+      min-height: 0;
+      background: var(--deep-blueprint);
+    }
+
+    body[data-active-view="edit"] .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) var(--edit-command-height);
+      grid-auto-rows: max-content;
+      overflow: hidden;
+    }
+
+    body[data-active-view="edit"] aside.left,
+    body[data-active-view="edit"] aside.right {
+      display: contents;
+    }
+
+    body[data-active-view="edit"] aside.left > .panel:first-child,
+    body[data-active-view="edit"] #layerPanel,
+    body[data-active-view="edit"] #precisionPanel {
+      display: none !important;
+    }
+
+    section.canvas-wrap {
+      position: relative;
+      grid-column: 1;
+      grid-row: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      order: 0;
+      overflow: hidden;
+      border: 0;
+      background: var(--deep-blueprint);
+    }
+
+    .viewport {
+      min-height: 0;
+      padding: 34px 24px 128px;
+      background: var(--deep-blueprint);
+      isolation: isolate;
+    }
+
+    .viewport::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background-image: url("__BLUEPRINT_SURFACE_DATA_URL__");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      filter: hue-rotate(145deg) saturate(.58);
+      opacity: .16;
+      pointer-events: none;
+    }
+
+    canvas#canvas {
+      position: relative;
+      z-index: 1;
+      max-width: min(94%, 920px);
+      max-height: calc(100% - 34px);
+      background: transparent;
+      box-shadow: none;
+      cursor: crosshair;
+    }
+
+    .toolbar,
+    body[data-active-view="prepare"] .toolbar,
+    body[data-active-view="review"] .toolbar {
+      position: absolute;
+      z-index: 12;
+      left: 50%;
+      bottom: 28px;
+      display: flex;
+      width: 210px;
+      height: 62px;
+      padding: 8px 10px 8px 0;
+      gap: 3px;
+      align-items: center;
+      flex-wrap: nowrap;
+      overflow: visible;
+      border: 1px solid rgba(180, 122, 60, .38);
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
+      background: #0c151a;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .35);
+    }
+
+    .toolbar .toolbar-spacer,
+    .toolbar .pill,
+    .toolbar #fit,
+    .toolbar #zoomOut {
+      display: none;
+    }
+
+    .toolbar button,
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) button {
+      width: 48px;
+      min-width: 48px;
+      height: 46px;
+      min-height: 46px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--bone);
+      font-size: 0;
+      line-height: 1;
+      box-shadow: none;
+    }
+
+    .toolbar button::before,
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) button::before,
+    .zone-actions > summary::before {
+      display: inline-grid;
+      place-items: center;
+      font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets";
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    #importButton {
+      position: fixed;
+      z-index: 50;
+      top: 20px;
+      right: 142px;
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      border: 1px solid rgba(180, 122, 60, .42);
+      border-radius: 4px;
+      background: #0c151a;
+    }
+
+    body.has-image #importButton {
+      display: none;
+    }
+
+    #importButton::before { content: "\E8E5"; }
+    #undo::before { content: "\E7A7"; }
+    #redo::before { content: "\E7A6"; }
+    #zoomIn::before { content: "\E8A3"; }
+
+    .toolbar #undo {
+      order: 2;
+    }
+
+    .toolbar #redo {
+      order: 3;
+    }
+
+    .toolbar #zoomIn {
+      order: 1;
+      margin-right: 7px;
+      border-right: 1px solid rgba(180, 122, 60, .42);
+      border-radius: 0;
+    }
+
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) {
+      position: absolute;
+      z-index: 13;
+      left: 50%;
+      bottom: calc(var(--edit-command-height) + 28px);
+      display: block !important;
+      width: 196px;
+      height: 62px;
+      margin: 0;
+      padding: 8px 0 8px 10px;
+      border: 1px solid rgba(180, 122, 60, .38);
+      border-right: 0;
+      border-radius: 8px 0 0 8px;
+      background: #0c151a;
+      transform: translateX(-196px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .35);
+    }
+
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) > h2,
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) > details,
+    body[data-active-view="edit"] #brushSizeControl,
+    body[data-active-view="edit"] #markNoteControl {
+      display: none !important;
+    }
+
+    body[data-active-view="edit"] #toolButtons {
+      display: flex;
+      gap: 3px;
+    }
+
+    body[data-active-view="edit"] #toolButtons [data-tool="select"] { order: 1; }
+    body[data-active-view="edit"] #toolButtons [data-tool="rectangle"] { order: 2; }
+    body[data-active-view="edit"] #toolButtons [data-tool="brush"] { order: 3; }
+
+    body[data-active-view="edit"] #toolButtons [data-tool="precision"] {
+      display: none;
+    }
+
+    [data-tool="select"]::before { content: "\E8E6"; }
+    [data-tool="rectangle"]::before { content: "\E739"; }
+    [data-tool="brush"]::before { content: "\ED63"; }
+    [data-tool="lasso"]::before { content: "\E7C9"; }
+    [data-tool="polygon"]::before { content: "\E81E"; }
+    [data-tool="ellipse"]::before { content: "\E91D"; }
+    [data-tool="eraser"]::before { content: "\E75C"; }
+    [data-tool="pan"]::before { content: "\E7C2"; }
+    [data-tool="precision"]::before { content: "\E7E6"; }
+
+    .toolbar button:hover,
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) button:hover {
+      color: #f1dfc5;
+      background: rgba(44, 141, 158, .12);
+    }
+
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) button.active {
+      color: #d6fbff;
+      outline: 1px solid var(--cyan);
+      background: rgba(44, 141, 158, .18);
+      box-shadow: 0 0 14px rgba(44, 141, 158, .36);
+    }
+
+    body[data-active-view="edit"] aside.right > .edit-command-panel {
+      grid-column: 1;
+      grid-row: 2;
+      display: block !important;
+      position: relative;
+      height: var(--edit-command-height);
+      min-height: var(--edit-command-height);
+      margin: 0;
+      padding: 14px 28px 20px;
+      overflow: hidden;
+      border: 0;
+      border-top: 1px solid rgba(180, 122, 60, .7);
+      border-radius: 0;
+      background: #0a1216;
+      box-shadow: none;
+    }
+
+    .zone-summary-bar {
+      height: 84px;
+      display: grid;
+      grid-template-columns: 70px minmax(110px, 1.35fr) 1px minmax(76px, .75fr) 1px minmax(110px, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 8px 12px 8px 8px;
+      border: 1px solid rgba(180, 122, 60, .24);
+      background: #091116;
+    }
+
+    .zone-thumbnail {
+      width: 68px;
+      height: 68px;
+      border: 1px solid rgba(180, 122, 60, .5);
+      border-radius: 5px;
+      background: var(--deep-blueprint);
+      object-fit: cover;
+    }
+
+    .zone-summary-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(180, 122, 60, .52);
+    }
+
+    .zone-summary-field {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .zone-summary-field input,
+    .zone-summary-field select {
+      height: 46px;
+      padding: 6px 4px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--bone);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 16px;
+      font-stretch: condensed;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .zone-summary-priority select {
+      color: var(--copper-bright);
+    }
+
+    .edit-command-panel #zoneSelectionHint {
+      min-height: 166px;
+      margin-top: 10px;
+      border-color: rgba(180, 122, 60, .34);
+      border-radius: 2px;
+      background: rgba(8, 18, 24, .7);
+    }
+
+    .edit-command-panel #zoneEditor {
+      padding-top: 11px;
+    }
+
+    .change-request {
+      display: grid;
+      gap: 6px;
+      width: calc(100% - 326px);
+      margin: 0;
+    }
+
+    .change-request > span {
+      color: var(--copper-bright);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 12px;
+      font-stretch: condensed;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .change-request textarea {
+      min-height: 84px;
+      max-height: 84px;
+      padding: 13px 15px;
+      border: 1px solid rgba(180, 122, 60, .42);
+      border-radius: 2px;
+      background: #081116;
+      color: var(--bone);
+      font-size: 14px;
+      line-height: 1.35;
+      resize: none;
+    }
+
+    .primary-imagegen {
+      position: absolute;
+      right: 28px;
+      bottom: 20px;
+      width: 298px;
+      height: 56px;
+      min-height: 56px;
+      padding: 0 20px;
+      border: 1px solid var(--copper-bright);
+      border-radius: 2px;
+      background: var(--copper);
+      color: #f1dfc5;
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 17px;
+      font-stretch: condensed;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .primary-imagegen:hover:not(:disabled) {
+      background: var(--copper-bright);
+      color: #0d1012;
+    }
+
+    .primary-imagegen:disabled {
+      opacity: .42;
+    }
+
+    .zone-actions {
+      position: absolute;
+      top: 24px;
+      right: 34px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      z-index: 4;
+    }
+
+    .edit-command-panel .zone-actions > summary {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0;
+      list-style: none;
+    }
+
+    .zone-actions > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .zone-actions > summary::before {
+      content: "\E712";
+      font-size: 18px;
+    }
+
+    .zone-actions[open] > .row {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      width: 280px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, .45);
+    }
+
+    .zone-actions #zonePicker {
+      position: static;
+      flex: 1 1 100%;
+      margin: 0 0 4px;
+    }
+
+    .conversation-dock {
+      position: absolute;
+      z-index: 35;
+      left: 28px;
+      bottom: 27px;
+      width: auto;
+      border: 0;
+      background: transparent;
+    }
+
+    .conversation-dock > summary {
+      min-height: 28px;
+      padding: 0;
+      gap: 8px;
+      color: var(--cyan);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 14px;
+      font-stretch: condensed;
+      font-weight: 500;
+      letter-spacing: .035em;
+      list-style: none;
+    }
+
+    .conversation-dock > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .conversation-dock > summary .small {
+      display: inline;
+      margin: 0;
+      color: var(--cyan);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .conversation-dock[open] .conversation-body {
+      position: absolute;
+      left: 0;
+      bottom: 38px;
+      width: min(560px, calc(100vw - 56px));
+      padding: 12px;
+      border: 1px solid rgba(180, 122, 60, .52);
+      background: #0a1216;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .55);
+    }
+
+    .conversation-compose {
+      grid-template-columns: minmax(0, 1fr) 116px;
+    }
+
+    .conversation-compose textarea {
+      min-height: 62px;
+      border-radius: 2px;
+    }
+
+    .conversation-compose button {
+      min-width: 116px;
+      border-radius: 2px;
+      background: var(--copper);
+      border-color: var(--copper-bright);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      border-radius: 3px;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    body:not([data-active-view="edit"]) .shell {
+      display: block;
+      overflow: auto;
+      padding: 22px;
+      background: var(--bg);
+    }
+
+    body:not([data-active-view="edit"]) section.canvas-wrap {
+      display: none;
+    }
+
+    body:not([data-active-view="edit"]) aside.left,
+    body:not([data-active-view="edit"]) aside.right {
+      display: block;
+      width: min(100%, 860px);
+      min-height: auto;
+      margin: 0 auto;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      background: transparent;
+    }
+
+    body:not([data-active-view="edit"]) .panel {
+      border-color: rgba(180, 122, 60, .32);
+      border-radius: 3px;
+      background: var(--panel);
+      box-shadow: none;
+    }
+
+    body[data-active-view="prepare"] aside.left > .panel:first-child {
+      display: block !important;
+    }
+
+    body[data-active-view="review"] .conversation-dock {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      :root,
+      :root[data-theme="light"] {
+        --edit-command-height: clamp(280px, 50.7vw, 330px);
+      }
+
+      header {
+        min-height: 136px;
+        padding: 0 18px;
+        grid-template-rows: 70px 66px;
+      }
+
+      .brand-logo {
+        width: 42px;
+        height: 42px;
+      }
+
+      h1 {
+        display: block;
+        font-size: clamp(16px, 4.3vw, 23px);
+      }
+
+      .image-file-name {
+        max-width: 42vw;
+      }
+
+      .editor-tabs {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        padding: 0 2%;
+      }
+
+      .editor-tabs::before {
+        left: 8%;
+        right: 8%;
+        top: 44px;
+      }
+
+      .editor-tabs button {
+        min-height: 64px;
+        padding-top: 10px;
+      }
+
+      .editor-tabs button::after {
+        top: 39px;
+      }
+
+      .editor-tabs button.active:not(:last-child)::before {
+        top: 44px;
+      }
+
+      .viewport {
+        min-height: 0;
+        padding: 18px 12px 100px;
+      }
+
+      canvas#canvas {
+        max-width: 96%;
+        max-height: calc(100% - 26px);
+      }
+
+      body[data-active-view="edit"] .left > .panel:nth-of-type(2) {
+        bottom: calc(var(--edit-command-height) + 22px);
+        width: 168px;
+        height: 56px;
+        padding: 6px 0 6px 8px;
+        transform: translateX(-168px);
+      }
+
+      .toolbar,
+      body[data-active-view="prepare"] .toolbar,
+      body[data-active-view="review"] .toolbar {
+        bottom: 22px;
+        width: 180px;
+        height: 56px;
+        padding: 6px 8px 6px 0;
+      }
+
+      .toolbar button,
+      body[data-active-view="edit"] .left > .panel:nth-of-type(2) button {
+        width: 42px;
+        min-width: 42px;
+        height: 42px;
+        min-height: 42px;
+      }
+
+      .toolbar button::before,
+      body[data-active-view="edit"] .left > .panel:nth-of-type(2) button::before {
+        font-size: 22px;
+      }
+
+      body[data-active-view="edit"] aside.right > .edit-command-panel {
+        padding: 12px 18px 18px;
+      }
+
+      .zone-summary-bar {
+        height: 82px;
+        grid-template-columns: 66px minmax(90px, 1.3fr) 1px minmax(66px, .72fr) 1px minmax(104px, 1fr);
+        gap: 8px;
+        padding-right: 8px;
+      }
+
+      .zone-thumbnail {
+        width: 64px;
+        height: 64px;
+      }
+
+      .zone-summary-field input,
+      .zone-summary-field select {
+        font-size: 14px;
+      }
+
+      .change-request {
+        width: 100%;
+        padding-right: 0;
+      }
+
+      .change-request textarea {
+        min-height: 80px;
+        max-height: 80px;
+      }
+
+      .primary-imagegen {
+        right: 18px;
+        bottom: 17px;
+        width: min(52%, 300px);
+        height: 52px;
+        min-height: 52px;
+        font-size: 15px;
+      }
+
+      .conversation-dock {
+        left: 18px;
+        bottom: 25px;
+      }
+
+      .zone-actions {
+        right: 22px;
+        top: 22px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .brand-copy h1 {
+        font-size: 15px;
+        letter-spacing: .07em;
+      }
+
+      .bridge-state {
+        font-size: 0;
+      }
+
+      .zone-summary-bar {
+        height: 70px;
+        grid-template-columns: 56px minmax(74px, 1fr) 1px 62px 1px 88px;
+        gap: 5px;
+        padding: 7px;
+      }
+
+      .zone-thumbnail {
+        width: 50px;
+        height: 50px;
+      }
+
+      .zone-summary-field input,
+      .zone-summary-field select {
+        padding-inline: 2px;
+        font-size: 12px;
+      }
+
+      body[data-active-view="edit"] .left > .panel:nth-of-type(2) {
+        left: 50%;
+        width: 144px;
+        transform: translateX(-144px);
+      }
+
+      .toolbar {
+        left: 50%;
+        width: 156px;
+      }
+
+      .toolbar button,
+      body[data-active-view="edit"] .left > .panel:nth-of-type(2) button {
+        width: 36px;
+        min-width: 36px;
+      }
+
+      body[data-active-view="edit"] aside.right > .edit-command-panel {
+        padding: 10px 14px 14px;
+      }
+
+      .change-request textarea {
+        min-height: 64px;
+        max-height: 64px;
+      }
+
+      .primary-imagegen {
+        right: 14px;
+        bottom: 14px;
+        height: 48px;
+        min-height: 48px;
+      }
+
+      .conversation-dock {
+        left: 14px;
+        bottom: 22px;
+      }
+    }
+
+    @media (max-height: 900px) {
+      body[data-active-view="edit"] {
+        height: auto;
+        min-height: clamp(760px, 176.8vw, 1158px);
+        overflow: auto;
+      }
+
+      body[data-active-view="edit"] main {
+        height: clamp(760px, 176.8vw, 1158px);
+        min-height: clamp(760px, 176.8vw, 1158px);
+      }
     }
   </style>
 </head>
-<body>
+<body data-active-view="edit">
 <main>
   <header>
     <div class="brand">
       <img class="brand-logo" src="__PLUGIN_LOGO_DATA_URL__" alt="Codex Image Editor logo" />
-      <h1>Inline Codex Image Editor</h1>
+      <div class="brand-copy">
+        <h1>CODEX IMAGE EDITOR</h1>
+        <span class="image-file-name mono" id="imageFileName">Aucune image</span>
+      </div>
     </div>
-    <div class="status"><span class="dot" id="dot"></span><span id="status">ready</span></div>
+    <nav class="editor-tabs" aria-label="Étape de travail">
+      <button class="active" type="button" data-editor-view-button="edit"><span>Zone</span></button>
+      <button type="button" data-editor-view-button="prepare"><span>Demande</span></button>
+      <button type="button" data-editor-view-button="review"><span>Envoi</span></button>
+    </nav>
+    <div class="header-actions">
+      <span class="workflow-summary" id="workflowSummary">Prêt</span>
+      <span class="bridge-state warn" id="bridgeStatus">Connexion…</span>
+      <button id="fullscreenMode" type="button">Plein écran</button>
+      <button id="inlineMode" type="button">Réduire</button>
+      <div class="status"><span class="dot" id="dot"></span><span id="status">ready</span></div>
+    </div>
   </header>
-  <div class="workflow" id="workflow">
-    <span class="step active" data-step="state_saved">state_saved</span>
-    <span class="step" data-step="context_exported">context_exported</span>
-    <span class="step" data-step="view_image_required">view_image_required</span>
-    <span class="step" data-step="codex_imagegen_requested">codex_imagegen_requested</span>
-    <span class="step" data-step="waiting_for_codex_image_gen">waiting_for_codex_image_gen</span>
-    <span class="step" data-step="artifact_candidate_received">artifact_candidate_received</span>
-    <span class="step" data-step="artifact_received">artifact_received</span>
-    <span class="step" data-step="review_ready">review_ready</span>
-    <span class="step" data-step="drift_detected">drift_detected</span>
-    <span class="step" data-step="host_blocked">host_blocked</span>
-  </div>
+
+  <details class="conversation-dock" id="conversationDock">
+    <summary>
+      <strong>Conversation Codex</strong>
+      <span class="small">›</span>
+    </summary>
+    <div class="conversation-body" aria-label="Conversation Codex intégrée">
+      <form class="conversation-compose" id="conversationForm">
+        <textarea id="conversationPrompt" placeholder="Demander à Codex d’analyser l’image ou préciser une modification…"></textarea>
+        <button class="primary" id="sendConversation" type="submit">Envoyer</button>
+      </form>
+    </div>
+  </details>
 
   <div class="shell">
-    <aside>
-      <div class="panel">
-        <h2>Image</h2>
-        <label>Workspace root <input id="workspaceRoot" placeholder="optional; MCP cwd by default" /></label>
-        <label>Session <input id="sessionId" value="default" /></label>
-        <label>Target path for Codex <input id="baseImagePath" placeholder="C:\\path\\inside\\workspace\\image.png" /></label>
-        <label>Import target <input id="file" type="file" accept="image/png,image/jpeg,image/webp" /></label>
-        <label>Request <textarea id="userRequest" placeholder="Describe the Image Gen edit"></textarea></label>
-        <div class="row">
-          <button id="loadState">Load</button>
-          <button id="saveState">Save state</button>
-          <button id="fit">Fit</button>
-        </div>
+    <aside class="left">
+      <div class="panel" data-editor-view="edit prepare">
+        <h2>Image cible</h2>
+        <label>Modification souhaitée <textarea id="userRequest" placeholder="Décrivez le résultat attendu"></textarea></label>
+        <details class="subdetails">
+          <summary>Détails de session</summary>
+          <label>Dossier de travail <input id="workspaceRoot" placeholder="Fourni automatiquement par Codex" /></label>
+          <label>Session <input id="sessionId" value="default" /></label>
+          <label>Chemin de l’image <input id="baseImagePath" placeholder="C:\\chemin\\dans\\le\\projet\\image.png" /></label>
+          <button id="loadState">Recharger l’état</button>
+        </details>
       </div>
 
-      <div class="panel">
-        <h2>Tools</h2>
-        <div class="row" id="toolButtons">
-          <button class="active" data-tool="select">Select</button>
-          <button data-tool="brush">Brush</button>
-          <button data-tool="lasso">Lasso</button>
-          <button data-tool="polygon">Polygon</button>
-          <button data-tool="rectangle">Rect</button>
-          <button data-tool="ellipse">Ellipse</button>
-          <button data-tool="precision">Precision</button>
-          <button data-tool="eraser">Gomme</button>
-          <button data-tool="pan">Pan</button>
+      <div class="panel" data-editor-view="edit">
+        <h2>Outils</h2>
+        <div class="tool-grid" id="toolButtons">
+          <button class="active" data-tool="select">Sélection</button>
+          <button data-tool="brush">Pinceau</button>
+          <button data-tool="rectangle">Rectangle</button>
+          <button data-tool="precision">Précision</button>
         </div>
-        <label>Brush size <input id="brushSize" type="range" min="4" max="80" value="18" /></label>
-        <label>Note for next mark <textarea id="markNote" placeholder="Instruction for this region"></textarea></label>
-        <div class="row">
-          <button id="duplicateShape">Duplicate</button>
-          <button class="bad" id="deleteShape">Delete</button>
-        </div>
+        <details class="subdetails">
+          <summary>Autres outils</summary>
+          <div class="tool-grid">
+            <button data-tool="lasso">Lasso</button>
+            <button data-tool="polygon">Polygone</button>
+            <button data-tool="ellipse">Ellipse</button>
+            <button data-tool="eraser">Gomme</button>
+            <button data-tool="pan">Déplacer</button>
+          </div>
+        </details>
+        <label id="brushSizeControl" hidden>Taille du pinceau <input id="brushSize" type="range" min="4" max="80" value="18" /></label>
+        <label id="markNoteControl" hidden>Instruction de la prochaine zone <textarea id="markNote" placeholder="Ce qui doit changer dans cette zone"></textarea></label>
       </div>
 
-      <div class="panel">
-        <h2>Layers</h2>
-        <div class="row" id="layerButtons">
-          <button class="active" data-layer="correct">Corriger</button>
-          <button data-layer="freeze">Figer</button>
-          <button data-layer="error">Erreur</button>
-          <button data-layer="reference">Reference</button>
-        </div>
+      <details class="panel" id="layerPanel" data-editor-view="edit">
+        <summary>Type de zone</summary>
+        <label>Type
+          <select id="layerPicker">
+            <option value="correct">À corriger</option>
+            <option value="freeze">À préserver</option>
+            <option value="error">Erreur à signaler</option>
+            <option value="reference">Référence</option>
+          </select>
+        </label>
         <div id="layerSettings"></div>
-      </div>
+      </details>
     </aside>
 
     <section class="canvas-wrap">
       <div class="toolbar">
-        <button id="undo">Undo</button>
-        <button id="redo">Redo</button>
-        <button id="clearLayer">Clear layer</button>
+        <button id="importButton" type="button">Importer</button>
+        <input class="visually-hidden" id="file" type="file" aria-hidden="true" tabindex="-1" accept="image/png,image/jpeg,image/webp" />
+        <button id="undo">Annuler</button>
+        <button id="redo">Rétablir</button>
+        <button id="fit">Ajuster</button>
         <button id="zoomOut">-</button>
         <button id="zoomIn">+</button>
+        <span class="toolbar-spacer"></span>
         <span class="pill" id="zoomLabel">100%</span>
         <span class="pill" id="shapeCount">0 zones</span>
-        <span class="pill" id="mode">select / correct</span>
       </div>
       <div class="viewport">
         <canvas id="canvas" width="1280" height="800"></canvas>
@@ -176,198 +1277,227 @@
     </section>
 
     <aside class="right">
-      <div class="panel">
-        <h2>Zones</h2>
-        <div class="list" id="zoneList"><div class="item">No zones</div></div>
-        <label>Label <input id="shapeLabel" /></label>
-        <label>Note <textarea id="shapeNote"></textarea></label>
-        <div class="grid2">
-          <label>Constraint <select id="shapeConstraint"><option>correct</option><option>freeze</option><option>error</option><option>reference</option></select></label>
-          <label>Priority <select id="shapePriority"><option>low</option><option selected>medium</option><option>high</option></select></label>
+      <div class="panel edit-command-panel" data-editor-view="edit">
+        <div class="zone-summary-bar" id="zoneSummaryBar" hidden>
+          <canvas class="zone-thumbnail" id="zoneThumbnail" width="96" height="96" aria-label="Aperçu de la zone"></canvas>
+          <label class="zone-summary-field zone-summary-name">
+            <span class="visually-hidden">Nom</span>
+            <input id="shapeLabel" aria-label="Nom de la zone" />
+          </label>
+          <span class="zone-summary-divider" aria-hidden="true"></span>
+          <label class="zone-summary-field">
+            <span class="visually-hidden">Type</span>
+            <select id="shapeConstraint" aria-label="Type de zone"><option value="correct">Corriger</option><option value="freeze">Figer</option><option value="error">Erreur</option><option value="reference">Référence</option></select>
+          </label>
+          <span class="zone-summary-divider" aria-hidden="true"></span>
+          <label class="zone-summary-field zone-summary-priority">
+            <span class="visually-hidden">Priorité</span>
+            <select id="shapePriority" aria-label="Priorité"><option value="low">Priorité basse</option><option value="medium" selected>Priorité moyenne</option><option value="high">Priorité haute</option></select>
+          </label>
         </div>
-        <div class="row">
-          <button id="applyShape">Apply zone</button>
-          <button id="jumpShape">Jump</button>
-        </div>
+        <div class="zone-empty" id="zoneSelectionHint">Tracez une zone directement sur l’image.</div>
+        <fieldset id="zoneEditor" hidden>
+          <label class="change-request"><span>Que faut-il changer&nbsp;?</span><textarea id="shapeNote" placeholder="Décrivez précisément la modification"></textarea></label>
+          <button class="visually-hidden" id="applyShape" type="button" tabindex="-1">Appliquer</button>
+          <button class="primary primary-imagegen" id="launchNativeImageGen" type="button">Lancer Image Gen</button>
+          <details class="subdetails zone-actions">
+            <summary>Autres actions</summary>
+            <div class="row">
+              <label id="zonePicker" hidden>Choisir une zone <select id="zoneList"></select></label>
+              <button id="jumpShape">Centrer</button>
+              <button id="duplicateShape">Dupliquer</button>
+              <button class="bad" id="deleteShape">Supprimer</button>
+            </div>
+          </details>
+        </fieldset>
       </div>
 
-      <div class="panel" id="precisionPanel">
-        <h2>Precision Controls</h2>
-        <div class="row">
-          <button id="precisionModeToggle">Precision mode</button>
-          <button id="validatePrecision">Validate</button>
-          <button id="precisionPreview">Preview</button>
-        </div>
-        <div class="grid2">
-          <label>X <input id="precisionX" type="number" step="1" /></label>
-          <label>Y <input id="precisionY" type="number" step="1" /></label>
-          <label>Width <input id="precisionW" type="number" step="1" /></label>
-          <label>Height <input id="precisionH" type="number" step="1" /></label>
-        </div>
-        <div class="grid2">
-          <label>Subtype <select id="precisionSubtype"><option>include</option><option>exclude</option><option>protect</option></select></label>
-          <label>Edge <select id="edgeMode"><option>soft</option><option>hard</option></select></label>
-          <label>Safety px <input id="safetyMarginPx" type="number" min="0" max="512" value="0" /></label>
-          <label>Feather px <input id="featherPx" type="number" min="0" max="512" value="0" /></label>
-          <label>Grid px <input id="gridSize" type="number" min="2" max="128" value="16" /></label>
-          <label>Nudge px <input id="nudgePx" type="number" min="1" max="128" value="1" /></label>
-        </div>
-        <label><input id="snapGrid" type="checkbox" checked /> snap to grid</label>
-        <label>Source zone <input id="precisionSourceShape" placeholder="shape id for subtract/merge" /></label>
-        <div class="row">
-          <button id="setGeometry">Set geometry</button>
-          <button id="refineContract">Contract</button>
-          <button id="refineDilate">Dilate</button>
-          <button id="refineSimplify">Simplify</button>
-          <button id="refineSubtract">Subtract</button>
-          <button id="refineMerge">Merge</button>
-          <button id="duplicateProtect">Protect copy</button>
-        </div>
-        <div class="notice" id="precisionWarnings">No precision validation yet.</div>
-        <h2>Presets</h2>
-        <div class="grid2">
-          <label>Kind <select id="presetKind"><option>zone</option><option>layer</option><option>prompt</option><option>review</option></select></label>
-          <label>Preset <select id="presetSelect"></select></label>
-        </div>
-        <label>Preset label <input id="presetLabel" placeholder="local preset label" /></label>
-        <div class="row">
-          <button id="loadPresets">Load presets</button>
-          <button id="applyPreset">Apply preset</button>
-          <button id="savePreset">Save preset</button>
-          <button class="bad" id="deletePreset">Delete preset</button>
-        </div>
-      </div>
+      <details class="panel" id="precisionPanel" data-editor-view="edit" hidden>
+        <summary>Précision de la zone</summary>
+        <fieldset id="precisionEditor">
+          <p class="small">L’outil Précision de la barre de gauche active la grille et le déplacement au clavier. Les réglages ci-dessous agissent uniquement sur la zone sélectionnée.</p>
+          <button id="validatePrecision">Vérifier la zone</button>
+          <div class="section-title">Géométrie</div>
+          <div class="grid2">
+            <label>X <input id="precisionX" type="number" step="1" /></label>
+            <label>Y <input id="precisionY" type="number" step="1" /></label>
+            <label>Largeur <input id="precisionW" type="number" step="1" /></label>
+            <label>Hauteur <input id="precisionH" type="number" step="1" /></label>
+          </div>
+          <div class="grid2">
+            <label>Masque <select id="precisionSubtype"><option value="include">Zone principale</option><option value="exclude">Exclusion</option><option value="protect">Protection</option></select></label>
+            <label>Contour <select id="edgeMode"><option value="soft">Doux</option><option value="hard">Net</option></select></label>
+            <label>Marge de sécurité (px) <input id="safetyMarginPx" type="number" min="0" max="512" value="0" /></label>
+            <label>Fondu (px) <input id="featherPx" type="number" min="0" max="512" value="0" /></label>
+            <label>Grille (px) <input id="gridSize" type="number" min="2" max="128" value="16" /></label>
+            <label>Pas (px) <input id="nudgePx" type="number" min="1" max="128" value="1" /></label>
+          </div>
+          <label><input id="snapGrid" type="checkbox" checked /> Aligner sur la grille</label>
+          <button id="setGeometry">Appliquer la géométrie</button>
 
-      <div class="panel">
-        <h2>References</h2>
-        <label>Reference import <input id="referenceFile" type="file" accept="image/png,image/jpeg,image/webp" /></label>
-        <label>Reference note <textarea id="referenceNote"></textarea></label>
-        <label>Weight <select id="referenceWeight"><option>low</option><option selected>medium</option><option>high</option></select></label>
-        <button id="addReference">Add reference</button>
-        <div class="list" id="referenceList"><div class="item">No references</div></div>
-      </div>
+          <div class="section-title">Ajuster le contour</div>
+          <div class="grid2">
+            <label>Opération
+              <select id="refineOperation">
+                <option value="contract">Réduire</option>
+                <option value="dilate">Étendre</option>
+                <option value="simplify">Simplifier en rectangle</option>
+                <option value="subtract">Soustraire une zone</option>
+                <option value="merge">Fusionner avec une zone</option>
+                <option value="duplicate_as_protect">Copier en protection</option>
+              </select>
+            </label>
+            <label id="precisionSourceRow" hidden>Zone source <select id="precisionSourceShape"></select></label>
+          </div>
+          <button id="applyRefinement">Appliquer l’ajustement</button>
+          <div class="notice" id="precisionWarnings">Aucune validation de précision.</div>
 
-      <div class="panel" id="promptPanel">
-        <h2>Prompt</h2>
+          <div class="section-title">Préréglage de précision</div>
+          <div class="grid2">
+            <label>Préréglage <select id="presetSelect"><option value="">Chargement à l’ouverture…</option></select></label>
+            <label>&nbsp;<button id="applyPreset">Appliquer</button></label>
+          </div>
+          <details class="subdetails" id="presetManager">
+            <summary>Gérer les préréglages locaux</summary>
+            <label>Nom du préréglage <input id="presetLabel" placeholder="Ex. bord net, marge 8 px" /></label>
+            <div class="row">
+              <button id="savePreset">Enregistrer l’actuel</button>
+              <button class="bad" id="deletePreset">Supprimer le préréglage</button>
+            </div>
+          </details>
+        </fieldset>
+      </details>
+
+      <details class="panel" id="referencePanel" data-editor-view="prepare">
+        <summary>Références <span class="small">(optionnel)</span></summary>
+        <label>Importer une référence <input id="referenceFile" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+        <label>Rôle de la référence <textarea id="referenceNote" placeholder="Style, composition ou élément à reprendre"></textarea></label>
+        <label>Importance <select id="referenceWeight"><option value="low">Faible</option><option value="medium" selected>Moyenne</option><option value="high">Forte</option></select></label>
+        <button id="addReference">Ajouter la référence</button>
+        <div class="list" id="referenceList"><div class="item">Aucune référence</div></div>
+      </details>
+
+      <details class="panel" id="promptPanel" data-editor-view="prepare">
+        <summary>Affiner la demande <span class="small">(optionnel)</span></summary>
         <div class="tabs" id="promptTabs">
           <button class="active" id="promptOriginalTab" data-prompt-view="original">Original</button>
-          <button id="promptNormalizedTab" data-prompt-view="normalized">Normalise</button>
-          <button id="promptFinalTab" data-prompt-view="final">Final $imagegen</button>
+          <button id="promptNormalizedTab" data-prompt-view="normalized">Normalisé</button>
+          <button id="promptFinalTab" data-prompt-view="final">Demande finale</button>
         </div>
         <div class="request-view active" id="promptViewOriginal">
           <label>Prompt original <textarea id="promptOriginal" placeholder="Prompt recu dans la conversation"></textarea></label>
         </div>
         <div class="request-view" id="promptViewNormalized">
-          <pre id="normalizedPrompt">No normalized request yet.</pre>
+          <pre id="normalizedPrompt">Demande non analysée.</pre>
         </div>
         <div class="request-view" id="promptViewFinal">
-          <pre id="finalImagegenRequest">No final $imagegen request yet.</pre>
+          <pre id="finalImagegenRequest">Demande finale non préparée.</pre>
         </div>
-        <label>Working translation from Codex <textarea id="workingTranslation" placeholder="Optional English working version supplied by Codex"></textarea></label>
-        <h2>Image roles</h2>
-        <div class="list" id="imageRoleTable"><div class="item">No conversation images</div></div>
-        <h2>Constraints</h2>
+        <label>Traduction de travail <textarea id="workingTranslation" placeholder="Version anglaise facultative fournie par Codex"></textarea></label>
+        <h2>Rôle des images</h2>
+        <div class="list" id="imageRoleTable"><div class="item">Aucune image de conversation</div></div>
+        <h2>Contraintes</h2>
         <div id="constraintsEditor" class="tag-editor">
-          <label>Conserver <textarea id="mustKeepInput" placeholder="One constraint per line"></textarea></label>
-          <label>Changer <textarea id="mustChangeInput" placeholder="One requested change per line"></textarea></label>
-          <label>Eviter <textarea id="mustAvoidInput" placeholder="One avoidance per line"></textarea></label>
-          <label>Texte exact <textarea id="textVerbatimInput" placeholder="Exact in-image text, one item per line"></textarea></label>
+          <label>Conserver <textarea id="mustKeepInput" placeholder="Une contrainte par ligne"></textarea></label>
+          <label>Changer <textarea id="mustChangeInput" placeholder="Une modification par ligne"></textarea></label>
+          <label>Éviter <textarea id="mustAvoidInput" placeholder="Un élément par ligne"></textarea></label>
+          <label>Texte exact <textarea id="textVerbatimInput" placeholder="Texte à conserver mot pour mot"></textarea></label>
           <label>Style <textarea id="styleConstraintsInput"></textarea></label>
           <label>Composition <textarea id="compositionConstraintsInput"></textarea></label>
           <label>Identite <textarea id="identityConstraintsInput"></textarea></label>
           <label>Sortie <textarea id="outputUseInput"></textarea></label>
         </div>
         <div class="row">
-          <button id="buildRequest">Build request</button>
-          <button class="primary" id="useFinalRequest">Use final request</button>
+          <button id="buildRequest">Analyser la demande</button>
+          <button class="primary" id="useFinalRequest">Utiliser la demande finale</button>
         </div>
-        <div id="requestWarnings" class="notice">No request validation yet.</div>
+        <div id="requestWarnings" class="notice">Demande non analysée.</div>
+      </details>
+
+      <div class="panel" id="generationPanel" data-editor-view="prepare">
+        <h2>Lancer l’édition</h2>
+        <p class="small">Codex prépare le contexte, puis transmet la demande à Image Gen natif dans cette conversation.</p>
+        <div class="primary-flow">
+          <button id="createRequest">Préparer pour Image Gen</button>
+        </div>
+        <details class="subdetails">
+          <summary>Détails du handoff</summary>
+          <label>Identifiant de contexte <input id="contextId" /></label>
+          <label>Chemin du résultat <input id="artifactPath" placeholder="Renseigné automatiquement après génération" /></label>
+        </details>
       </div>
 
-      <div class="panel">
-        <h2>Codex workflow</h2>
-        <button class="primary" id="createRequest">Create $imagegen request</button>
-        <button id="createCodexHandoff">Create handoff</button>
-        <label>Context id <input id="contextId" /></label>
-        <label>Artifact path <input id="artifactPath" placeholder="path saved from Codex Image Gen" /></label>
-        <div class="row">
-          <button id="recordNativeImageGenRequested">Native Image Gen requested</button>
-          <button class="good" id="saveResult">Save result</button>
-          <button id="versions">Versions</button>
-        </div>
-      </div>
-
-      <div class="panel" id="artifactBridgePanel">
-        <h2>Artifact Bridge</h2>
+      <details class="panel" id="artifactBridgePanel" data-editor-view="prepare">
+        <summary>Intégration avancée</summary>
         <div id="hostCapabilities" class="grid2">
-          <label class="check-row"><input id="capInlineMcpWidget" type="checkbox" /> inline widget</label>
-          <label class="check-row"><input id="capCallToolBridge" type="checkbox" /> callTool bridge</label>
-          <label class="check-row"><input id="capVisibleConversationImages" type="checkbox" /> visible images</label>
-          <label class="check-row"><input id="capArtifactBridge" type="checkbox" /> artifact bridge</label>
-          <label class="check-row"><input id="capWorkspaceArtifactSave" type="checkbox" /> workspace save</label>
-          <label class="check-row"><input id="capCanAttachLocalImages" type="checkbox" /> attach local</label>
-          <label class="check-row"><input id="capCanCallNativeImageGen" type="checkbox" /> native image_gen</label>
+          <label class="check-row"><input id="capInlineMcpWidget" type="checkbox" /> widget intégré</label>
+          <label class="check-row"><input id="capCallToolBridge" type="checkbox" /> outils MCP</label>
+          <label class="check-row"><input id="capVisibleConversationImages" type="checkbox" /> images visibles</label>
+          <label class="check-row"><input id="capArtifactBridge" type="checkbox" /> retour d’artefact</label>
+          <label class="check-row"><input id="capWorkspaceArtifactSave" type="checkbox" /> sauvegarde locale</label>
+          <label class="check-row"><input id="capCanAttachLocalImages" type="checkbox" /> pièces jointes locales</label>
+          <label class="check-row"><input id="capCanCallNativeImageGen" type="checkbox" /> Image Gen natif</label>
         </div>
         <div class="row">
-          <button id="recordHostCapabilities">Record capabilities</button>
-          <button id="listPendingGenerations">Refresh pending</button>
+          <button id="recordHostCapabilities">Enregistrer les capacités</button>
+          <button id="listPendingGenerations">Actualiser</button>
         </div>
-        <div class="list" id="pendingGenerations"><div class="item">No pending handoff</div></div>
-        <label>Candidate id <input id="candidateId" /></label>
-        <label>Candidate context <input id="candidateContextId" /></label>
-        <label>Candidate artifact path <input id="candidateArtifactPath" placeholder="workspace-local artifact path" /></label>
-        <label>Candidate artifact id <input id="candidateArtifactId" placeholder="optional Codex artifact id" /></label>
-        <label>Codex turn <input id="candidateCodexTurnId" /></label>
-        <label>Origin
+        <div class="list" id="pendingGenerations"><div class="item">Aucun handoff en attente</div></div>
+        <label>ID du résultat <input id="candidateId" /></label>
+        <label>Contexte <input id="candidateContextId" /></label>
+        <label>Chemin du résultat <input id="candidateArtifactPath" placeholder="Chemin local dans le projet" /></label>
+        <label>ID d’artefact Codex <input id="candidateArtifactId" placeholder="Facultatif" /></label>
+        <label>Tour Codex <input id="candidateCodexTurnId" /></label>
+        <label>Origine
           <select id="candidateOrigin">
-            <option value="codex-image-gen">codex-image-gen</option>
-            <option value="external">external</option>
+            <option value="codex-image-gen">Image Gen Codex</option>
+            <option value="external">Externe</option>
           </select>
         </label>
-        <label>Resolution note <textarea id="candidateReason"></textarea></label>
+        <label>Note de validation <textarea id="candidateReason"></textarea></label>
         <div class="row">
-          <button id="registerArtifactCandidate">Register candidate</button>
-          <button class="good" id="acceptArtifactCandidate">Accept candidate</button>
-          <button class="bad" id="rejectArtifactCandidate">Reject candidate</button>
+          <button id="registerArtifactCandidate">Enregistrer</button>
+          <button class="good" id="acceptArtifactCandidate">Accepter</button>
+          <button class="bad" id="rejectArtifactCandidate">Rejeter</button>
         </div>
-        <div class="list" id="artifactCandidateList"><div class="item">No artifact candidates</div></div>
+        <div class="list" id="artifactCandidateList"><div class="item">Aucun résultat reçu</div></div>
+      </details>
+
+      <div class="panel" id="reviewPanel" data-editor-view="review">
+        <h2>Comparer le résultat</h2>
+        <div class="zone-empty" id="reviewEmpty">Le résultat apparaîtra ici après la génération.</div>
+        <fieldset id="reviewControls" hidden>
+          <div class="row">
+            <button id="viewBefore">Avant</button>
+            <button id="viewAfter">Après</button>
+            <button id="viewSplit">Curseur</button>
+            <button id="viewSide">Côte à côte</button>
+          </div>
+          <label>Position de comparaison <input id="reviewSlider" type="range" min="0" max="100" value="50" /></label>
+          <div class="row">
+            <button id="compareVersion">Vérifier</button>
+            <button id="retryVersion">Relancer</button>
+          </div>
+        </fieldset>
+        <div class="list" id="versionList"><div class="item">Aucun résultat</div></div>
       </div>
 
-      <div class="panel">
-        <h2>Review</h2>
-        <div class="row">
-          <button id="viewBefore">Before</button>
-          <button id="viewAfter">After</button>
-          <button id="viewSplit">Slider</button>
-          <button id="viewSide">Side by side</button>
-        </div>
-        <label>Before/after <input id="reviewSlider" type="range" min="0" max="100" value="50" /></label>
-        <div class="row">
-          <button id="compareVersion">Compare</button>
-          <button id="retryVersion">Retry request</button>
-        </div>
-        <div class="list" id="versionList"><div class="item">No versions</div></div>
-      </div>
-
-      <div class="panel">
-        <h2>Output</h2>
-        <pre id="output">Ready.</pre>
-      </div>
+      <details class="panel" data-editor-view="review">
+        <summary>Détails techniques</summary>
+        <pre id="output">Prêt.</pre>
+      </details>
     </aside>
   </div>
-  <footer>
-    <span class="small">Conversation-native boundary: Codex Image Gen only. No external image API, no key, no simulated result.</span>
-    <span class="small mono" id="selectedInfo">no selection</span>
-  </footer>
 </main>
 
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const layerNames = ['correct', 'freeze', 'error', 'reference'];
-const workflowSteps = ['state_saved', 'context_exported', 'view_image_required', 'codex_imagegen_requested', 'waiting_for_codex_image_gen', 'artifact_candidate_received', 'artifact_received', 'review_ready', 'drift_detected', 'host_blocked'];
 const imageRoles = ['edit_target', 'reference', 'style_reference', 'insert_source', 'previous_result', 'rejected_result'];
+const imageRoleLabels = { edit_target: 'Image à modifier', reference: 'Référence', style_reference: 'Référence de style', insert_source: 'Élément à insérer', previous_result: 'Résultat précédent', rejected_result: 'Résultat rejeté' };
 const zoneSubtypes = ['include', 'exclude', 'protect'];
+const layerLabels = { correct: 'À corriger', freeze: 'À préserver', error: 'Erreur à signaler', reference: 'Référence' };
 const constraintFields = {
   must_keep: 'mustKeepInput',
   must_change: 'mustChangeInput',
@@ -378,16 +1508,18 @@ const constraintFields = {
   identity_constraints: 'identityConstraintsInput',
   output_use: 'outputUseInput'
 };
-const colors = { correct: '#ef4444', freeze: '#3b82f6', error: '#f59e0b', reference: '#22c55e' };
-const fills = { correct: 'rgba(239,68,68,.16)', freeze: 'rgba(59,130,246,.14)', error: 'rgba(245,158,11,.18)', reference: 'rgba(34,197,94,.14)' };
+const colors = { correct: '#2c8d9e', freeze: '#356f8f', error: '#d18b3a', reference: '#4caf50' };
+const fills = { correct: 'rgba(44,141,158,.16)', freeze: 'rgba(53,111,143,.14)', error: 'rgba(209,139,58,.16)', reference: 'rgba(76,175,80,.13)' };
 const $ = (id) => document.getElementById(id);
 
 const state = {
-  schemaVersion: 1,
+  schemaVersion: 2,
+  stateRevision: 0,
   sessionId: 'default',
   baseImagePath: '',
   imageInfo: null,
   userRequest: '',
+  editorView: 'edit',
   activeTool: 'select',
   activeLayer: 'correct',
   selectedShapeId: '',
@@ -450,9 +1582,24 @@ function setStatus(text, kind = 'ok') {
 }
 
 function setWorkflow(step) {
-  document.querySelectorAll('.step').forEach((item) => item.classList.toggle('active', item.dataset.step === step));
+  const labels = {
+    ready: 'Prêt',
+    image_loaded: 'Image chargée',
+    state_saved: 'Enregistré',
+    context_exported: 'Prêt pour Image Gen',
+    view_image_required: 'Image à vérifier',
+    codex_imagegen_requested: 'Envoyé à Image Gen',
+    waiting_for_codex_image_gen: 'Génération en cours',
+    artifact_candidate_received: 'Résultat reçu',
+    artifact_received: 'Résultat reçu',
+    review_ready: 'Résultat prêt',
+    drift_detected: 'Écart détecté',
+    host_blocked: 'Action indisponible'
+  };
   const bad = step === 'drift_detected' || step === 'host_blocked';
   const warn = ['view_image_required', 'codex_imagegen_requested', 'waiting_for_codex_image_gen', 'artifact_candidate_received'].includes(step);
+  $('workflowSummary').textContent = labels[step] || 'Prêt';
+  $('workflowSummary').title = step || '';
   setStatus(step, bad ? 'bad' : warn ? 'warn' : 'ok');
 }
 
@@ -464,8 +1611,10 @@ function uid(prefix = 'shape') {
 function syncInputsToState() {
   state.sessionId = $('sessionId').value.trim() || 'default';
   state.baseImagePath = $('baseImagePath').value.trim();
-  state.userRequest = $('promptOriginal').value.trim() || $('userRequest').value.trim();
-  if ($('promptOriginal').value.trim() && $('userRequest').value.trim() !== $('promptOriginal').value.trim()) $('userRequest').value = $('promptOriginal').value.trim();
+  const request = $('shapeNote').value.trim() || $('promptOriginal').value.trim() || $('userRequest').value.trim();
+  state.userRequest = request;
+  if (request && $('userRequest').value.trim() !== request) $('userRequest').value = request;
+  if (request && !$('promptOriginal').value.trim()) $('promptOriginal').value = request;
 }
 
 function argsBase() {
@@ -477,6 +1626,7 @@ function serializableState() {
   syncInputsToState();
   return {
     schemaVersion: 2,
+    stateRevision: state.stateRevision || 0,
     sessionId: state.sessionId,
     baseImagePath: state.baseImagePath,
     imageInfo: state.imageInfo,
@@ -519,20 +1669,236 @@ function serializableState() {
   };
 }
 
-function callTool(name, args) {
-  if (!window.openai || typeof window.openai.callTool !== 'function') {
-    $('output').textContent = 'Host callTool unavailable. Ask Codex to call ' + name + ' with:\n' + JSON.stringify(args, null, 2);
-    return Promise.reject(new Error('callTool unavailable'));
+let rpcId = 0;
+const pendingRpcRequests = new Map();
+let bridgeConnected = false;
+let bridgeInitialization = null;
+
+function setBridgeStatus(label, kind = 'warn') {
+  $('bridgeStatus').textContent = label;
+  $('bridgeStatus').className = 'bridge-state ' + kind;
+}
+
+function rpcNotify(method, params = {}) {
+  if (window.parent === window) return false;
+  window.parent.postMessage({ jsonrpc: '2.0', method, params }, '*');
+  return true;
+}
+
+function rpcRequest(method, params = {}, timeoutMs = 12000) {
+  if (window.parent === window) return Promise.reject(new Error('MCP Apps parent host unavailable'));
+  return new Promise((resolve, reject) => {
+    const id = ++rpcId;
+    const timer = window.setTimeout(() => {
+      pendingRpcRequests.delete(id);
+      reject(new Error(method + ' timed out'));
+    }, timeoutMs);
+    pendingRpcRequests.set(id, { resolve, reject, timer });
+    window.parent.postMessage({ jsonrpc: '2.0', id, method, params }, '*');
+  });
+}
+
+function handleHostMessage(event) {
+  if (event.source !== window.parent) return;
+  const message = event.data;
+  if (!message || message.jsonrpc !== '2.0') return;
+  if (message.id !== undefined && message.method === undefined) {
+    const pending = pendingRpcRequests.get(message.id);
+    if (!pending) return;
+    pendingRpcRequests.delete(message.id);
+    window.clearTimeout(pending.timer);
+    if (message.error) pending.reject(new Error(message.error.message || JSON.stringify(message.error)));
+    else pending.resolve(message.result);
+    return;
   }
+  if (message.method === 'ui/notifications/tool-input') {
+    applyHostToolInput(message.params?.arguments || message.params || {});
+    return;
+  }
+  if (message.method === 'ui/notifications/tool-result') {
+    hydrateFromHostResult(message.params || {});
+    return;
+  }
+  if (message.method === 'ui/notifications/host-context-changed') {
+    applyHostContext(message.params || {});
+  }
+}
+
+window.addEventListener('message', handleHostMessage, { passive: true });
+window.addEventListener('openai:set_globals', (event) => applyOpenAiGlobals(event.detail?.globals || {}), { passive: true });
+
+function applyHostToolInput(input = {}) {
+  if (input.workspaceRoot) $('workspaceRoot').value = String(input.workspaceRoot);
+  if (input.sessionId) $('sessionId').value = String(input.sessionId);
+  if (input.baseImagePath) $('baseImagePath').value = String(input.baseImagePath);
+  if (input.userRequest) {
+    $('userRequest').value = String(input.userRequest);
+    $('promptOriginal').value = String(input.userRequest);
+    if (!$('shapeNote').value.trim()) $('shapeNote').value = String(input.userRequest);
+  }
+  syncInputsToState();
+}
+
+function hydrateFromHostResult(toolResult = {}) {
+  const wrapped = toolResult?.structuredContent ? toolResult : { structuredContent: toolResult };
+  const data = wrapped.structuredContent || {};
+  if (data.state || data.handoff || data.candidate || data.pendingGenerations) applyBridgeStateFromResult(wrapped, true);
+  if (data.state?.workspaceRoot) $('workspaceRoot').value = data.state.workspaceRoot;
+  persistWidgetSnapshot();
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+}
+
+function applyHostContext(context = {}) {
+  if (context.theme) applyTheme(context.theme);
+  if (context.displayMode) document.documentElement.dataset.displayMode = context.displayMode;
+}
+
+function applyOpenAiGlobals(globals = {}) {
+  applyHostContext(globals);
+  if (globals.toolInput) applyHostToolInput(globals.toolInput);
+  if (globals.toolOutput) hydrateFromHostResult(globals.toolOutput);
+  if (globals.widgetState) restoreWidgetSnapshot(globals.widgetState);
+  syncDetectedHostCapabilities();
+}
+
+async function initializeMcpAppsBridge() {
+  if (window.parent === window) {
+    setBridgeStatus('Aperçu local', 'warn');
+    return false;
+  }
+  try {
+    const initialized = await rpcRequest('ui/initialize', {
+      appInfo: { name: 'codex-image-editor-widget', version: '0.2.0' },
+      appCapabilities: {},
+      protocolVersion: '2026-01-26'
+    }, 3000);
+    bridgeConnected = true;
+    rpcNotify('ui/notifications/initialized', {});
+    applyHostContext(initialized?.hostContext || {});
+    setBridgeStatus('Connecté', 'ok');
+    syncDetectedHostCapabilities();
+    return true;
+  } catch (error) {
+    bridgeConnected = false;
+    const compatible = typeof window.openai?.callTool === 'function';
+    setBridgeStatus(compatible ? 'Connecté' : 'Hors ligne', compatible ? 'ok' : 'warn');
+    syncDetectedHostCapabilities();
+    return false;
+  }
+}
+
+function ensureBridgeReady() {
+  if (!bridgeInitialization) bridgeInitialization = initializeMcpAppsBridge();
+  return bridgeInitialization;
+}
+
+async function callTool(name, args) {
   setStatus(name, 'warn');
-  return window.openai.callTool(name, args).then((res) => {
+  try {
+    const portableBridge = await ensureBridgeReady();
+    let res;
+    if (portableBridge) {
+      res = await rpcRequest('tools/call', { name, arguments: args });
+    } else if (typeof window.openai?.callTool === 'function') {
+      res = await window.openai.callTool(name, args);
+    } else {
+      throw new Error('Neither the MCP Apps tools/call bridge nor window.openai.callTool is available.');
+    }
     $('output').textContent = JSON.stringify(res, null, 2);
+    setStatus(name + '_done');
+    persistWidgetSnapshot();
     return res;
-  }).catch((err) => {
+  } catch (err) {
     setStatus('error', 'bad');
     $('output').textContent = err?.stack || String(err);
     throw err;
+  }
+}
+
+function widgetSnapshot() {
+  return {
+    version: 1,
+    workspaceRoot: $('workspaceRoot').value.trim(),
+    sessionId: $('sessionId').value.trim() || 'default',
+    editorView: state.editorView,
+    activeTool: state.activeTool,
+    activeLayer: state.activeLayer,
+    promptView: state.promptView,
+    stateRevision: state.stateRevision || 0
+  };
+}
+
+function persistWidgetSnapshot() {
+  if (typeof window.openai?.setWidgetState !== 'function') return;
+  try {
+    Promise.resolve(window.openai.setWidgetState(widgetSnapshot())).catch(() => {});
+  } catch {}
+}
+
+function restoreWidgetSnapshot(snapshot = {}) {
+  if (snapshot.workspaceRoot && !$('workspaceRoot').value) $('workspaceRoot').value = snapshot.workspaceRoot;
+  if (snapshot.sessionId && !$('sessionId').value) $('sessionId').value = snapshot.sessionId;
+  if (snapshot.editorView) state.editorView = snapshot.editorView;
+  if (snapshot.activeTool) state.activeTool = snapshot.activeTool;
+  if (snapshot.activeLayer) state.activeLayer = snapshot.activeLayer;
+  if (snapshot.promptView) state.promptView = snapshot.promptView;
+}
+
+function renderEditorView() {
+  const allowed = new Set(['edit', 'prepare', 'review']);
+  if (!allowed.has(state.editorView)) state.editorView = 'edit';
+  document.body.dataset.activeView = state.editorView;
+  document.querySelectorAll('[data-editor-view-button]').forEach((button) => {
+    const active = button.dataset.editorViewButton === state.editorView;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-current', active ? 'page' : 'false');
   });
+}
+
+function switchEditorView(view) {
+  state.editorView = ['edit', 'prepare', 'review'].includes(view) ? view : 'edit';
+  renderEditorView();
+  persistWidgetSnapshot();
+  if (state.editorView === 'review') {
+    loadVersions().catch((error) => {
+      $('output').textContent = error?.stack || String(error);
+    });
+  }
+}
+
+async function sendFollowUpMessage(prompt) {
+  const portableBridge = await ensureBridgeReady();
+  if (portableBridge) {
+    return rpcRequest('ui/message', { role: 'user', content: [{ type: 'text', text: prompt }] });
+  }
+  if (typeof window.openai?.sendFollowUpMessage === 'function') {
+    return window.openai.sendFollowUpMessage({ prompt, scrollToBottom: true });
+  }
+  throw new Error('Conversation messaging is unavailable in this host.');
+}
+
+async function submitConversationPrompt(prompt) {
+  const text = String(prompt || '').trim();
+  if (!text) return;
+  $('conversationPrompt').value = '';
+  setBridgeStatus('Envoi…', 'warn');
+  try {
+    await sendFollowUpMessage(text);
+    setBridgeStatus('Connecté', 'ok');
+  } catch (error) {
+    $('output').textContent = error?.stack || String(error);
+    setBridgeStatus('Envoi impossible', 'warn');
+  }
+}
+
+async function requestHostDisplayMode(mode) {
+  const portableBridge = await ensureBridgeReady();
+  if (portableBridge) return rpcRequest('ui/request-display-mode', { mode });
+  if (typeof window.openai?.requestDisplayMode === 'function') return window.openai.requestDisplayMode({ mode });
+  throw new Error('Display mode control is unavailable in this host.');
 }
 
 function loadImageFromFile(file, target) {
@@ -566,9 +1932,13 @@ function loadBaseImageFromDataUrl(dataUrl, label = 'image_loaded') {
     state.image = img;
     state.resultImage = null;
     state.displayMode = 'before';
+    state.zoom = 1;
+    state.panX = 0;
+    state.panY = 0;
     canvas.width = img.naturalWidth || img.width;
     canvas.height = img.naturalHeight || img.height;
-    draw();
+    renderAll();
+    applyTransform();
     setStatus(label);
   });
 }
@@ -577,6 +1947,7 @@ function loadResultImageFromDataUrl(dataUrl, label = 'artifact_received') {
   return imageFromDataUrl(dataUrl).then((img) => {
     state.resultImage = img;
     state.displayMode = 'after';
+    updateReviewControls();
     draw();
     setWorkflow(label);
   });
@@ -693,8 +2064,8 @@ function renderPrecisionWarnings(shape) {
   $('precisionWarnings').className = 'notice ' + (warnings.length ? 'warn' : '');
   $('precisionWarnings').textContent = shape ? [
     'Score: ' + (shape.precisionScore || 0),
-    warnings.length ? 'Warnings: ' + warnings.join(' | ') : 'Warnings: none'
-  ].join('\n') : 'No selected zone.';
+    warnings.length ? 'Alertes : ' + warnings.join(' | ') : 'Alertes : aucune'
+  ].join('\n') : 'Aucune zone sélectionnée.';
 }
 
 function precisionPresetValues() {
@@ -765,7 +2136,7 @@ function renderPromptPanel() {
   const validation = latestValidation();
   const translation = latestTranslation();
   if (!$('promptOriginal').value) $('promptOriginal').value = state.userRequest || '';
-  $('normalizedPrompt').textContent = draft?.normalizedPrompt || 'No normalized request yet.';
+  $('normalizedPrompt').textContent = draft?.normalizedPrompt || 'Demande non analysée.';
   const finalRequest = latest(state.generationRequests || [], (request) => request.promptDraftId === draft?.draftId) || latest(state.generationRequests || []);
   $('finalImagegenRequest').textContent = finalRequest ? JSON.stringify({
     contextId: finalRequest.contextId,
@@ -774,7 +2145,7 @@ function renderPromptPanel() {
     inputPackageId: finalRequest.inputPackageId,
     promptDraftId: finalRequest.promptDraftId,
     validation: finalRequest.requestValidation ? { executable: finalRequest.requestValidation.executable, blockingErrors: finalRequest.requestValidation.blockingErrors, warnings: finalRequest.requestValidation.warnings } : null
-  }, null, 2) : 'No final $imagegen request yet.';
+  }, null, 2) : 'Demande finale non préparée.';
   if (translation?.workingTranslation && !$('workingTranslation').value) $('workingTranslation').value = translation.workingTranslation;
   if (draft?.constraints) fillConstraintsFromDraft(draft.constraints);
   renderImageRoleTable();
@@ -792,21 +2163,21 @@ function fillConstraintsFromDraft(constraints) {
 function renderImageRoleTable() {
   const images = requestImagesForPanel();
   if (!images.length) {
-    $('imageRoleTable').innerHTML = '<div class="item">No conversation images</div>';
+    $('imageRoleTable').innerHTML = '<div class="item">Aucune image de conversation</div>';
     return;
   }
   $('imageRoleTable').innerHTML = images.map((image) => {
     const role = state.imageRoles[image.imageId] || image.role || 'reference';
     return `<div class="item image-role-row">
-      <div>${image.previewDataUrl ? `<img class="thumb" src="${image.previewDataUrl}" alt="image role" />` : '<div class="thumb"></div>'}</div>
+      <div>${image.previewDataUrl ? `<img class="thumb" src="${image.previewDataUrl}" alt="Aperçu de l’image" />` : '<div class="thumb"></div>'}</div>
       <div>
         <div class="mono">${escapeHtml((image.sha256 || image.imageId || '').slice(0, 18))}</div>
-        <label>Role <select data-role-select="${escapeHtml(image.imageId)}">${imageRoles.map((item) => `<option value="${item}" ${item === role ? 'selected' : ''}>${item}</option>`).join('')}</select></label>
+        <label>Rôle <select data-role-select="${escapeHtml(image.imageId)}">${imageRoles.map((item) => `<option value="${item}" ${item === role ? 'selected' : ''}>${imageRoleLabels[item] || item}</option>`).join('')}</select></label>
         <label>Note <textarea data-role-note="${escapeHtml(image.imageId)}">${escapeHtml(image.userNote || image.caption || '')}</textarea></label>
-        <label><input data-role-visible="${escapeHtml(image.imageId)}" type="checkbox" ${image.visibleInConversation === true ? 'checked' : ''} /> visible in conversation</label>
+        <label><input data-role-visible="${escapeHtml(image.imageId)}" type="checkbox" ${image.visibleInConversation === true ? 'checked' : ''} /> visible dans la conversation</label>
         <div class="row">
-          <button data-set-target="${escapeHtml(image.imageId)}">cible</button>
-          <button data-set-reference="${escapeHtml(image.imageId)}">reference</button>
+          <button data-set-target="${escapeHtml(image.imageId)}">Image cible</button>
+          <button data-set-reference="${escapeHtml(image.imageId)}">Référence</button>
         </div>
       </div>
     </div>`;
@@ -845,15 +2216,15 @@ function setImageRole(imageId, role) {
 function renderRequestWarnings(report) {
   if (!report) {
     $('requestWarnings').className = 'notice';
-    $('requestWarnings').textContent = 'No request validation yet.';
+    $('requestWarnings').textContent = 'Demande non analysée.';
     return;
   }
   const blockers = report.blockingErrors || [];
   const warnings = report.warnings || [];
   $('requestWarnings').className = 'notice ' + (blockers.length ? 'bad' : warnings.length ? 'warn' : '');
   $('requestWarnings').textContent = [
-    blockers.length ? 'Blocking: ' + blockers.join(' | ') : 'Blocking: none',
-    warnings.length ? 'Warnings: ' + warnings.join(' | ') : 'Warnings: none'
+    blockers.length ? 'Blocages : ' + blockers.join(' | ') : 'Aucun blocage',
+    warnings.length ? 'Avertissements : ' + warnings.join(' | ') : 'Aucun avertissement'
   ].join('\n');
 }
 
@@ -903,17 +2274,32 @@ function collectHostCapabilities() {
 
 function fillHostCapabilities() {
   const caps = state.hostCapabilities || {};
-  for (const [key, id] of Object.entries(hostCapabilityMap())) $(id).checked = caps[key] === true;
+  const detected = detectedHostCapabilities();
+  for (const [key, id] of Object.entries(hostCapabilityMap())) $(id).checked = caps[key] === true || detected[key] === true;
+}
+
+function detectedHostCapabilities() {
+  const hasVisibleImages = (state.conversationInputs || []).some((input) => (input.images || []).some((image) => image.visibleInConversation === true));
+  return {
+    inlineMcpWidget: window.parent !== window,
+    callToolBridge: bridgeConnected || typeof window.openai?.callTool === 'function',
+    visibleConversationImages: hasVisibleImages,
+    canAttachLocalImages: typeof FileReader === 'function'
+  };
+}
+
+function syncDetectedHostCapabilities() {
+  fillHostCapabilities();
 }
 
 function upsertLocal(list, key, item) {
   return [...(list || []).filter((entry) => entry?.[key] !== item?.[key]), item];
 }
 
-function applyBridgeStateFromResult(res) {
+function applyBridgeStateFromResult(res, loadImagePreview = false) {
   const data = res?.structuredContent || {};
   if (data.state) {
-    applyLoadedState(data.state, false);
+    applyLoadedState(data.state, loadImagePreview);
   } else {
     if (data.hostCapabilities) state.hostCapabilities = data.hostCapabilities;
     if (data.pendingGenerations) state.pendingGenerations = data.pendingGenerations;
@@ -943,6 +2329,7 @@ function applyBridgeStateFromResult(res) {
     showVersion(data.version);
   }
   renderArtifactInbox();
+  updateGenerationControls();
   return res;
 }
 
@@ -955,8 +2342,8 @@ function renderArtifactInbox() {
       <div>${escapeHtml(item.status || '')}</div>
       <div class="mono">${escapeHtml(item.expectedResultPath || '')}</div>
       ${item.hostBlockers?.length ? `<div class="notice bad">${escapeHtml(item.hostBlockers.join(' | '))}</div>` : ''}
-      <button data-use-handoff="${escapeHtml(item.handoffId)}" data-context="${escapeHtml(item.contextId)}" data-expected="${escapeHtml(item.expectedResultPath || '')}">Use</button>
-    </div>`).join('') : '<div class="item">No pending handoff</div>';
+      <button data-use-handoff="${escapeHtml(item.handoffId)}" data-context="${escapeHtml(item.contextId)}" data-expected="${escapeHtml(item.expectedResultPath || '')}">Utiliser</button>
+    </div>`).join('') : '<div class="item">Aucun handoff en attente</div>';
   document.querySelectorAll('[data-use-handoff]').forEach((btn) => btn.onclick = () => {
     $('contextId').value = btn.dataset.context || '';
     $('candidateContextId').value = btn.dataset.context || '';
@@ -968,12 +2355,12 @@ function renderArtifactInbox() {
   const candidates = state.artifactCandidates || [];
   $('artifactCandidateList').innerHTML = candidates.length ? candidates.map((candidate) => `
     <div class="item ${candidate.candidateId === $('candidateId').value ? 'selected' : ''}">
-      ${candidate.previewDataUrl ? `<img class="thumb" src="${candidate.previewDataUrl}" alt="artifact candidate" />` : ''}
+      ${candidate.previewDataUrl ? `<img class="thumb" src="${candidate.previewDataUrl}" alt="Aperçu du résultat" />` : ''}
       <div class="mono">${escapeHtml(candidate.candidateId)}</div>
       <div>${escapeHtml(candidate.status || '')} / ${escapeHtml(candidate.origin || '')}</div>
       <div class="mono">${escapeHtml((candidate.sha256 || '').slice(0, 16))}</div>
-      <button data-use-candidate="${escapeHtml(candidate.candidateId)}" data-context="${escapeHtml(candidate.contextId)}" data-path="${escapeHtml(candidate.artifactPath || '')}" data-origin="${escapeHtml(candidate.origin || '')}">Use</button>
-    </div>`).join('') : '<div class="item">No artifact candidates</div>';
+      <button data-use-candidate="${escapeHtml(candidate.candidateId)}" data-context="${escapeHtml(candidate.contextId)}" data-path="${escapeHtml(candidate.artifactPath || '')}" data-origin="${escapeHtml(candidate.origin || '')}">Utiliser</button>
+    </div>`).join('') : '<div class="item">Aucun résultat reçu</div>';
   document.querySelectorAll('[data-use-candidate]').forEach((btn) => btn.onclick = () => {
     $('candidateId').value = btn.dataset.useCandidate || '';
     $('candidateContextId').value = btn.dataset.context || '';
@@ -1040,7 +2427,7 @@ function useFinalRequest() {
     if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
     if (data.prompt) $('finalImagegenRequest').textContent = data.prompt;
     applyRequestStateFromResult(res);
-    applyBridgeStateFromResult(res);
+    applyBridgeStateFromResult(res, true);
     switchPromptView('final');
     setWorkflow(data.handoff?.status || 'context_exported');
     return res;
@@ -1048,6 +2435,7 @@ function useFinalRequest() {
 }
 
 function validatePrecision() {
+  if (!state.selectedShapeId) return setStatus('no_zone', 'warn');
   return saveState(false).then(() => callTool('validate_zone_precision', {
     ...argsBase(),
     shapeId: state.selectedShapeId,
@@ -1059,10 +2447,10 @@ function validatePrecision() {
     if (report) {
       $('precisionWarnings').className = 'notice ' + (report.blockingErrors?.length ? 'bad' : report.warnings?.length ? 'warn' : '');
       $('precisionWarnings').textContent = [
-        'Status: ' + report.status,
-        'Score: ' + report.precisionScore,
-        report.blockingErrors?.length ? 'Blocking: ' + report.blockingErrors.join(' | ') : 'Blocking: none',
-        report.warnings?.length ? 'Warnings: ' + report.warnings.join(' | ') : 'Warnings: none'
+        'État : ' + report.status,
+        'Score : ' + report.precisionScore,
+        report.blockingErrors?.length ? 'Blocages : ' + report.blockingErrors.join(' | ') : 'Aucun blocage',
+        report.warnings?.length ? 'Avertissements : ' + report.warnings.join(' | ') : 'Aucun avertissement'
       ].join('\n');
     }
     return res;
@@ -1113,20 +2501,8 @@ function refineSelected(operation) {
   });
 }
 
-function createPrecisionPreview() {
-  return saveState(false).then(() => callTool('create_precision_preview', {
-    ...argsBase(),
-    shapeId: state.selectedShapeId,
-    editorState: serializableState()
-  })).then((res) => {
-    const loaded = res?.structuredContent?.state;
-    if (loaded) applyLoadedState(loaded, false);
-    return res;
-  });
-}
-
 function loadPresets() {
-  return callTool('list_zone_presets', { ...argsBase(), kind: $('presetKind').value }).then((res) => {
+  return callTool('list_zone_presets', { ...argsBase(), kind: 'zone' }).then((res) => {
     state.presets = res?.structuredContent?.presets || [];
     renderPresetSelect();
     return res;
@@ -1134,15 +2510,19 @@ function loadPresets() {
 }
 
 function renderPresetSelect() {
-  const kind = $('presetKind').value;
-  const presets = (state.presets || []).filter((preset) => preset.kind === kind);
-  $('presetSelect').innerHTML = presets.map((preset) => `<option value="${escapeHtml(preset.presetId)}">${escapeHtml(preset.label || preset.presetId)}${preset.builtIn ? ' *' : ''}</option>`).join('');
+  const select = $('presetSelect');
+  const selectedId = select.value;
+  const presets = (state.presets || []).filter((preset) => preset.kind === 'zone');
+  select.innerHTML = '<option value="">Choisir un préréglage…</option>' + presets.map((preset) => '<option value="' + escapeHtml(preset.presetId) + '">' + escapeHtml(preset.label || preset.presetId) + (preset.builtIn ? ' · intégré' : '') + '</option>').join('');
+  if (presets.some((preset) => preset.presetId === selectedId)) select.value = selectedId;
+  updatePresetControls();
 }
 
 function applyPreset() {
+  if (!state.selectedShapeId || !$('presetSelect').value) return setStatus('preset_unavailable', 'warn');
   return callTool('apply_zone_preset', {
     ...argsBase(),
-    kind: $('presetKind').value,
+    kind: 'zone',
     presetId: $('presetSelect').value,
     shapeId: state.selectedShapeId,
     editorState: serializableState()
@@ -1155,8 +2535,9 @@ function applyPreset() {
 }
 
 function savePreset() {
-  const kind = $('presetKind').value;
-  const values = kind === 'zone' ? precisionPresetValues() : kind === 'layer' ? { layer: state.activeLayer, ...(state.layerSettings[state.activeLayer] || {}) } : kind === 'prompt' ? constraintsOverride() : { requiresHumanReview: true };
+  if (!state.selectedShapeId) return setStatus('no_zone', 'warn');
+  const kind = 'zone';
+  const values = precisionPresetValues();
   return callTool('save_zone_preset', {
     ...argsBase(),
     kind,
@@ -1170,11 +2551,36 @@ function savePreset() {
 }
 
 function deletePreset() {
-  return callTool('delete_zone_preset', { ...argsBase(), kind: $('presetKind').value, presetId: $('presetSelect').value }).then((res) => {
+  const preset = (state.presets || []).find((item) => item.kind === 'zone' && item.presetId === $('presetSelect').value);
+  if (!preset || preset.builtIn) return setStatus('preset_not_deletable', 'warn');
+  return callTool('delete_zone_preset', { ...argsBase(), kind: 'zone', presetId: preset.presetId }).then((res) => {
     state.presets = res?.structuredContent?.presets || [];
     renderPresetSelect();
     return res;
   });
+}
+
+function updatePresetControls() {
+  const selected = (state.presets || []).find((preset) => preset.kind === 'zone' && preset.presetId === $('presetSelect').value);
+  $('applyPreset').disabled = !state.selectedShapeId || !selected;
+  $('savePreset').disabled = !state.selectedShapeId;
+  $('deletePreset').disabled = !selected || selected.builtIn === true;
+}
+
+function renderSourceZoneSelect() {
+  const select = $('precisionSourceShape');
+  const selectedId = select.value;
+  const sources = allShapes().filter((shape) => shape.id !== state.selectedShapeId);
+  select.innerHTML = '<option value="">Choisir une autre zone…</option>' + sources.map((shape) => '<option value="' + escapeHtml(shape.id) + '">' + escapeHtml(shape.label || shape.kind) + ' · ' + escapeHtml(shape.layer || '') + '</option>').join('');
+  if (sources.some((shape) => shape.id === selectedId)) select.value = selectedId;
+  updateRefinementControls();
+}
+
+function updateRefinementControls() {
+  const needsSource = ['subtract', 'merge'].includes($('refineOperation').value);
+  $('precisionSourceRow').hidden = !needsSource;
+  $('precisionSourceShape').disabled = !needsSource;
+  $('applyRefinement').disabled = !state.selectedShapeId || (needsSource && !$('precisionSourceShape').value);
 }
 
 function nudgeSelected(dx, dy) {
@@ -1294,6 +2700,7 @@ function end() {
     return;
   }
   if (!state.drawing || !state.current) return;
+  const completedTool = state.activeTool;
   state.drawing = false;
   if (state.activeTool !== 'eraser' && validShape(state.current)) {
     state.current.bounds = state.current.bounds || bounds(state.current.points);
@@ -1303,6 +2710,10 @@ function end() {
     if (state.current.note) state.annotations.push({ id: state.current.id, layer: state.activeLayer, text: state.current.note, bounds: state.current.bounds });
   }
   state.current = null;
+  if (['rectangle', 'ellipse', 'lasso', 'polygon', 'precision'].includes(completedTool)) {
+    state.activeTool = 'select';
+    state.precisionMode = false;
+  }
   renderAll();
   autosave();
 }
@@ -1406,7 +2817,8 @@ function draw() {
   }
   if (state.current && state.activeTool !== 'eraser') drawShape(state.current, state.activeLayer, state.layerSettings[state.activeLayer]?.opacity ?? 1);
   drawSelected();
-  $('shapeCount').textContent = allShapes().length + ' zones';
+  const shapeTotal = allShapes().length;
+  $('shapeCount').textContent = shapeTotal + (shapeTotal > 1 ? ' zones' : ' zone');
 }
 
 function drawPrecisionGrid() {
@@ -1453,7 +2865,7 @@ function drawEmpty() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#9ca3af';
   ctx.font = '26px sans-serif';
-  ctx.fillText('Import an image, then mark edit zones.', 40, 70);
+  ctx.fillText('Importez une image, puis tracez les zones à modifier.', 40, 70);
 }
 
 function drawSideBySide() {
@@ -1491,7 +2903,7 @@ function drawShape(shape, layer, opacity) {
   if (!b) return;
   ctx.save();
   ctx.globalAlpha = opacity;
-  ctx.lineWidth = shape.size || 10;
+  ctx.lineWidth = ['brush', 'lasso', 'polygon'].includes(shape.kind) ? (shape.size || 10) : 3;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = colors[layer];
@@ -1515,7 +2927,7 @@ function drawShape(shape, layer, opacity) {
   }
   if (shape.label || shape.note) {
     ctx.globalAlpha = 1;
-    ctx.font = '16px sans-serif';
+    ctx.font = '600 16px Bahnschrift, sans-serif';
     ctx.fillStyle = colors[layer];
     ctx.fillText((shape.label || shape.note).slice(0, 34), b.x, Math.max(18, b.y - 8));
   }
@@ -1527,99 +2939,209 @@ function drawSelected() {
   if (!shape) return;
   const b = shape.bounds || bounds(shape.points || []);
   ctx.save();
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([8, 5]);
-  ctx.strokeRect(b.x, b.y, b.width, b.height);
+  const selectionColor = '#2c8d9e';
+  ctx.strokeStyle = selectionColor;
+  ctx.lineWidth = 3;
   ctx.setLineDash([]);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(b.x + b.width - 6, b.y + b.height - 6, 12, 12);
+  ctx.strokeRect(b.x, b.y, b.width, b.height);
+  ctx.fillStyle = '#081218';
+  ctx.strokeStyle = selectionColor;
+  const handle = 13;
+  for (const [x, y] of [
+    [b.x, b.y],
+    [b.x + b.width, b.y],
+    [b.x, b.y + b.height],
+    [b.x + b.width, b.y + b.height]
+  ]) {
+    ctx.fillRect(x - handle / 2, y - handle / 2, handle, handle);
+    ctx.strokeRect(x - handle / 2, y - handle / 2, handle, handle);
+  }
+
+  const label = (shape.label || 'Zone sélectionnée').slice(0, 30);
+  ctx.font = '600 18px Bahnschrift, sans-serif';
+  const labelWidth = Math.ceil(ctx.measureText(label).width) + 28;
+  const labelHeight = 40;
+  const labelX = Math.min(canvas.width - labelWidth - 10, b.x + Math.max(20, b.width * .58));
+  const labelY = Math.max(8, b.y - 74);
+  ctx.strokeStyle = selectionColor;
+  ctx.fillStyle = '#081218';
+  ctx.fillRect(labelX, labelY, labelWidth, labelHeight);
+  ctx.strokeRect(labelX, labelY, labelWidth, labelHeight);
+  ctx.beginPath();
+  ctx.moveTo(labelX + 26, labelY + labelHeight);
+  ctx.lineTo(b.x + Math.max(12, b.width * .3), b.y);
+  ctx.stroke();
+  ctx.fillStyle = '#7dd3df';
+  ctx.fillText(label, labelX + 14, labelY + 26);
   ctx.restore();
 }
 
+function drawZoneThumbnail() {
+  const preview = $('zoneThumbnail');
+  const previewCtx = preview.getContext('2d');
+  const shape = getSelectedShape();
+  previewCtx.clearRect(0, 0, preview.width, preview.height);
+  previewCtx.fillStyle = '#081218';
+  previewCtx.fillRect(0, 0, preview.width, preview.height);
+  if (!state.image || !shape) return;
+
+  const b = shape.bounds || bounds(shape.points || []);
+  if (!b || b.width <= 0 || b.height <= 0) return;
+  const sourceWidth = state.image.naturalWidth || state.image.width || canvas.width;
+  const sourceHeight = state.image.naturalHeight || state.image.height || canvas.height;
+  const padding = Math.max(8, Math.round(Math.max(b.width, b.height) * .18));
+  const sx = Math.max(0, b.x - padding);
+  const sy = Math.max(0, b.y - padding);
+  const sw = Math.min(sourceWidth - sx, b.width + padding * 2);
+  const sh = Math.min(sourceHeight - sy, b.height + padding * 2);
+  const scale = Math.max(preview.width / Math.max(1, sw), preview.height / Math.max(1, sh));
+  const dw = sw * scale;
+  const dh = sh * scale;
+  const dx = (preview.width - dw) / 2;
+  const dy = (preview.height - dh) / 2;
+  previewCtx.drawImage(state.image, sx, sy, sw, sh, dx, dy, dw, dh);
+  previewCtx.strokeStyle = '#2c8d9e';
+  previewCtx.lineWidth = 3;
+  previewCtx.strokeRect(1.5, 1.5, preview.width - 3, preview.height - 3);
+}
+
+function renderEditChrome() {
+  const shape = getSelectedShape();
+  document.body.classList.toggle('has-image', Boolean(state.image));
+  const pathName = $('baseImagePath').value.trim().split(/[\\/]/).filter(Boolean).pop();
+  $('imageFileName').textContent = state.imageName || pathName || 'Aucune image';
+  $('zoneSummaryBar').hidden = !shape;
+  if (shape) drawZoneThumbnail();
+}
+
 function renderAll() {
+  renderEditorView();
+  document.querySelectorAll('[data-tool]').forEach((button) => {
+    button.classList.toggle('active', button.dataset.tool === state.activeTool);
+  });
+  $('layerPicker').value = state.activeLayer;
+  updateToolOptions();
   renderLayerSettings();
   renderZones();
   renderReferences();
   renderVersions(state.versions);
+  updateReviewControls();
   renderPromptPanel();
   renderArtifactInbox();
   fillShapeEditor();
   fillPrecisionEditor();
   renderPresetSelect();
+  renderSourceZoneSelect();
+  updateZoneControlAvailability();
+  updateGenerationControls();
   draw();
-  $('mode').textContent = state.activeTool + ' / ' + state.activeLayer;
-  $('selectedInfo').textContent = state.selectedShapeId || 'no selection';
+  renderEditChrome();
+}
+
+function updateToolOptions() {
+  const brushTools = new Set(['brush', 'eraser']);
+  const annotationTools = new Set(['brush', 'lasso', 'polygon', 'rectangle', 'ellipse', 'precision']);
+  $('brushSizeControl').hidden = !brushTools.has(state.activeTool);
+  $('markNoteControl').hidden = !annotationTools.has(state.activeTool);
 }
 
 function renderLayerSettings() {
-  $('layerSettings').innerHTML = layerNames.map((layer) => {
-    const s = state.layerSettings[layer] || { visible: true, locked: false, opacity: 1 };
-    return `<div class="layer-row">
-      <span>${layer}</span>
-      <button data-vis="${layer}">${s.visible === false ? 'show' : 'hide'}</button>
-      <button data-lock="${layer}">${s.locked ? 'unlock' : 'lock'}</button>
-      <input data-opacity="${layer}" type="range" min="5" max="100" value="${Math.round((s.opacity ?? 1) * 100)}" />
-    </div>`;
-  }).join('');
-  document.querySelectorAll('[data-vis]').forEach((btn) => btn.onclick = () => {
-    const layer = btn.dataset.vis;
-    state.layerSettings[layer].visible = state.layerSettings[layer].visible === false;
-    renderAll();
-    autosave();
-  });
-  document.querySelectorAll('[data-lock]').forEach((btn) => btn.onclick = () => {
-    const layer = btn.dataset.lock;
-    state.layerSettings[layer].locked = !state.layerSettings[layer].locked;
-    renderAll();
-    autosave();
-  });
-  document.querySelectorAll('[data-opacity]').forEach((input) => input.oninput = () => {
-    state.layerSettings[input.dataset.opacity].opacity = Number(input.value) / 100;
+  const layer = state.activeLayer;
+  const settings = state.layerSettings[layer] || (state.layerSettings[layer] = { visible: true, locked: false, opacity: 1 });
+  $('layerSettings').innerHTML =
+    '<div class="layer-current">' +
+      '<label class="check-row"><input data-layer-visible type="checkbox"' + (settings.visible === false ? '' : ' checked') + ' /> Afficher ce calque</label>' +
+      '<label class="check-row"><input data-layer-locked type="checkbox"' + (settings.locked ? ' checked' : '') + ' /> Verrouiller ce calque</label>' +
+      '<label>Opacité <input data-layer-opacity type="range" min="5" max="100" value="' + Math.round((settings.opacity ?? 1) * 100) + '" /></label>' +
+    '</div>';
+  document.querySelector('[data-layer-visible]').onchange = (event) => {
+    settings.visible = event.target.checked;
     draw();
-  });
+    autosave();
+  };
+  document.querySelector('[data-layer-locked]').onchange = (event) => {
+    settings.locked = event.target.checked;
+    updateZoneControlAvailability();
+    autosave();
+  };
+  document.querySelector('[data-layer-opacity]').oninput = (event) => {
+    settings.opacity = Number(event.target.value) / 100;
+    draw();
+  };
 }
 
 function renderZones() {
   const shapes = allShapes();
+  $('zonePicker').hidden = shapes.length === 0;
   if (!shapes.length) {
-    $('zoneList').innerHTML = '<div class="item">No zones</div>';
+    $('zoneList').innerHTML = '';
     return;
   }
-  $('zoneList').innerHTML = shapes.map((shape) => `
-    <div class="item ${shape.id === state.selectedShapeId ? 'selected' : ''}" data-zone="${escapeHtml(shape.id)}">
-      <div><strong>${escapeHtml(shape.label || shape.kind)}</strong> <span>${escapeHtml(shape.layer)}</span></div>
-      <div>${escapeHtml(shape.priority || 'medium')} / ${escapeHtml(shape.constraintType || shape.layer)}</div>
-      <div>${escapeHtml(shape.note || '')}</div>
-      <div class="row">
-        <button data-select-zone="${escapeHtml(shape.id)}">Select</button>
-        <button data-toggle-zone="${escapeHtml(shape.id)}">${shape.visible === false ? 'Show' : 'Hide'}</button>
-      </div>
-    </div>`).join('');
-  document.querySelectorAll('[data-select-zone]').forEach((btn) => btn.onclick = () => {
-    state.selectedShapeId = btn.dataset.selectZone;
+  $('zoneList').innerHTML = '<option value="">Sélectionner…</option>' + shapes.map((shape, index) =>
+    '<option value="' + escapeHtml(shape.id) + '">' + escapeHtml(shape.label || ('Zone ' + (index + 1))) + ' · ' + escapeHtml(layerLabels[shape.layer] || shape.layer) + '</option>'
+  ).join('');
+  $('zoneList').value = state.selectedShapeId;
+  $('zoneList').onchange = () => {
+    state.selectedShapeId = $('zoneList').value;
     renderAll();
-  });
-  document.querySelectorAll('[data-toggle-zone]').forEach((btn) => btn.onclick = () => {
-    const shape = getShapeById(btn.dataset.toggleZone);
-    if (shape) shape.visible = shape.visible === false;
-    renderAll();
-    autosave();
-  });
+  };
 }
 
 function fillShapeEditor() {
   const shape = getSelectedShape();
   $('shapeLabel').value = shape?.label || '';
-  $('shapeNote').value = shape?.note || '';
+  $('shapeNote').value = shape?.note || state.userRequest || $('userRequest').value || '';
   $('shapeConstraint').value = shape?.constraintType || shape?.layer || 'correct';
   $('shapePriority').value = shape?.priority || 'medium';
+}
+
+function updateZoneControlAvailability() {
+  const hasSelection = Boolean(getSelectedShape());
+  const hasImage = Boolean(state.image);
+  $('zoneSelectionHint').hidden = hasSelection;
+  $('zoneSelectionHint').textContent = hasImage
+    ? 'Tracez une zone directement sur l’image.'
+    : 'Importez une image pour commencer.';
+  $('zoneEditor').hidden = !hasSelection;
+  $('zoneSummaryBar').hidden = !hasSelection;
+  $('zoneEditor').disabled = !hasSelection;
+  $('precisionPanel').hidden = !hasSelection;
+  $('precisionEditor').disabled = !hasSelection;
+  if (!hasSelection) $('precisionPanel').open = false;
+
+  const drawingTools = new Set(['brush', 'lasso', 'polygon', 'rectangle', 'ellipse', 'precision', 'eraser']);
+  document.querySelectorAll('[data-tool]').forEach((button) => {
+    button.disabled = drawingTools.has(button.dataset.tool) && !hasImage;
+  });
+  $('undo').disabled = state.undo.length === 0;
+  $('redo').disabled = state.redo.length === 0;
+  updatePresetControls();
+  updateRefinementControls();
+}
+
+function updateGenerationControls() {
+  const hasImage = Boolean(state.image || $('baseImagePath').value.trim());
+  const hasRequest = Boolean(($('shapeNote').value || $('promptOriginal').value || $('userRequest').value).trim());
+  $('createRequest').disabled = !hasImage || !hasRequest;
+  const handoff = activeHandoff();
+  const hostBlocked = handoff?.status === 'host_blocked' || Boolean(handoff?.hostBlockers?.length);
+  $('launchNativeImageGen').disabled = !hasImage || !hasRequest || hostBlocked;
+}
+
+function updateReviewControls() {
+  const hasVersions = (state.versions || []).length > 0;
+  const hasPreview = Boolean(state.resultImage);
+  $('reviewEmpty').hidden = hasVersions || hasPreview;
+  $('reviewControls').hidden = !hasPreview;
+  $('versionList').hidden = !hasVersions;
+  $('compareVersion').disabled = !state.activeVersionId;
+  $('retryVersion').disabled = !state.activeVersionId;
 }
 
 function renderReferences() {
   const refs = (state.references || []).filter((ref) => ref.removed !== true);
   if (!refs.length) {
-    $('referenceList').innerHTML = '<div class="item">No references</div>';
+    $('referenceList').innerHTML = '<div class="item">Aucune référence</div>';
     return;
   }
   $('referenceList').innerHTML = refs.map((ref) => `
@@ -1627,7 +3149,7 @@ function renderReferences() {
       ${ref.previewDataUrl ? `<img class="thumb" src="${ref.previewDataUrl}" alt="reference" />` : ''}
       <div>${escapeHtml(ref.weight || 'medium')} / ${escapeHtml(ref.note || '')}</div>
       <div class="mono">${escapeHtml((ref.sha256 || '').slice(0, 16))}</div>
-      <button class="bad" data-remove-ref="${escapeHtml(ref.referenceId)}">Remove</button>
+      <button class="bad" data-remove-ref="${escapeHtml(ref.referenceId)}">Supprimer</button>
     </div>`).join('');
   document.querySelectorAll('[data-remove-ref]').forEach((btn) => btn.onclick = () => callTool('remove_reference_image', { ...argsBase(), referenceId: btn.dataset.removeRef }).then((res) => {
     state.references = res?.structuredContent?.references || [];
@@ -1639,7 +3161,7 @@ function renderReferences() {
 function renderVersions(list) {
   const versions = list || [];
   if (!versions.length) {
-    $('versionList').innerHTML = '<div class="item">No versions</div>';
+    $('versionList').innerHTML = '<div class="item">Aucun résultat</div>';
     return;
   }
   $('versionList').innerHTML = versions.map((version) => `
@@ -1648,9 +3170,9 @@ function renderVersions(list) {
       <div>${escapeHtml(version.status || '')} / ${escapeHtml(version.invariantCheck?.status || '')}</div>
       <div class="mono">${escapeHtml((version.resultSha256 || '').slice(0, 16))}</div>
       <div class="row">
-        <button data-view-version="${escapeHtml(version.versionId)}">View</button>
-        <button data-commit-version="${escapeHtml(version.versionId)}">Accept</button>
-        <button class="bad" data-reject-version="${escapeHtml(version.versionId)}">Reject</button>
+        <button data-view-version="${escapeHtml(version.versionId)}">Afficher</button>
+        <button data-commit-version="${escapeHtml(version.versionId)}">Accepter</button>
+        <button class="bad" data-reject-version="${escapeHtml(version.versionId)}">Rejeter</button>
       </div>
     </div>`).join('');
   document.querySelectorAll('[data-view-version]').forEach((btn) => btn.onclick = () => showVersion(versions.find((v) => v.versionId === btn.dataset.viewVersion)));
@@ -1683,6 +3205,7 @@ function zoomBy(factor) {
 let autosaveTimer = null;
 function autosave() {
   clearTimeout(autosaveTimer);
+  persistWidgetSnapshot();
   autosaveTimer = setTimeout(() => saveState(false), 350);
 }
 
@@ -1697,10 +3220,19 @@ function saveState(verbose = true) {
 }
 
 function applyLoadedState(loaded, loadImagePreview = true) {
+  if (loaded.workspaceRoot) $('workspaceRoot').value = loaded.workspaceRoot;
   $('sessionId').value = loaded.sessionId || 'default';
   $('baseImagePath').value = loaded.baseImagePath || '';
   $('userRequest').value = loaded.userRequest || '';
   $('promptOriginal').value = loaded.userRequest || '';
+  state.schemaVersion = loaded.schemaVersion || state.schemaVersion;
+  state.stateRevision = loaded.stateRevision || 0;
+  state.sessionId = loaded.sessionId || 'default';
+  state.baseImagePath = loaded.baseImagePath || '';
+  state.imageInfo = loaded.imageInfo || null;
+  state.userRequest = loaded.userRequest || '';
+  state.activeTool = loaded.activeTool || state.activeTool;
+  state.activeLayer = loaded.activeLayer || state.activeLayer;
   state.layers = loaded.layers || state.layers;
   for (const layer of layerNames) state.layers[layer] = (state.layers[layer] || []).map(ensurePrecisionShape);
   state.layerSettings = loaded.layerSettings || state.layerSettings;
@@ -1726,19 +3258,30 @@ function applyLoadedState(loaded, loadImagePreview = true) {
   state.pendingGenerations = loaded.pendingGenerations || [];
   state.artifactCandidates = loaded.artifactCandidates || [];
   state.handoffEvents = loaded.handoffEvents || [];
-  state.precisionMode = loaded.precisionMode === true;
-  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
+  const currentHandoff = latest(state.handoffs);
+  if (currentHandoff?.contextId) {
+    $('contextId').value = currentHandoff.contextId;
+    $('candidateContextId').value = currentHandoff.contextId;
+  }
+  if (currentHandoff?.expectedResultPath) {
+    $('artifactPath').value = currentHandoff.expectedResultPath;
+    $('candidateArtifactPath').value = currentHandoff.expectedResultPath;
+  }
+  state.precisionMode = state.activeTool === 'precision';
   state.activeInputPackageId = loaded.activeInputPackageId || '';
   state.activePromptDraftId = loaded.activePromptDraftId || '';
   state.selectedShapeId = loaded.selectedShapeId || '';
+  state.activeVersionId = loaded.activeVersionId || state.activeVersionId;
   if (loadImagePreview && loaded.baseImageDataUrl) loadBaseImageFromDataUrl(loaded.baseImageDataUrl, 'state_loaded');
   renderAll();
+  persistWidgetSnapshot();
 }
 
 function loadVersions() {
   return callTool('list_versions', argsBase()).then((res) => {
     state.versions = res?.structuredContent?.versions || [];
     renderVersions(state.versions);
+    updateReviewControls();
     return state.versions;
   });
 }
@@ -1755,24 +3298,73 @@ function recordHostCapabilitiesFromWidget() {
   }).then(applyBridgeStateFromResult);
 }
 
-function createHandoffFromWidget() {
-  return saveState(false).then(() => callTool('create_codex_handoff', {
-    ...argsBase(),
-    contextId: $('contextId').value.trim(),
-    hostCapabilities: collectHostCapabilities()
-  })).then(applyBridgeStateFromResult);
+function activeHandoff() {
+  const handoffs = state.handoffs || [];
+  const contextId = $('contextId').value.trim();
+  return handoffs.find((item) => item.contextId === contextId) || handoffs[handoffs.length - 1] || null;
 }
 
-function recordNativeImageGenRequested() {
-  const handoffs = state.handoffs || [];
-  const handoff = handoffs.find((item) => item.contextId === $('contextId').value.trim()) || handoffs[handoffs.length - 1];
-  return callTool('record_handoff_event', {
+function syncSelectedShapeDraft() {
+  const shape = getSelectedShape();
+  const note = $('shapeNote').value.trim();
+  if (shape) {
+    shape.label = $('shapeLabel').value.trim();
+    shape.note = note;
+    shape.constraintType = $('shapeConstraint').value;
+    shape.priority = $('shapePriority').value;
+    ensurePrecisionShape(shape);
+  }
+  if (note) {
+    $('userRequest').value = note;
+    $('promptOriginal').value = note;
+    state.userRequest = note;
+  }
+}
+
+function prepareGenerationRequestFromWidget() {
+  syncSelectedShapeDraft();
+  return saveState(false).then(() => callTool('create_generation_request', {
     ...argsBase(),
-    handoffId: handoff?.handoffId || '',
-    contextId: $('contextId').value.trim(),
+    baseImagePath: $('baseImagePath').value.trim(),
+    userRequest: $('shapeNote').value.trim() || $('userRequest').value.trim(),
+    editorState: serializableState()
+  })).then((res) => {
+    const data = res?.structuredContent || {};
+    if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
+    if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
+    applyBridgeStateFromResult(res, true);
+    setWorkflow(data.handoff?.status || 'context_exported');
+    return res;
+  });
+}
+
+async function launchNativeImageGen() {
+  syncSelectedShapeDraft();
+  let handoff = activeHandoff();
+  if (!handoff?.imageGenPrompt) {
+    await prepareGenerationRequestFromWidget();
+    handoff = activeHandoff();
+  }
+  if (!handoff?.imageGenPrompt) {
+    throw new Error('La demande Image Gen n’a pas pu être préparée.');
+  }
+  if (handoff.status === 'host_blocked' || handoff.hostBlockers?.length) {
+    throw new Error('Le handoff est bloqué par l’hôte : ' + (handoff.hostBlockers || []).join(' | '));
+  }
+
+  setBridgeStatus('Envoi à Image Gen…', 'warn');
+  await sendFollowUpMessage(handoff.imageGenPrompt);
+  const result = await callTool('record_handoff_event', {
+    ...argsBase(),
+    handoffId: handoff.handoffId,
+    contextId: handoff.contextId,
     status: 'codex_imagegen_requested',
-    message: 'Codex native Image Gen request was triggered from the conversation.'
-  }).then(applyBridgeStateFromResult);
+    message: 'The exact native Image Gen handoff was sent to the Codex conversation.'
+  });
+  applyBridgeStateFromResult(result);
+  setBridgeStatus('Connecté', 'ok');
+  switchEditorView('review');
+  return result;
 }
 
 function registerCandidateFromWidget() {
@@ -1801,30 +3393,64 @@ function escapeHtml(value) {
 }
 
 $('file').addEventListener('change', (evt) => evt.target.files?.[0] && loadImageFromFile(evt.target.files[0], 'target'));
+$('importButton').onclick = () => $('file').click();
 $('referenceFile').addEventListener('change', (evt) => evt.target.files?.[0] && loadImageFromFile(evt.target.files[0], 'reference'));
-$('userRequest').addEventListener('input', () => { if (!$('promptOriginal').value.trim()) $('promptOriginal').value = $('userRequest').value; });
-$('promptOriginal').addEventListener('input', () => { $('userRequest').value = $('promptOriginal').value; state.userRequest = $('promptOriginal').value.trim(); });
+$('userRequest').addEventListener('input', () => {
+  if (!$('promptOriginal').value.trim()) $('promptOriginal').value = $('userRequest').value;
+  updateGenerationControls();
+});
+$('promptOriginal').addEventListener('input', () => {
+  $('userRequest').value = $('promptOriginal').value;
+  state.userRequest = $('promptOriginal').value.trim();
+  updateGenerationControls();
+});
+$('shapeNote').addEventListener('input', () => {
+  const note = $('shapeNote').value;
+  $('userRequest').value = note;
+  $('promptOriginal').value = note;
+  state.userRequest = note.trim();
+  updateGenerationControls();
+});
+['shapeLabel', 'shapeNote', 'shapeConstraint', 'shapePriority'].forEach((id) => {
+  $(id).addEventListener('change', () => $('applyShape').click());
+});
+$('baseImagePath').addEventListener('input', updateGenerationControls);
 canvas.addEventListener('pointerdown', begin);
 canvas.addEventListener('pointermove', move);
 canvas.addEventListener('pointerup', end);
 canvas.addEventListener('pointerleave', end);
-canvas.addEventListener('wheel', (evt) => { evt.preventDefault(); zoomBy(evt.deltaY < 0 ? 1.08 : 0.92); }, { passive: false });
+canvas.addEventListener('wheel', (evt) => {
+  const compactLayout = window.matchMedia('(max-width: 1120px)').matches;
+  if (compactLayout && !evt.ctrlKey && !evt.metaKey) return;
+  evt.preventDefault();
+  zoomBy(evt.deltaY < 0 ? 1.08 : 0.92);
+}, { passive: false });
 $('reviewSlider').addEventListener('input', draw);
 
 document.querySelectorAll('[data-tool]').forEach((btn) => btn.onclick = () => {
   state.activeTool = btn.dataset.tool;
-  state.precisionMode = state.activeTool === 'precision' ? true : state.precisionMode;
-  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
+  state.precisionMode = state.activeTool === 'precision';
   document.querySelectorAll('[data-tool]').forEach((item) => item.classList.toggle('active', item === btn));
   renderAll();
 });
-document.querySelectorAll('[data-layer]').forEach((btn) => btn.onclick = () => {
-  state.activeLayer = btn.dataset.layer;
-  document.querySelectorAll('[data-layer]').forEach((item) => item.classList.toggle('active', item === btn));
+$('layerPicker').onchange = () => {
+  state.activeLayer = $('layerPicker').value;
   renderAll();
+};
+document.querySelectorAll('[data-editor-view-button]').forEach((button) => {
+  button.onclick = () => switchEditorView(button.dataset.editorViewButton);
 });
 document.querySelectorAll('[data-prompt-view]').forEach((btn) => btn.onclick = () => switchPromptView(btn.dataset.promptView));
-$('presetKind').onchange = () => loadPresets();
+$('presetSelect').onchange = updatePresetControls;
+$('refineOperation').onchange = updateRefinementControls;
+$('precisionSourceShape').onchange = updateRefinementControls;
+$('precisionPanel').addEventListener('toggle', () => {
+  if (!$('precisionPanel').open || (state.presets || []).some((preset) => preset.kind === 'zone')) return;
+  loadPresets().catch((error) => {
+    $('output').textContent = error?.stack || String(error);
+    setStatus('preset_load_failed', 'warn');
+  });
+});
 $('precisionSubtype').onchange = fillPrecisionEditor;
 $('gridSize').oninput = draw;
 $('snapGrid').onchange = draw;
@@ -1843,16 +3469,7 @@ $('redo').onclick = () => { if (state.redo.length) { state.undo.push(JSON.string
 $('fit').onclick = () => { state.zoom = 1; state.panX = 0; state.panY = 0; applyTransform(); draw(); };
 $('zoomIn').onclick = () => zoomBy(1.25);
 $('zoomOut').onclick = () => zoomBy(0.8);
-$('saveState').onclick = () => saveState(true);
 $('loadState').onclick = () => callTool('get_editor_state', argsBase()).then((res) => applyLoadedState(res?.structuredContent?.state || {}, true));
-$('clearLayer').onclick = () => {
-  if (state.layerSettings[state.activeLayer]?.locked) return setStatus('layer_locked', 'warn');
-  pushUndo();
-  state.layers[state.activeLayer] = [];
-  state.selectedShapeId = '';
-  renderAll();
-  autosave();
-};
 $('duplicateShape').onclick = () => {
   const shape = getSelectedShape();
   if (!shape) return;
@@ -1917,53 +3534,25 @@ $('addReference').onclick = () => {
 };
 $('buildRequest').onclick = () => buildRequest();
 $('useFinalRequest').onclick = () => useFinalRequest();
-$('precisionModeToggle').onclick = () => {
-  state.precisionMode = !state.precisionMode;
-  $('precisionModeToggle').classList.toggle('active', state.precisionMode);
-  state.activeTool = state.precisionMode ? 'precision' : state.activeTool;
-  draw();
-};
 $('validatePrecision').onclick = validatePrecision;
-$('precisionPreview').onclick = createPrecisionPreview;
 $('setGeometry').onclick = setGeometry;
-$('refineContract').onclick = () => refineSelected('contract');
-$('refineDilate').onclick = () => refineSelected('dilate');
-$('refineSimplify').onclick = () => refineSelected('simplify');
-$('refineSubtract').onclick = () => refineSelected('subtract');
-$('refineMerge').onclick = () => refineSelected('merge');
-$('duplicateProtect').onclick = () => refineSelected('duplicate_as_protect');
-$('loadPresets').onclick = loadPresets;
+$('applyRefinement').onclick = () => refineSelected($('refineOperation').value);
 $('applyPreset').onclick = applyPreset;
 $('savePreset').onclick = savePreset;
 $('deletePreset').onclick = deletePreset;
-$('createRequest').onclick = () => saveState(false).then(() => callTool('create_generation_request', {
-  ...argsBase(),
-  baseImagePath: $('baseImagePath').value.trim(),
-  userRequest: $('userRequest').value.trim(),
-  editorState: serializableState()
-})).then((res) => {
-  const data = res?.structuredContent || {};
-  if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
-  if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
-  applyBridgeStateFromResult(res);
-  setWorkflow(data.handoff?.status || 'context_exported');
-  return res;
+$('createRequest').onclick = () => prepareGenerationRequestFromWidget().catch((error) => {
+  $('output').textContent = error?.stack || String(error);
+  setStatus('imagegen_request_failed', 'bad');
 });
-$('createCodexHandoff').onclick = createHandoffFromWidget;
-$('recordNativeImageGenRequested').onclick = recordNativeImageGenRequested;
+$('launchNativeImageGen').onclick = () => launchNativeImageGen().catch((error) => {
+  $('output').textContent = error?.stack || String(error);
+  setStatus('native_imagegen_unavailable', 'bad');
+});
 $('recordHostCapabilities').onclick = recordHostCapabilitiesFromWidget;
 $('listPendingGenerations').onclick = refreshPendingGenerations;
 $('registerArtifactCandidate').onclick = registerCandidateFromWidget;
 $('acceptArtifactCandidate').onclick = () => resolveCandidateFromWidget('accept');
 $('rejectArtifactCandidate').onclick = () => resolveCandidateFromWidget('reject');
-$('saveResult').onclick = () => callTool('save_generated_result', { ...argsBase(), artifactPath: $('artifactPath').value.trim(), contextId: $('contextId').value.trim(), origin: 'codex-image-gen' }).then((res) => {
-  const version = res?.structuredContent?.version;
-  state.versions = res?.structuredContent?.versions || state.versions;
-  applyBridgeStateFromResult(res);
-  renderVersions(state.versions);
-  if (version) showVersion(version);
-});
-$('versions').onclick = loadVersions;
 $('viewBefore').onclick = () => { state.displayMode = 'before'; draw(); };
 $('viewAfter').onclick = () => { state.displayMode = 'after'; draw(); };
 $('viewSplit').onclick = () => { state.displayMode = 'split'; draw(); };
@@ -1986,13 +3575,42 @@ $('retryVersion').onclick = () => {
     const data = res?.structuredContent || {};
     if (data.packet?.contextId) $('contextId').value = data.packet.contextId;
     if (data.expectedResultPath) $('artifactPath').value = data.expectedResultPath;
-    applyBridgeStateFromResult(res);
+    applyBridgeStateFromResult(res, true);
     setWorkflow(data.handoff?.status || 'context_exported');
   });
 };
 
-renderAll();
-applyTransform();
+$('conversationForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const button = $('sendConversation');
+  if (button.disabled) return;
+  button.disabled = true;
+  try {
+    await submitConversationPrompt($('conversationPrompt').value);
+  } finally {
+    button.disabled = false;
+  }
+});
+$('fullscreenMode').onclick = () => requestHostDisplayMode('fullscreen').catch((error) => {
+  $('output').textContent = error?.stack || String(error);
+  setStatus('fullscreen_unavailable', 'warn');
+});
+$('inlineMode').onclick = () => requestHostDisplayMode('inline').catch((error) => {
+  $('output').textContent = error?.stack || String(error);
+  setStatus('inline_mode_unavailable', 'warn');
+});
+
+function initializeWidget() {
+  applyTheme(window.openai?.theme || 'dark');
+  restoreWidgetSnapshot(window.openai?.widgetState || {});
+  applyHostToolInput(window.openai?.toolInput || {});
+  if (window.openai?.toolOutput) hydrateFromHostResult(window.openai.toolOutput);
+  renderAll();
+  applyTransform();
+  bridgeInitialization = initializeMcpAppsBridge();
+}
+
+initializeWidget();
 </script>
 </body>
 </html>

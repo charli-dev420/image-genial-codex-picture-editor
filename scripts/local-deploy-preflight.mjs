@@ -98,12 +98,16 @@ export function inspectPluginRoot(pluginRoot) {
     if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(String(manifest.version || ""))) {
       errors.push("Manifest version is not valid semver.");
     }
-    for (const field of ["skills", "mcpServers", "apps"]) {
+    for (const field of ["skills", "mcpServers"]) {
       if (!isSafeRelativePath(root, manifest[field])) {
         errors.push(`Manifest ${field} must be a safe ./ relative path.`);
         continue;
       }
       if (!existsSync(path.resolve(root, manifest[field]))) errors.push(`Manifest ${field} target is missing.`);
+    }
+    if (manifest.apps !== undefined) {
+      if (!isSafeRelativePath(root, manifest.apps)) errors.push("Manifest apps must be a safe ./ relative path when present.");
+      else if (!existsSync(path.resolve(root, manifest.apps))) errors.push("Manifest apps target is missing.");
     }
   }
 
@@ -134,7 +138,8 @@ function marketplaceEntryMatches(entry) {
 
 export function inspectMarketplace(marketplacePath, checkoutPath) {
   const resolvedMarketplacePath = path.resolve(marketplacePath);
-  const expectedCheckoutPath = path.resolve(path.dirname(resolvedMarketplacePath), MARKETPLACE_SOURCE_PATH);
+  const marketplaceRoot = path.resolve(path.dirname(resolvedMarketplacePath), "..", "..");
+  const expectedCheckoutPath = path.resolve(marketplaceRoot, MARKETPLACE_SOURCE_PATH);
   const errors = [];
   let marketplace = null;
 
@@ -271,7 +276,7 @@ export function inspectCodexHost(commandRunner = runSystemCommand) {
 
 export function createPreflightReport({
   sourceRoot = sourceRootDefault,
-  checkoutPath = path.join(os.homedir(), ".agents", "plugins", "plugins", PLUGIN_NAME),
+  checkoutPath = path.join(os.homedir(), "plugins", PLUGIN_NAME),
   marketplacePath = path.join(os.homedir(), ".agents", "plugins", "marketplace.json"),
   nodeVersion = process.versions.node,
   allowLocalCachebuster = false,
@@ -349,7 +354,7 @@ function main() {
     printHelp();
     return;
   }
-  const checkoutPath = options.checkoutPath || path.join(os.homedir(), ".agents", "plugins", "plugins", PLUGIN_NAME);
+  const checkoutPath = options.checkoutPath || path.join(os.homedir(), "plugins", PLUGIN_NAME);
   const marketplacePath = options.marketplacePath || path.join(os.homedir(), ".agents", "plugins", "marketplace.json");
   if (options.writeMarketplace) writeMarketplaceEntry(marketplacePath, checkoutPath);
   const report = createPreflightReport({ ...options, checkoutPath, marketplacePath });

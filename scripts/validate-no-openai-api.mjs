@@ -20,7 +20,12 @@ const banned = [
   "window.location",
   "document.location"
 ];
-const skipFiles = new Set(["validate-no-openai-api.mjs", "widget-contract.mjs"]);
+const skipFiles = new Set([
+  "validate-no-openai-api.mjs",
+  "widget-contract.mjs",
+  // Local test host only: it embeds the production widget and proxies JSON-RPC to localhost.
+  "widget-host-harness.mjs"
+]);
 
 const files = [];
 for (const dir of runtimeDirs) walk(path.join(root, dir));

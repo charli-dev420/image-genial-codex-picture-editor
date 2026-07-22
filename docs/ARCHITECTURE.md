@@ -1,6 +1,6 @@
 # Architecture
 
-Image Genial Codex Picture Editor is split into three runtime layers.
+Codex Image Editor is split into three runtime layers.
 
 ## 1. Codex Conversation Layer
 
@@ -10,7 +10,7 @@ The plugin never replaces the native image generation path.
 
 ## 2. Inline Widget
 
-`mcp/image-editor-widget.html` is a single inline MCP app. It owns user interaction:
+`mcp/image-editor-widget.html` is a single inline MCP app organized around Zone, Demande, and Envoi. It owns user interaction:
 
 - importing or associating images;
 - drawing and refining zones;
@@ -20,7 +20,9 @@ The plugin never replaces the native image generation path.
 - registering artifact candidates;
 - reviewing versions.
 
-The widget persists state only through `window.openai.callTool`. It does not perform network calls.
+The widget calls MCP tools through the standard MCP Apps JSON-RPC bridge (`ui/initialize`, `tools/call`, and tool notifications). `window.openai` remains an additive compatibility path for Codex hosts that expose it. The widget itself performs no direct image or external network API calls.
+
+Its conversation dock sends follow-up text and the exact native Image Gen handoff through `ui/message`. This message returns control to Codex; the widget never pretends to invoke Image Gen by itself.
 
 ## 3. Local MCP Server
 
@@ -36,18 +38,24 @@ The widget persists state only through `window.openai.callTool`. It does not per
 
 The MCP server writes only under the selected workspace root. It rejects generated result registration unless the declared origin is exactly `codex-image-gen`.
 
+## Privacy Boundary
+
+Operational paths are required for `view_image`, persistence, and artifact registration, but they stay inside local MCP state and handoff packets. The primary interface renders the image basename, not the absolute source path. Workspace and artifact paths are available only inside collapsed technical sections for local troubleshooting. No editor state, prompt, image, or path is sent to an external service by the plugin.
+
+Repository captures are generated from the widget surface, stripped of host chrome and image metadata, and checked by `npm run privacy:check`.
+
 ## Data Flow
 
-1. User opens the inline editor in the Codex conversation.
-2. Widget saves editor state through `update_editor_state`.
-3. Request Builder ingests prompt text and images.
-4. MCP creates a normalized `$imagegen` context packet.
-5. MCP creates a handoff with `view_image` instructions and expected artifact path.
-6. Codex runs native `image_gen`.
-7. User or host saves the real artifact into the workspace.
+1. **Zone:** the user associates any target image and draws one or more edit regions.
+2. The widget saves state through `update_editor_state`.
+3. **Demande:** the user confirms the change and optional references.
+4. MCP creates a normalized `$imagegen` context packet and a handoff with `view_image` instructions.
+5. **Envoi:** the widget sends the exact handoff back to the current conversation through `ui/message`.
+6. Codex follows the `view_image` instructions and runs native `image_gen`.
+7. Codex or the host saves the real artifact into the workspace.
 8. Artifact Bridge registers the artifact candidate.
 9. Acceptance delegates to `save_generated_result`.
-10. Review compares the version and prepares retry prompts if needed.
+10. Review compares the version and prepares a narrower retry when needed.
 
 ## Host Dependency
 

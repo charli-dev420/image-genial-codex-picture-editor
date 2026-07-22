@@ -15,12 +15,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const tmp = mkdtempSync(path.join(os.tmpdir(), "codex-image-editor-deploy-"));
 const sourceRoot = path.join(tmp, "source");
-const marketplaceRoot = path.join(tmp, "marketplace");
-const checkoutPath = path.join(marketplaceRoot, "plugins", PLUGIN_NAME);
+const homeRoot = path.join(tmp, "home");
+const marketplaceRoot = path.join(homeRoot, ".agents", "plugins");
+const checkoutPath = path.join(homeRoot, "plugins", PLUGIN_NAME);
 const marketplacePath = path.join(marketplaceRoot, "marketplace.json");
 
 writePluginFixture(sourceRoot, "0.1.0");
 writePluginFixture(checkoutPath, "0.1.0");
+mkdirSync(marketplaceRoot, { recursive: true });
 writeFileSync(marketplacePath, JSON.stringify({
   name: "personal",
   interface: { displayName: "Personal" },
@@ -96,7 +98,7 @@ const unsupportedNode = createPreflightReport({
 assert.equal(unsupportedNode.localReady, false);
 
 const deploymentScript = readFileSync(path.join(root, "scripts", "deploy-local.ps1"), "utf8");
-for (const token of ["[switch]$Apply", "Split-Path -Parent $PSScriptRoot", "update_plugin_cachebuster.py", "--write-marketplace", "codex://plugins/"]) {
+for (const token of ["[switch]$Apply", "Split-Path -Parent $PSScriptRoot", "plugins\\codex-image-editor", "update_plugin_cachebuster.py", "--write-marketplace", "codex://plugins/"]) {
   assert.ok(deploymentScript.includes(token), `deployment script missing ${token}`);
 }
 for (const banned of ["OPENAI" + "_API_KEY", "openai.images." + "generate", "openai.images." + "edit", "api.openai.com" + "/v1/images"]) {
@@ -113,7 +115,6 @@ function fixtureManifest(version) {
     author: { name: "fixture" },
     skills: "./skills/",
     mcpServers: "./.mcp.json",
-    apps: "./.app.json",
     interface: { displayName: "Fixture", shortDescription: "Fixture" }
   };
 }
@@ -123,7 +124,6 @@ function writePluginFixture(pluginRoot, version) {
   mkdirSync(path.join(pluginRoot, "skills"), { recursive: true });
   writeFileSync(path.join(pluginRoot, ".codex-plugin", "plugin.json"), JSON.stringify(fixtureManifest(version), null, 2));
   writeFileSync(path.join(pluginRoot, ".mcp.json"), "{\"mcpServers\":{}}\n");
-  writeFileSync(path.join(pluginRoot, ".app.json"), "{\"apps\":{}}\n");
   writeFileSync(path.join(pluginRoot, "package.json"), JSON.stringify({ name: PLUGIN_NAME, engines: { node: SUPPORTED_NODE_RANGE } }, null, 2));
 }
 

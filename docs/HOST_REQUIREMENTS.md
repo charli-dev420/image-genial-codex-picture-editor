@@ -3,12 +3,13 @@
 Codex Image Editor intentionally does not generate images in its MCP server and must not send the user to an external app. A production Codex host must provide these capabilities inside the conversation surface:
 
 - Render MCP resources with `text/html;profile=mcp-app` inline in the discussion.
-- Support `openai/outputTemplate` on tool results.
-- Let the widget call MCP tools through the Codex host bridge.
+- Resolve the versioned component resource declared through standard `_meta.ui.resourceUri`; `openai/outputTemplate` remains a compatibility mirror.
+- Let the widget call MCP tools through the MCP Apps `tools/call` bridge and deliver tool input/result notifications.
+- Support `ui/message` so the explicit launch action returns the exact handoff to Codex for native tool execution.
 - Let Codex pass visible conversation images/artifacts to MCP tools, or allow the widget to associate local/imported images manually inside the same inline card.
 - Let Codex call the built-in Image Gen tool from the generated `$imagegen` prompt.
 - Let Codex save or move selected Image Gen artifacts into the workspace before calling `save_generated_result`.
-- Let the widget or Codex record host capabilities with `record_host_capabilities`, including whether inline widgets, the tool bridge, native Image Gen, artifact bridge, and workspace artifact saving are actually available.
+- Let the widget or Codex explicitly record known host capabilities with `record_host_capabilities`, including whether inline widgets, the tool bridge, native Image Gen, artifact bridge, and workspace artifact saving are actually available. Unknown capabilities must not be reported as false automatically.
 - Let the plugin create and preserve handoff packets with required `view_image` instructions before Codex calls native Image Gen.
 - Let candidate Image Gen artifacts be registered, reviewed, accepted, or rejected through the inline Artifact Bridge without reloading the conversation block.
 - Let the inline widget update itself from real MCP tool results without reloading the conversation block.

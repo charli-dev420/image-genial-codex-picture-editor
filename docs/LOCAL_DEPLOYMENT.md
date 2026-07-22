@@ -8,6 +8,7 @@ This procedure installs the complete `codex-image-editor` bundle through the per
 
 - Windows with Git, Python, and Node `>=22 <25` available to the Codex desktop process.
 - A clean source checkout tracking `origin/main`.
+- The release commit pushed to `origin/main`; deployment fast-forwards the dedicated checkout from that remote revision.
 - `%USERPROFILE%\.agents\plugins\marketplace.json` with the `personal` marketplace.
 - A Codex desktop session authenticated through ChatGPT/Codex.
 
@@ -19,7 +20,9 @@ Run from the source checkout:
 .\scripts\deploy-local.ps1 -Apply
 ```
 
-The script creates or updates `%USERPROFILE%\.agents\plugins\plugins\codex-image-editor`, validates the checkout, applies a generated `+codex.*` cachebuster only in that deployment checkout, and atomically appends or repairs the marketplace entry. Existing marketplace entries are preserved.
+The script creates or updates `%USERPROFILE%\plugins\codex-image-editor`, the path resolved by the personal marketplace entry `./plugins/codex-image-editor`. It validates the checkout, applies a generated `+codex.*` cachebuster only in that deployment checkout, and atomically appends or repairs the marketplace entry. Existing marketplace entries are preserved.
+
+It never copies `.env` files, runtime state, temporary QA captures, or source images from the working tree. Only the clean committed plugin bundle is deployed.
 
 It writes the current report to:
 
@@ -37,9 +40,9 @@ The script prints a `codex://` detail link. Install or enable the plugin from th
 
 After installation, a real desktop thread must confirm all of the following:
 
-1. `get_editor_state` renders the MCP card inline and `window.openai.callTool` works.
+1. `get_editor_state` renders the MCP card inline and the standard MCP Apps `tools/call` bridge works (`window.openai.callTool` is a compatibility path).
 2. A request with image target, references, correction zones, and freeze/protect zones creates a handoff.
-3. Codex uses native `image_gen` after the generated `view_image` instructions.
+3. The launch button sends the exact handoff through `ui/message`, then Codex uses native `image_gen` after the generated `view_image` instructions.
 4. A real artifact is saved into the workspace, registered with origin `codex-image-gen`, and accepted or rejected inline.
 
 If native Image Gen, the inline widget, or artifact return is unavailable, the expected outcome is `host_blocked`. The plugin must not switch to an external generator or produce a simulated result.
