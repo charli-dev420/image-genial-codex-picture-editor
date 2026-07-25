@@ -1,4 +1,4 @@
-# Public Release Checklist
+# Public Release Checklist — v0.2.0-beta
 
 ## Completed Locally
 
@@ -9,16 +9,16 @@
 - `mcp/server.mjs` syntax check passes.
 - Logo asset is bundled under `assets/logo.png`.
 - Public documentation, security policy, contribution guide, changelog, and CI workflow are present.
+- Public proof board and short demo are cropped to exclude account, project, terminal, and local-path data.
+- Marketplace metadata points to an existing PNG proof asset inside the plugin archive.
+- A recorded Codex desktop flow shows inline rendering, selection, request preparation, handoff confirmation, and response follow-up.
 
 ## Required Before Production Claim
 
-- Install the plugin in a real Codex host.
-- Open the inline editor inside a conversation.
-- Run a native Codex/Image Gen request from a handoff.
 - Save the real Image Gen artifact into the expected workspace path.
 - Register and accept the artifact candidate.
 - Verify the accepted version appears inline without conversation reload.
 
 ## Release Boundary
 
-Until the live host test is complete, describe the project as locally validated and public-ready, not fully production-certified.
+Until the Artifact Bridge test is complete on a real host artifact, describe the project as an MVP beta that is locally validated and demonstrated in Codex, not fully production-certified.

@@ -5,6 +5,8 @@
 - Source of truth: the user-selected DAWWWCORE mockup supplied in the task. It was used for visual comparison and is intentionally not committed.
 - Implementation capture: `docs/media/codex-image-editor-mvp-beta.png`.
 - Workflow demo: `docs/media/codex-image-editor-flow.gif`.
+- Public desktop proof: `assets/codex-image-editor-proof.png`.
+- Public short demo: `docs/media/codex-image-editor-demo-courte.mp4`.
 - Density normalization: the reference and implementation were compared at equal width without upscaling the implementation.
 - Tested state: `daw-core-banner.png`, one selected correction zone named “Détails du sujet”, high priority, and the request “Améliorer les détails sans modifier le texte”.
 
@@ -35,6 +37,7 @@
 
 - Repository media excludes host chrome and absolute local paths.
 - Generated media contains no embedded image metadata.
+- The public desktop proof and MP4 are cropped to exclude account, project, terminal, and local-path data from the source recording.
 - Browser console errors and warnings: none in the final flow.
 - Core states verified: Zone, Demande, Envoi, conversation disclosure, native handoff.
 

@@ -1,7 +1,7 @@
 {
   "name": "codex-image-editor",
-  "version": "0.2.0",
-  "description": "A focused Codex workspace for marking any image and launching native Image Gen edits.",
+  "version": "0.2.0-beta",
+  "description": "Préparez des retouches précises dans Codex avec le flux Image Gen natif.",
   "author": {
     "name": "charli-dev420"
   },
@@ -18,9 +18,9 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Codex Image Editor",
-    "shortDescription": "Mark any image and launch native Image Gen.",
-    "longDescription": "Codex Image Editor embeds a focused Zone, Request, and Send workflow in the Codex conversation. Draw or select a region on any image, describe the intended change, add optional references, then send an exact handoff to Codex native Image Gen. Advanced precision and review controls stay available on demand. Workflow state remains local and the plugin never calls an external image API.",
+    "displayName": "Image Genial Codex Picture Editor",
+    "shortDescription": "Marquez des retouches directement dans Codex.",
+    "longDescription": "Image Genial Codex Picture Editor affiche un éditeur inline dans la conversation Codex. Sélectionnez une région sur n’importe quelle image, décrivez le changement, ajoutez éventuellement des références, puis remettez une demande précise au flux Image Gen natif. Les réglages avancés et la revue restent disponibles à la demande. L’état demeure local et le plugin n’appelle aucune API d’image externe.",
     "developerName": "charli-dev420",
     "category": "Productivity",
     "capabilities": [
@@ -28,13 +28,19 @@
       "Read",
       "Write"
     ],
+    "websiteURL": "https://github.com/charli-dev420/image-genial-codex-picture-editor",
+    "privacyPolicyURL": "https://github.com/charli-dev420/image-genial-codex-picture-editor/blob/main/SECURITY.md",
+    "termsOfServiceURL": "https://github.com/charli-dev420/image-genial-codex-picture-editor/blob/main/LICENSE",
     "defaultPrompt": [
-      "Use the inline Image Editor for this image.",
-      "Prepare a precise Image Gen edit from the image in this thread.",
-      "Save this Codex Image Gen result as a reviewed version."
+      "Marquer les zones à retoucher dans cette image.",
+      "Préparer une demande Image Gen précise pour cette image.",
+      "Revoir ce résultat sans modifier les zones protégées."
     ],
     "brandColor": "#A56532",
     "composerIcon": "./assets/dawww-unicorn-mark.png",
-    "logo": "./assets/dawww-unicorn-mark.png"
+    "logo": "./assets/dawww-unicorn-mark.png",
+    "screenshots": [
+      "./assets/codex-image-editor-proof.png"
+    ]
   }
 }

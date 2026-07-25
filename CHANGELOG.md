@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 - 2026-07-22
+## 0.2.0-beta - 2026-07-26
 
 - Shipped the **MVP beta** visual redesign around the three-step Zone, Request, and Send flow.
 - Replaced the prototype control wall with a compact selection toolbar, one primary Image Gen action, and contextual advanced controls.
@@ -13,6 +13,7 @@
 - Fixed local marketplace resolution to `%USERPROFILE%\plugins\codex-image-editor` and removed the unused app manifest placeholder.
 - Added widget syntax, resource metadata, native handoff, deployment, and browser-host validation coverage.
 - Reworked the widget into focused Zone, Demande, and Envoi views; reduced the conversation dock to a single composer; removed duplicate workflow/footer chrome; and made zone, precision, layer, and review controls strictly contextual.
+- Added a privacy-cropped desktop proof board, a sanitized 27-second demo, the public marketplace sheet, and publication copy.
 
 ## 0.1.0 - 2026-07-06
 
