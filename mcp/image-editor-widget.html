@@ -127,25 +127,15 @@
     .bridge-state { border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; font-size: 11px; color: var(--muted); }
     .bridge-state.ok { border-color: var(--good); color: var(--success-text); }
     .bridge-state.warn { border-color: var(--warn); color: var(--warning-text); }
-    .editor-tabs { justify-self: center; display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel2); }
-    .editor-tabs button { width: auto; min-height: 30px; padding: 5px 12px; border: 0; background: transparent; color: var(--muted); }
-    .editor-tabs button.active { outline: 0; background: var(--panel); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
     .workflow-summary { width: auto; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; color: var(--muted); font-size: 11px; }
     [data-editor-view] { display: none !important; }
-    body[data-active-view="edit"] [data-editor-view~="edit"],
-    body[data-active-view="prepare"] [data-editor-view~="prepare"],
-    body[data-active-view="review"] [data-editor-view~="review"] { display: block !important; }
-    body[data-active-view="prepare"] .toolbar,
-    body[data-active-view="review"] .toolbar { display: none; }
-    body[data-active-view="review"] .shell { grid-template-columns: minmax(0, 1fr) 324px; }
-    body[data-active-view="review"] aside.left { display: none; }
+    body[data-active-view="edit"] [data-editor-view~="edit"] { display: block !important; }
     body [hidden] { display: none !important; }
     .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .tool-grid button { min-height: 36px; }
     .layer-current { margin-top: 9px; }
     .layer-current-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; color: var(--muted); font-size: 12px; }
     .zone-empty { min-height: 108px; display: grid; place-items: center; text-align: center; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 12px; line-height: 1.5; }
-    .zone-actions > summary { text-align: center; }
     .toolbar-spacer { flex: 1 1 auto; }
     .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
     .primary-flow { display: grid; gap: 8px; }
@@ -155,7 +145,6 @@
     aside.right { display: flex; flex-direction: column; }
     @media (max-width: 1120px) {
       .shell { grid-template-columns: 1fr; grid-auto-rows: max-content; overflow-x: hidden; overflow-y: auto; }
-      body[data-active-view="review"] .shell { grid-template-columns: 1fr; }
       aside, aside.right { min-height: auto; overflow: visible; border: 0; border-bottom: 1px solid var(--line); }
       section.canvas-wrap { order: -1; }
       section.canvas-wrap { min-height: 460px; }
@@ -166,8 +155,6 @@
       .brand { width: auto; }
       h1 { display: none; }
       .brand-logo { width: 36px; height: 36px; }
-      .editor-tabs { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; }
-      .editor-tabs button { flex: 1 1 0; }
       .header-actions { width: auto; justify-content: flex-end; }
       .header-actions #inlineMode, .header-actions .status { display: none; }
       .status { width: auto; justify-content: flex-start; }
@@ -218,7 +205,7 @@
       --carbon-navy: #213946;
       --bone: #e2ccae;
       --dust: #aca191;
-      --edit-command-height: 306px;
+      --edit-command-height: 264px;
     }
 
     html,
@@ -240,11 +227,11 @@
     }
 
     header {
-      min-height: 144px;
+      min-height: 74px;
       padding: 0 28px;
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-rows: 74px 70px;
+      grid-template-rows: 74px;
       gap: 0 20px;
       border-bottom: 1px solid rgba(180, 122, 60, .38);
       background: var(--chrome);
@@ -341,87 +328,6 @@
       border: 0;
     }
 
-    .editor-tabs {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      align-self: stretch;
-      justify-self: stretch;
-      position: relative;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      padding: 0 6%;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      isolation: isolate;
-    }
-
-    .editor-tabs::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      left: 12.5%;
-      right: 12.5%;
-      top: 47px;
-      height: 1px;
-      background: rgba(172, 161, 145, .32);
-    }
-
-    .editor-tabs button {
-      position: relative;
-      width: 100%;
-      min-height: 68px;
-      padding: 12px 6px 32px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: rgba(172, 161, 145, .48);
-      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
-      font-size: 13px;
-      font-stretch: condensed;
-      font-weight: 600;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      box-shadow: none;
-    }
-
-    .editor-tabs button::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 42px;
-      width: 10px;
-      height: 10px;
-      border: 1px solid rgba(172, 161, 145, .48);
-      border-radius: 50%;
-      background: var(--chrome);
-      transform: translateX(-50%);
-    }
-
-    .editor-tabs button.active {
-      outline: 0;
-      background: transparent;
-      color: var(--copper-bright);
-      box-shadow: none;
-    }
-
-    .editor-tabs button.active::after {
-      border-color: var(--copper-bright);
-      background: var(--copper);
-      box-shadow: 0 0 10px rgba(180, 122, 60, .35);
-    }
-
-    .editor-tabs button.active:not(:last-child)::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 47px;
-      width: 100%;
-      height: 1px;
-      background: var(--copper-bright);
-    }
-
     .shell {
       position: relative;
       min-height: 0;
@@ -491,9 +397,7 @@
       cursor: crosshair;
     }
 
-    .toolbar,
-    body[data-active-view="prepare"] .toolbar,
-    body[data-active-view="review"] .toolbar {
+    .toolbar {
       position: absolute;
       z-index: 12;
       left: 50%;
@@ -538,7 +442,7 @@
 
     .toolbar button::before,
     body[data-active-view="edit"] .left > .panel:nth-of-type(2) button::before,
-    .zone-actions > summary::before {
+    .tool-overflow > summary::before {
       display: inline-grid;
       place-items: center;
       font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets";
@@ -561,14 +465,10 @@
       background: #0c151a;
     }
 
-    body.has-image #importButton {
-      display: none;
-    }
-
-    #importButton::before { content: "\E8E5"; }
-    #undo::before { content: "\E7A7"; }
-    #redo::before { content: "\E7A6"; }
-    #zoomIn::before { content: "\E8A3"; }
+    #importButton::before { content: "\E8E5" / ""; }
+    #undo::before { content: "\E7A7" / ""; }
+    #redo::before { content: "\E7A6" / ""; }
+    #zoomIn::before { content: "\E8A3" / ""; }
 
     .toolbar #undo {
       order: 2;
@@ -591,20 +491,19 @@
       left: 50%;
       bottom: calc(var(--edit-command-height) + 28px);
       display: block !important;
-      width: 196px;
+      width: 258px;
       height: 62px;
       margin: 0;
-      padding: 8px 0 8px 10px;
+      padding: 8px 54px 8px 10px;
       border: 1px solid rgba(180, 122, 60, .38);
       border-right: 0;
       border-radius: 8px 0 0 8px;
       background: #0c151a;
-      transform: translateX(-196px);
+      transform: translateX(-258px);
       box-shadow: 0 14px 30px rgba(0, 0, 0, .35);
     }
 
     body[data-active-view="edit"] .left > .panel:nth-of-type(2) > h2,
-    body[data-active-view="edit"] .left > .panel:nth-of-type(2) > details,
     body[data-active-view="edit"] #brushSizeControl,
     body[data-active-view="edit"] #markNoteControl {
       display: none !important;
@@ -618,20 +517,97 @@
     body[data-active-view="edit"] #toolButtons [data-tool="select"] { order: 1; }
     body[data-active-view="edit"] #toolButtons [data-tool="rectangle"] { order: 2; }
     body[data-active-view="edit"] #toolButtons [data-tool="brush"] { order: 3; }
+    body[data-active-view="edit"] #toolButtons [data-tool="lasso"] { order: 4; }
 
     body[data-active-view="edit"] #toolButtons [data-tool="precision"] {
       display: none;
     }
 
-    [data-tool="select"]::before { content: "\E8E6"; }
-    [data-tool="rectangle"]::before { content: "\E739"; }
-    [data-tool="brush"]::before { content: "\ED63"; }
-    [data-tool="lasso"]::before { content: "\E7C9"; }
-    [data-tool="polygon"]::before { content: "\E81E"; }
-    [data-tool="ellipse"]::before { content: "\E91D"; }
-    [data-tool="eraser"]::before { content: "\E75C"; }
-    [data-tool="pan"]::before { content: "\E7C2"; }
-    [data-tool="precision"]::before { content: "\E7E6"; }
+    .tool-overflow {
+      position: absolute;
+      top: 8px;
+      right: 7px;
+      width: 44px;
+      height: 46px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      z-index: 6;
+    }
+
+    .tool-overflow > summary {
+      width: 44px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      color: var(--bone);
+      font-size: 0;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .tool-overflow > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tool-overflow > summary::before {
+      content: "\E712" / "";
+      font-size: 20px;
+    }
+
+    .tool-overflow[open] > .tool-grid {
+      position: absolute;
+      right: -7px;
+      bottom: 54px;
+      width: 244px;
+      display: grid;
+      grid-template-columns: repeat(2, 110px);
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: #0c151a;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, .45);
+    }
+
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) .tool-overflow[open] > .tool-grid button {
+      width: 110px;
+      min-width: 110px;
+      height: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      padding: 0 9px;
+      color: var(--bone);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
+      font-size: 11px;
+      font-stretch: condensed;
+      font-weight: 600;
+    }
+
+    body[data-active-view="edit"] .left > .panel:nth-of-type(2) .tool-overflow[open] > .tool-grid button::before {
+      flex: 0 0 auto;
+      font-size: 19px;
+    }
+
+    .tool-overflow > summary:hover,
+    .tool-overflow[open] > summary,
+    .tool-overflow.active > summary {
+      color: #d6fbff;
+      background: rgba(44, 141, 158, .14);
+      box-shadow: inset 0 0 0 1px var(--cyan);
+    }
+
+    [data-tool="select"]::before { content: "\E8E6" / ""; }
+    [data-tool="rectangle"]::before { content: "\E739" / ""; }
+    [data-tool="brush"]::before { content: "\ED63" / ""; }
+    [data-tool="lasso"]::before { content: "\E7C9" / ""; }
+    [data-tool="polygon"]::before { content: "\E81E" / ""; }
+    [data-tool="ellipse"]::before { content: "\E91D" / ""; }
+    [data-tool="eraser"]::before { content: "\E75C" / ""; }
+    [data-tool="pan"]::before { content: "\E7C2" / ""; }
+    [data-tool="precision"]::before { content: "\E7E6" / ""; }
 
     .toolbar button:hover,
     body[data-active-view="edit"] .left > .panel:nth-of-type(2) button:hover {
@@ -663,67 +639,54 @@
       box-shadow: none;
     }
 
-    .zone-summary-bar {
-      height: 84px;
+    .edit-preset-control {
+      width: min(100%, 520px);
+      min-height: 42px;
       display: grid;
-      grid-template-columns: 70px minmax(110px, 1.35fr) 1px minmax(76px, .75fr) 1px minmax(110px, 1fr);
+      grid-template-columns: auto minmax(190px, 1fr);
       gap: 12px;
       align-items: center;
-      padding: 8px 12px 8px 8px;
-      border: 1px solid rgba(180, 122, 60, .24);
-      background: #091116;
+      margin: 0 0 8px;
     }
 
-    .zone-thumbnail {
-      width: 68px;
-      height: 68px;
-      border: 1px solid rgba(180, 122, 60, .5);
-      border-radius: 5px;
-      background: var(--deep-blueprint);
-      object-fit: cover;
-    }
-
-    .zone-summary-divider {
-      width: 1px;
-      height: 28px;
-      background: rgba(180, 122, 60, .52);
-    }
-
-    .zone-summary-field {
-      min-width: 0;
-      margin: 0;
-    }
-
-    .zone-summary-field input,
-    .zone-summary-field select {
-      height: 46px;
-      padding: 6px 4px;
-      overflow: hidden;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--bone);
+    .edit-preset-control > span {
+      color: var(--copper-bright);
       font-family: "Bahnschrift Condensed", "Arial Narrow", Bahnschrift, sans-serif;
-      font-size: 16px;
+      font-size: 11px;
       font-stretch: condensed;
-      text-overflow: ellipsis;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-transform: uppercase;
       white-space: nowrap;
     }
 
-    .zone-summary-priority select {
-      color: var(--copper-bright);
+    .edit-preset-control select {
+      height: 44px;
+      padding: 6px 30px 6px 10px;
+      border: 1px solid rgba(180, 122, 60, .34);
+      border-radius: 2px;
+      background: #081116;
+      color: var(--bone);
+      font-size: 13px;
     }
 
     .edit-command-panel #zoneSelectionHint {
-      min-height: 166px;
-      margin-top: 10px;
-      border-color: rgba(180, 122, 60, .34);
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 0 0 9px;
+      padding: 8px 10px;
+      border: 1px solid rgba(44, 141, 158, .34);
       border-radius: 2px;
-      background: rgba(8, 18, 24, .7);
+      background: rgba(44, 141, 158, .07);
+      color: var(--muted);
+      text-align: left;
     }
 
     .edit-command-panel #zoneEditor {
-      padding-top: 11px;
+      position: static;
+      padding-top: 9px;
     }
 
     .change-request {
@@ -785,51 +748,17 @@
       opacity: .42;
     }
 
-    .zone-actions {
+    .handoff-feedback {
       position: absolute;
-      top: 24px;
-      right: 34px;
-      width: auto;
+      right: 28px;
+      bottom: 82px;
+      width: 298px;
+      min-height: 18px;
       margin: 0;
-      padding: 0;
-      border: 0;
-      z-index: 4;
-    }
-
-    .edit-command-panel .zone-actions > summary {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
       color: var(--muted);
-      font-size: 0;
-      list-style: none;
-    }
-
-    .zone-actions > summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .zone-actions > summary::before {
-      content: "\E712";
-      font-size: 18px;
-    }
-
-    .zone-actions[open] > .row {
-      position: absolute;
-      right: 0;
-      top: 38px;
-      width: 280px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: 0 16px 30px rgba(0, 0, 0, .45);
-    }
-
-    .zone-actions #zonePicker {
-      position: static;
-      flex: 1 1 100%;
-      margin: 0 0 4px;
+      font-size: 11px;
+      line-height: 1.3;
+      text-align: right;
     }
 
     .conversation-dock {
@@ -843,7 +772,7 @@
     }
 
     .conversation-dock > summary {
-      min-height: 28px;
+      min-height: 44px;
       padding: 0;
       gap: 8px;
       color: var(--cyan);
@@ -910,54 +839,16 @@
       outline-offset: 2px;
     }
 
-    body:not([data-active-view="edit"]) .shell {
-      display: block;
-      overflow: auto;
-      padding: 22px;
-      background: var(--bg);
-    }
-
-    body:not([data-active-view="edit"]) section.canvas-wrap {
-      display: none;
-    }
-
-    body:not([data-active-view="edit"]) aside.left,
-    body:not([data-active-view="edit"]) aside.right {
-      display: block;
-      width: min(100%, 860px);
-      min-height: auto;
-      margin: 0 auto;
-      padding: 0;
-      overflow: visible;
-      border: 0;
-      background: transparent;
-    }
-
-    body:not([data-active-view="edit"]) .panel {
-      border-color: rgba(180, 122, 60, .32);
-      border-radius: 3px;
-      background: var(--panel);
-      box-shadow: none;
-    }
-
-    body[data-active-view="prepare"] aside.left > .panel:first-child {
-      display: block !important;
-    }
-
-    body[data-active-view="review"] .conversation-dock {
-      display: none;
-    }
-
     @media (max-width: 760px) {
       :root,
       :root[data-theme="light"] {
-        --edit-command-height: clamp(280px, 50.7vw, 330px);
+        --edit-command-height: 260px;
       }
 
       header {
-        min-height: 136px;
+        min-height: 70px;
         padding: 0 18px;
-        grid-template-rows: 70px 66px;
+        grid-template-rows: 70px;
       }
 
       .brand-logo {
@@ -974,31 +865,6 @@
         max-width: 42vw;
       }
 
-      .editor-tabs {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        padding: 0 2%;
-      }
-
-      .editor-tabs::before {
-        left: 8%;
-        right: 8%;
-        top: 44px;
-      }
-
-      .editor-tabs button {
-        min-height: 64px;
-        padding-top: 10px;
-      }
-
-      .editor-tabs button::after {
-        top: 39px;
-      }
-
-      .editor-tabs button.active:not(:last-child)::before {
-        top: 44px;
-      }
-
       .viewport {
         min-height: 0;
         padding: 18px 12px 100px;
@@ -1011,15 +877,13 @@
 
       body[data-active-view="edit"] .left > .panel:nth-of-type(2) {
         bottom: calc(var(--edit-command-height) + 22px);
-        width: 168px;
+        width: 238px;
         height: 56px;
-        padding: 6px 0 6px 8px;
-        transform: translateX(-168px);
+        padding: 6px 52px 6px 8px;
+        transform: translateX(-238px);
       }
 
-      .toolbar,
-      body[data-active-view="prepare"] .toolbar,
-      body[data-active-view="review"] .toolbar {
+      .toolbar {
         bottom: 22px;
         width: 180px;
         height: 56px;
@@ -1028,10 +892,10 @@
 
       .toolbar button,
       body[data-active-view="edit"] .left > .panel:nth-of-type(2) button {
-        width: 42px;
-        min-width: 42px;
-        height: 42px;
-        min-height: 42px;
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        min-height: 44px;
       }
 
       .toolbar button::before,
@@ -1039,25 +903,24 @@
         font-size: 22px;
       }
 
+      .tool-overflow {
+        top: 6px;
+        right: 6px;
+        height: 44px;
+      }
+
+      .tool-overflow > summary {
+        width: 44px;
+        height: 44px;
+      }
+
+      .tool-overflow[open] > .tool-grid button {
+        width: 110px;
+        min-width: 110px;
+      }
+
       body[data-active-view="edit"] aside.right > .edit-command-panel {
         padding: 12px 18px 18px;
-      }
-
-      .zone-summary-bar {
-        height: 82px;
-        grid-template-columns: 66px minmax(90px, 1.3fr) 1px minmax(66px, .72fr) 1px minmax(104px, 1fr);
-        gap: 8px;
-        padding-right: 8px;
-      }
-
-      .zone-thumbnail {
-        width: 64px;
-        height: 64px;
-      }
-
-      .zone-summary-field input,
-      .zone-summary-field select {
-        font-size: 14px;
       }
 
       .change-request {
@@ -1079,15 +942,17 @@
         font-size: 15px;
       }
 
+      .handoff-feedback {
+        right: 18px;
+        bottom: 73px;
+        width: min(52%, 300px);
+      }
+
       .conversation-dock {
         left: 18px;
         bottom: 25px;
       }
 
-      .zone-actions {
-        right: 22px;
-        top: 22px;
-      }
     }
 
     @media (max-width: 500px) {
@@ -1100,39 +965,31 @@
         font-size: 0;
       }
 
-      .zone-summary-bar {
-        height: 70px;
-        grid-template-columns: 56px minmax(74px, 1fr) 1px 62px 1px 88px;
-        gap: 5px;
-        padding: 7px;
-      }
-
-      .zone-thumbnail {
-        width: 50px;
-        height: 50px;
-      }
-
-      .zone-summary-field input,
-      .zone-summary-field select {
-        padding-inline: 2px;
-        font-size: 12px;
+      .edit-preset-control {
+        grid-template-columns: 1fr;
+        gap: 4px;
       }
 
       body[data-active-view="edit"] .left > .panel:nth-of-type(2) {
         left: 50%;
-        width: 144px;
-        transform: translateX(-144px);
+        width: 238px;
+        transform: translateX(-238px);
       }
 
       .toolbar {
         left: 50%;
-        width: 156px;
+        width: 168px;
       }
 
       .toolbar button,
       body[data-active-view="edit"] .left > .panel:nth-of-type(2) button {
-        width: 36px;
-        min-width: 36px;
+        width: 44px;
+        min-width: 44px;
+      }
+
+      .tool-overflow[open] > .tool-grid button {
+        width: 110px;
+        min-width: 110px;
       }
 
       body[data-active-view="edit"] aside.right > .edit-command-panel {
@@ -1181,11 +1038,6 @@
         <span class="image-file-name mono" id="imageFileName">Aucune image</span>
       </div>
     </div>
-    <nav class="editor-tabs" aria-label="Étape de travail">
-      <button class="active" type="button" data-editor-view-button="edit"><span>Zone</span></button>
-      <button type="button" data-editor-view-button="prepare"><span>Demande</span></button>
-      <button type="button" data-editor-view-button="review"><span>Envoi</span></button>
-    </nav>
     <div class="header-actions">
       <span class="workflow-summary" id="workflowSummary">Prêt</span>
       <span class="bridge-state warn" id="bridgeStatus">Connexion…</span>
@@ -1194,19 +1046,6 @@
       <div class="status"><span class="dot" id="dot"></span><span id="status">ready</span></div>
     </div>
   </header>
-
-  <details class="conversation-dock" id="conversationDock">
-    <summary>
-      <strong>Conversation Codex</strong>
-      <span class="small">›</span>
-    </summary>
-    <div class="conversation-body" aria-label="Conversation Codex intégrée">
-      <form class="conversation-compose" id="conversationForm">
-        <textarea id="conversationPrompt" placeholder="Demander à Codex d’analyser l’image ou préciser une modification…"></textarea>
-        <button class="primary" id="sendConversation" type="submit">Envoyer</button>
-      </form>
-    </div>
-  </details>
 
   <div class="shell">
     <aside class="left">
@@ -1224,20 +1063,20 @@
 
       <div class="panel" data-editor-view="edit">
         <h2>Outils</h2>
-        <div class="tool-grid" id="toolButtons">
-          <button class="active" data-tool="select">Sélection</button>
-          <button data-tool="brush">Pinceau</button>
-          <button data-tool="rectangle">Rectangle</button>
-          <button data-tool="precision">Précision</button>
+        <div class="tool-grid" id="toolButtons" role="toolbar" aria-label="Outils de zone">
+          <button class="active" type="button" data-tool="select" aria-label="Sélectionner ou déplacer une zone" title="Sélectionner ou déplacer une zone">Sélection</button>
+          <button type="button" data-tool="rectangle" aria-label="Tracer une zone rectangulaire" title="Tracer une zone rectangulaire">Rectangle</button>
+          <button type="button" data-tool="brush" aria-label="Dessiner une zone au pinceau" title="Dessiner une zone au pinceau">Pinceau</button>
+          <button type="button" data-tool="lasso" aria-label="Tracer une zone libre au lasso" title="Tracer une zone libre au lasso">Lasso</button>
+          <button type="button" data-tool="precision" aria-label="Ajuster précisément la zone" aria-hidden="true" tabindex="-1" title="Ajuster précisément la zone" hidden>Précision</button>
         </div>
-        <details class="subdetails">
-          <summary>Autres outils</summary>
-          <div class="tool-grid">
-            <button data-tool="lasso">Lasso</button>
-            <button data-tool="polygon">Polygone</button>
-            <button data-tool="ellipse">Ellipse</button>
-            <button data-tool="eraser">Gomme</button>
-            <button data-tool="pan">Déplacer</button>
+        <details class="subdetails tool-overflow">
+          <summary aria-label="Autres outils de zone" title="Autres outils de zone"><span class="visually-hidden">Autres outils de zone</span></summary>
+          <div class="tool-grid" role="toolbar" aria-label="Outils de zone supplémentaires">
+            <button type="button" data-tool="polygon" aria-label="Tracer une zone polygonale" title="Tracer une zone polygonale">Polygone</button>
+            <button type="button" data-tool="ellipse" aria-label="Tracer une zone elliptique" title="Tracer une zone elliptique">Ellipse</button>
+            <button type="button" data-tool="eraser" aria-label="Effacer une zone" title="Effacer une zone">Gomme</button>
+            <button type="button" data-tool="pan" aria-label="Déplacer l’image" title="Déplacer l’image">Déplacer</button>
           </div>
         </details>
         <label id="brushSizeControl" hidden>Taille du pinceau <input id="brushSize" type="range" min="4" max="80" value="18" /></label>
@@ -1259,56 +1098,65 @@
     </aside>
 
     <section class="canvas-wrap">
-      <div class="toolbar">
-        <button id="importButton" type="button">Importer</button>
-        <input class="visually-hidden" id="file" type="file" aria-hidden="true" tabindex="-1" accept="image/png,image/jpeg,image/webp" />
-        <button id="undo">Annuler</button>
-        <button id="redo">Rétablir</button>
-        <button id="fit">Ajuster</button>
-        <button id="zoomOut">-</button>
-        <button id="zoomIn">+</button>
+      <div class="toolbar" role="toolbar" aria-label="Affichage et historique">
+        <button id="importButton" type="button" aria-label="Importer une image" title="Importer une image">Importer</button>
+        <input id="file" type="file" aria-hidden="true" tabindex="-1" hidden accept="image/png,image/jpeg,image/webp" />
+        <button id="undo" type="button" aria-label="Annuler la dernière modification" title="Annuler">Annuler</button>
+        <button id="redo" type="button" aria-label="Rétablir la modification" title="Rétablir">Rétablir</button>
+        <button id="fit" type="button" aria-label="Ajuster l’image à la fenêtre" aria-hidden="true" tabindex="-1" title="Ajuster l’image" hidden>Ajuster</button>
+        <button id="zoomOut" type="button" aria-label="Réduire le zoom" aria-hidden="true" tabindex="-1" title="Réduire le zoom" hidden>-</button>
+        <button id="zoomIn" type="button" aria-label="Agrandir l’image" title="Agrandir l’image">+</button>
         <span class="toolbar-spacer"></span>
         <span class="pill" id="zoomLabel">100%</span>
         <span class="pill" id="shapeCount">0 zones</span>
       </div>
       <div class="viewport">
-        <canvas id="canvas" width="1280" height="800"></canvas>
+        <canvas id="canvas" width="1280" height="800" role="img" aria-describedby="canvasHint"></canvas>
+        <p class="visually-hidden" id="canvasHint">L’image à retoucher. La zone est facultative : utilisez Rectangle ou Pinceau pour cibler une partie précise.</p>
       </div>
     </section>
 
     <aside class="right">
       <div class="panel edit-command-panel" data-editor-view="edit">
-        <div class="zone-summary-bar" id="zoneSummaryBar" hidden>
-          <canvas class="zone-thumbnail" id="zoneThumbnail" width="96" height="96" aria-label="Aperçu de la zone"></canvas>
-          <label class="zone-summary-field zone-summary-name">
-            <span class="visually-hidden">Nom</span>
-            <input id="shapeLabel" aria-label="Nom de la zone" />
-          </label>
-          <span class="zone-summary-divider" aria-hidden="true"></span>
-          <label class="zone-summary-field">
-            <span class="visually-hidden">Type</span>
-            <select id="shapeConstraint" aria-label="Type de zone"><option value="correct">Corriger</option><option value="freeze">Figer</option><option value="error">Erreur</option><option value="reference">Référence</option></select>
-          </label>
-          <span class="zone-summary-divider" aria-hidden="true"></span>
-          <label class="zone-summary-field zone-summary-priority">
-            <span class="visually-hidden">Priorité</span>
-            <select id="shapePriority" aria-label="Priorité"><option value="low">Priorité basse</option><option value="medium" selected>Priorité moyenne</option><option value="high">Priorité haute</option></select>
-          </label>
+        <div id="zoneTechnicalControls" hidden aria-hidden="true">
+          <input id="shapeLabel" aria-label="Nom de la zone" />
+          <select id="shapeConstraint" aria-label="Type de zone"><option value="correct">Corriger</option><option value="freeze">Figer</option><option value="error">Erreur</option><option value="reference">Référence</option></select>
+          <select id="shapePriority" aria-label="Priorité"><option value="low">Priorité basse</option><option value="medium" selected>Priorité moyenne</option><option value="high">Priorité haute</option></select>
+          <label id="zonePicker">Choisir une zone <select id="zoneList"></select></label>
+          <button id="jumpShape" type="button">Centrer</button>
+          <button id="duplicateShape" type="button">Dupliquer</button>
+          <button id="deleteShape" type="button">Supprimer</button>
         </div>
-        <div class="zone-empty" id="zoneSelectionHint">Tracez une zone directement sur l’image.</div>
-        <fieldset id="zoneEditor" hidden>
-          <label class="change-request"><span>Que faut-il changer&nbsp;?</span><textarea id="shapeNote" placeholder="Décrivez précisément la modification"></textarea></label>
-          <button class="visually-hidden" id="applyShape" type="button" tabindex="-1">Appliquer</button>
+        <label class="edit-preset-control" for="editPreset">
+          <span>Preset de retouche</span>
+          <select id="editPreset">
+            <option value="">Aucun — suivre uniquement la demande</option>
+            <optgroup label="Styles">
+              <option value="style_photoreal">Photोरéaliste</option>
+              <option value="style_cinematic">Cinématique</option>
+              <option value="style_illustration">Illustration éditoriale</option>
+              <option value="style_product_3d">Rendu 3D premium</option>
+            </optgroup>
+            <optgroup label="Arrière-plan">
+              <option value="bg_transparent">Fond transparent</option>
+              <option value="bg_replace">Remplacer l’arrière-plan</option>
+              <option value="bg_blur">Flou d’arrière-plan</option>
+            </optgroup>
+            <optgroup label="Effets et finition">
+              <option value="fx_detail">Amélioration des détails</option>
+              <option value="fx_studio_light">Éclairage studio</option>
+              <option value="fx_cleanup">Nettoyage et débruitage</option>
+              <option value="fx_warm_grade">Étalonnage chaud</option>
+              <option value="fx_cool_grade">Étalonnage froid</option>
+            </optgroup>
+          </select>
+        </label>
+        <div class="zone-empty" id="zoneSelectionHint" role="status" aria-live="polite">Retouche de l’image entière. Tracez une zone seulement si nécessaire.</div>
+        <fieldset id="zoneEditor" aria-label="Demande de retouche" hidden>
+          <label class="change-request"><span>Quelle retouche souhaitez-vous&nbsp;?</span><textarea id="shapeNote" placeholder="Décrivez le résultat attendu, pour toute l’image ou pour la zone sélectionnée"></textarea></label>
+          <button id="applyShape" type="button" hidden>Appliquer</button>
           <button class="primary primary-imagegen" id="launchNativeImageGen" type="button">Lancer Image Gen</button>
-          <details class="subdetails zone-actions">
-            <summary>Autres actions</summary>
-            <div class="row">
-              <label id="zonePicker" hidden>Choisir une zone <select id="zoneList"></select></label>
-              <button id="jumpShape">Centrer</button>
-              <button id="duplicateShape">Dupliquer</button>
-              <button class="bad" id="deleteShape">Supprimer</button>
-            </div>
-          </details>
+          <p class="handoff-feedback" id="handoffFeedback" role="status" aria-live="polite"></p>
         </fieldset>
       </div>
 
@@ -1488,6 +1336,20 @@
       </details>
     </aside>
   </div>
+
+  <details class="conversation-dock" id="conversationDock">
+    <summary>
+      <strong>Conversation Codex</strong>
+      <span class="small" aria-hidden="true">›</span>
+    </summary>
+    <div class="conversation-body" aria-label="Conversation Codex intégrée">
+      <form class="conversation-compose" id="conversationForm">
+        <label class="visually-hidden" for="conversationPrompt">Message pour Codex</label>
+        <textarea id="conversationPrompt" aria-label="Message pour Codex" placeholder="Demander à Codex d’analyser l’image ou préciser une modification…"></textarea>
+        <button class="primary" id="sendConversation" type="submit">Envoyer</button>
+      </form>
+    </div>
+  </details>
 </main>
 
 <script>
@@ -1498,6 +1360,21 @@ const imageRoles = ['edit_target', 'reference', 'style_reference', 'insert_sourc
 const imageRoleLabels = { edit_target: 'Image à modifier', reference: 'Référence', style_reference: 'Référence de style', insert_source: 'Élément à insérer', previous_result: 'Résultat précédent', rejected_result: 'Résultat rejeté' };
 const zoneSubtypes = ['include', 'exclude', 'protect'];
 const layerLabels = { correct: 'À corriger', freeze: 'À préserver', error: 'Erreur à signaler', reference: 'Référence' };
+const editPresetInstructions = {
+  style_photoreal: 'Rendu photoréaliste, matières naturelles, détails crédibles et lumière cohérente.',
+  style_cinematic: 'Traitement cinématique, contraste maîtrisé, lumière directionnelle et profondeur atmosphérique.',
+  style_illustration: 'Illustration éditoriale soignée, formes lisibles, textures fines et palette cohérente.',
+  style_product_3d: 'Rendu 3D premium de type visuel produit, matériaux précis et éclairage de studio.',
+  bg_transparent: 'Détourer proprement le sujet et rendre l’arrière-plan transparent.',
+  bg_replace: 'Remplacer l’arrière-plan en conservant le sujet, ses proportions et des raccords de lumière réalistes.',
+  bg_blur: 'Conserver le sujet net et appliquer un flou d’arrière-plan naturel avec une profondeur de champ crédible.',
+  fx_detail: 'Améliorer les détails et la netteté locale sans modifier le texte, les formes ni la composition.',
+  fx_studio_light: 'Ajouter un éclairage studio équilibré sans changer l’identité ni la composition du sujet.',
+  fx_cleanup: 'Nettoyer les artefacts, le bruit et les défauts de compression en préservant les détails utiles.',
+  fx_warm_grade: 'Appliquer un étalonnage chaud subtil sans altérer les couleurs essentielles du sujet.',
+  fx_cool_grade: 'Appliquer un étalonnage froid subtil sans altérer les couleurs essentielles du sujet.'
+};
+const overflowToolLabels = { polygon: 'Polygone', ellipse: 'Ellipse', eraser: 'Gomme', pan: 'Déplacer' };
 const constraintFields = {
   must_keep: 'mustKeepInput',
   must_change: 'mustChangeInput',
@@ -1519,6 +1396,7 @@ const state = {
   baseImagePath: '',
   imageInfo: null,
   userRequest: '',
+  editPreset: '',
   editorView: 'edit',
   activeTool: 'select',
   activeLayer: 'correct',
@@ -1631,6 +1509,7 @@ function serializableState() {
     baseImagePath: state.baseImagePath,
     imageInfo: state.imageInfo,
     userRequest: state.userRequest,
+    editPreset: $('editPreset').value,
     activeTool: state.activeTool,
     activeLayer: state.activeLayer,
     precisionMode: state.precisionMode,
@@ -1771,7 +1650,7 @@ async function initializeMcpAppsBridge() {
   }
   try {
     const initialized = await rpcRequest('ui/initialize', {
-      appInfo: { name: 'codex-image-editor-widget', version: '0.2.0' },
+      appInfo: { name: 'codex-image-editor-widget', version: '0.2.1' },
       appCapabilities: {},
       protocolVersion: '2026-01-26'
     }, 3000);
@@ -1826,6 +1705,7 @@ function widgetSnapshot() {
     editorView: state.editorView,
     activeTool: state.activeTool,
     activeLayer: state.activeLayer,
+    editPreset: $('editPreset').value,
     promptView: state.promptView,
     stateRevision: state.stateRevision || 0
   };
@@ -1841,32 +1721,19 @@ function persistWidgetSnapshot() {
 function restoreWidgetSnapshot(snapshot = {}) {
   if (snapshot.workspaceRoot && !$('workspaceRoot').value) $('workspaceRoot').value = snapshot.workspaceRoot;
   if (snapshot.sessionId && !$('sessionId').value) $('sessionId').value = snapshot.sessionId;
-  if (snapshot.editorView) state.editorView = snapshot.editorView;
-  if (snapshot.activeTool) state.activeTool = snapshot.activeTool;
+  state.editorView = 'edit';
+  if (snapshot.activeTool && snapshot.activeTool !== 'precision') state.activeTool = snapshot.activeTool;
   if (snapshot.activeLayer) state.activeLayer = snapshot.activeLayer;
+  if (snapshot.editPreset && editPresetInstructions[snapshot.editPreset]) {
+    state.editPreset = snapshot.editPreset;
+    $('editPreset').value = snapshot.editPreset;
+  }
   if (snapshot.promptView) state.promptView = snapshot.promptView;
 }
 
 function renderEditorView() {
-  const allowed = new Set(['edit', 'prepare', 'review']);
-  if (!allowed.has(state.editorView)) state.editorView = 'edit';
-  document.body.dataset.activeView = state.editorView;
-  document.querySelectorAll('[data-editor-view-button]').forEach((button) => {
-    const active = button.dataset.editorViewButton === state.editorView;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-current', active ? 'page' : 'false');
-  });
-}
-
-function switchEditorView(view) {
-  state.editorView = ['edit', 'prepare', 'review'].includes(view) ? view : 'edit';
-  renderEditorView();
-  persistWidgetSnapshot();
-  if (state.editorView === 'review') {
-    loadVersions().catch((error) => {
-      $('output').textContent = error?.stack || String(error);
-    });
-  }
+  state.editorView = 'edit';
+  document.body.dataset.activeView = 'edit';
 }
 
 async function sendFollowUpMessage(prompt) {
@@ -2976,49 +2843,34 @@ function drawSelected() {
   ctx.restore();
 }
 
-function drawZoneThumbnail() {
-  const preview = $('zoneThumbnail');
-  const previewCtx = preview.getContext('2d');
-  const shape = getSelectedShape();
-  previewCtx.clearRect(0, 0, preview.width, preview.height);
-  previewCtx.fillStyle = '#081218';
-  previewCtx.fillRect(0, 0, preview.width, preview.height);
-  if (!state.image || !shape) return;
-
-  const b = shape.bounds || bounds(shape.points || []);
-  if (!b || b.width <= 0 || b.height <= 0) return;
-  const sourceWidth = state.image.naturalWidth || state.image.width || canvas.width;
-  const sourceHeight = state.image.naturalHeight || state.image.height || canvas.height;
-  const padding = Math.max(8, Math.round(Math.max(b.width, b.height) * .18));
-  const sx = Math.max(0, b.x - padding);
-  const sy = Math.max(0, b.y - padding);
-  const sw = Math.min(sourceWidth - sx, b.width + padding * 2);
-  const sh = Math.min(sourceHeight - sy, b.height + padding * 2);
-  const scale = Math.max(preview.width / Math.max(1, sw), preview.height / Math.max(1, sh));
-  const dw = sw * scale;
-  const dh = sh * scale;
-  const dx = (preview.width - dw) / 2;
-  const dy = (preview.height - dh) / 2;
-  previewCtx.drawImage(state.image, sx, sy, sw, sh, dx, dy, dw, dh);
-  previewCtx.strokeStyle = '#2c8d9e';
-  previewCtx.lineWidth = 3;
-  previewCtx.strokeRect(1.5, 1.5, preview.width - 3, preview.height - 3);
-}
-
 function renderEditChrome() {
   const shape = getSelectedShape();
-  document.body.classList.toggle('has-image', Boolean(state.image));
+  const hasImage = Boolean(state.image);
+  document.body.classList.toggle('has-image', hasImage);
+  $('importButton').hidden = hasImage;
+  $('importButton').setAttribute('aria-hidden', hasImage ? 'true' : 'false');
+  $('importButton').tabIndex = hasImage ? -1 : 0;
   const pathName = $('baseImagePath').value.trim().split(/[\\/]/).filter(Boolean).pop();
   $('imageFileName').textContent = state.imageName || pathName || 'Aucune image';
-  $('zoneSummaryBar').hidden = !shape;
-  if (shape) drawZoneThumbnail();
+  canvas.setAttribute('aria-label', state.image
+    ? (shape ? 'Image à retoucher, avec une zone sélectionnée.' : 'Image à retoucher dans son ensemble. Aucune zone ciblée.')
+    : 'Aucune image importée.');
 }
 
 function renderAll() {
   renderEditorView();
   document.querySelectorAll('[data-tool]').forEach((button) => {
-    button.classList.toggle('active', button.dataset.tool === state.activeTool);
+    const active = button.dataset.tool === state.activeTool;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
+  const overflow = document.querySelector('.tool-overflow');
+  const overflowActiveLabel = overflowToolLabels[state.activeTool] || '';
+  overflow.classList.toggle('active', Boolean(overflowActiveLabel));
+  overflow.querySelector('summary').setAttribute(
+    'aria-label',
+    overflowActiveLabel ? 'Outil actif : ' + overflowActiveLabel + '. Ouvrir les autres outils de zone.' : 'Autres outils de zone'
+  );
   $('layerPicker').value = state.activeLayer;
   updateToolOptions();
   renderLayerSettings();
@@ -3097,14 +2949,13 @@ function fillShapeEditor() {
 
 function updateZoneControlAvailability() {
   const hasSelection = Boolean(getSelectedShape());
-  const hasImage = Boolean(state.image);
+  const hasImage = Boolean(state.image || $('baseImagePath').value.trim());
   $('zoneSelectionHint').hidden = hasSelection;
   $('zoneSelectionHint').textContent = hasImage
-    ? 'Tracez une zone directement sur l’image.'
+    ? 'Retouche de l’image entière. Tracez une zone seulement si nécessaire.'
     : 'Importez une image pour commencer.';
-  $('zoneEditor').hidden = !hasSelection;
-  $('zoneSummaryBar').hidden = !hasSelection;
-  $('zoneEditor').disabled = !hasSelection;
+  $('zoneEditor').hidden = !hasImage;
+  $('zoneEditor').disabled = !hasImage;
   $('precisionPanel').hidden = !hasSelection;
   $('precisionEditor').disabled = !hasSelection;
   if (!hasSelection) $('precisionPanel').open = false;
@@ -3231,7 +3082,9 @@ function applyLoadedState(loaded, loadImagePreview = true) {
   state.baseImagePath = loaded.baseImagePath || '';
   state.imageInfo = loaded.imageInfo || null;
   state.userRequest = loaded.userRequest || '';
-  state.activeTool = loaded.activeTool || state.activeTool;
+  state.editPreset = editPresetInstructions[loaded.editPreset] ? loaded.editPreset : state.editPreset;
+  $('editPreset').value = state.editPreset;
+  state.activeTool = loaded.activeTool && loaded.activeTool !== 'precision' ? loaded.activeTool : state.activeTool;
   state.activeLayer = loaded.activeLayer || state.activeLayer;
   state.layers = loaded.layers || state.layers;
   for (const layer of layerNames) state.layers[layer] = (state.layers[layer] || []).map(ensurePrecisionShape);
@@ -3321,12 +3174,19 @@ function syncSelectedShapeDraft() {
   }
 }
 
+function effectiveUserRequest() {
+  const baseRequest = $('shapeNote').value.trim() || $('userRequest').value.trim();
+  const presetInstruction = editPresetInstructions[$('editPreset').value] || '';
+  if (!presetInstruction) return baseRequest;
+  return baseRequest + '\n\nDirection de retouche : ' + presetInstruction;
+}
+
 function prepareGenerationRequestFromWidget() {
   syncSelectedShapeDraft();
   return saveState(false).then(() => callTool('create_generation_request', {
     ...argsBase(),
     baseImagePath: $('baseImagePath').value.trim(),
-    userRequest: $('shapeNote').value.trim() || $('userRequest').value.trim(),
+    userRequest: effectiveUserRequest(),
     editorState: serializableState()
   })).then((res) => {
     const data = res?.structuredContent || {};
@@ -3340,11 +3200,8 @@ function prepareGenerationRequestFromWidget() {
 
 async function launchNativeImageGen() {
   syncSelectedShapeDraft();
-  let handoff = activeHandoff();
-  if (!handoff?.imageGenPrompt) {
-    await prepareGenerationRequestFromWidget();
-    handoff = activeHandoff();
-  }
+  await prepareGenerationRequestFromWidget();
+  const handoff = activeHandoff();
   if (!handoff?.imageGenPrompt) {
     throw new Error('La demande Image Gen n’a pas pu être préparée.');
   }
@@ -3363,7 +3220,7 @@ async function launchNativeImageGen() {
   });
   applyBridgeStateFromResult(result);
   setBridgeStatus('Connecté', 'ok');
-  switchEditorView('review');
+  $('handoffFeedback').textContent = 'Demande envoyée dans la conversation Codex.';
   return result;
 }
 
@@ -3411,6 +3268,13 @@ $('shapeNote').addEventListener('input', () => {
   state.userRequest = note.trim();
   updateGenerationControls();
 });
+$('editPreset').addEventListener('change', () => {
+  state.editPreset = $('editPreset').value;
+  $('handoffFeedback').textContent = state.editPreset
+    ? 'Le preset sera ajouté à la demande Image Gen.'
+    : '';
+  persistWidgetSnapshot();
+});
 ['shapeLabel', 'shapeNote', 'shapeConstraint', 'shapePriority'].forEach((id) => {
   $(id).addEventListener('change', () => $('applyShape').click());
 });
@@ -3430,16 +3294,19 @@ $('reviewSlider').addEventListener('input', draw);
 document.querySelectorAll('[data-tool]').forEach((btn) => btn.onclick = () => {
   state.activeTool = btn.dataset.tool;
   state.precisionMode = state.activeTool === 'precision';
-  document.querySelectorAll('[data-tool]').forEach((item) => item.classList.toggle('active', item === btn));
+  document.querySelectorAll('[data-tool]').forEach((item) => {
+    const active = item === btn;
+    item.classList.toggle('active', active);
+    item.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  const overflow = btn.closest('.tool-overflow');
+  if (overflow) overflow.open = false;
   renderAll();
 });
 $('layerPicker').onchange = () => {
   state.activeLayer = $('layerPicker').value;
   renderAll();
 };
-document.querySelectorAll('[data-editor-view-button]').forEach((button) => {
-  button.onclick = () => switchEditorView(button.dataset.editorViewButton);
-});
 document.querySelectorAll('[data-prompt-view]').forEach((btn) => btn.onclick = () => switchPromptView(btn.dataset.promptView));
 $('presetSelect').onchange = updatePresetControls;
 $('refineOperation').onchange = updateRefinementControls;
@@ -3544,10 +3411,26 @@ $('createRequest').onclick = () => prepareGenerationRequestFromWidget().catch((e
   $('output').textContent = error?.stack || String(error);
   setStatus('imagegen_request_failed', 'bad');
 });
-$('launchNativeImageGen').onclick = () => launchNativeImageGen().catch((error) => {
-  $('output').textContent = error?.stack || String(error);
-  setStatus('native_imagegen_unavailable', 'bad');
-});
+$('launchNativeImageGen').onclick = async () => {
+  const button = $('launchNativeImageGen');
+  if (button.disabled) return;
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.setAttribute('aria-busy', 'true');
+  button.textContent = 'Envoi…';
+  $('handoffFeedback').textContent = 'Préparation de la demande Image Gen…';
+  try {
+    await launchNativeImageGen();
+  } catch (error) {
+    $('output').textContent = error?.stack || String(error);
+    $('handoffFeedback').textContent = 'Envoi impossible. Vérifiez la connexion puis réessayez.';
+    setStatus('native_imagegen_unavailable', 'bad');
+  } finally {
+    button.removeAttribute('aria-busy');
+    button.textContent = originalLabel;
+    updateGenerationControls();
+  }
+};
 $('recordHostCapabilities').onclick = recordHostCapabilitiesFromWidget;
 $('listPendingGenerations').onclick = refreshPendingGenerations;
 $('registerArtifactCandidate').onclick = registerCandidateFromWidget;

@@ -1,6 +1,6 @@
 {
   "name": "codex-image-editor",
-  "version": "0.2.0-beta",
+  "version": "0.2.1-beta",
   "description": "Préparez des retouches précises dans Codex avec le flux Image Gen natif.",
   "author": {
     "name": "charli-dev420"
@@ -38,9 +38,6 @@
     ],
     "brandColor": "#A56532",
     "composerIcon": "./assets/dawww-unicorn-mark.png",
-    "logo": "./assets/dawww-unicorn-mark.png",
-    "screenshots": [
-      "./assets/codex-image-editor-proof.png"
-    ]
+    "logo": "./assets/dawww-unicorn-mark.png"
   }
 }

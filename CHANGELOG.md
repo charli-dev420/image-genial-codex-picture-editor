@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1-beta - 2026-07-27
+
+- Replaced the multi-step Zone, Request, and Send views with one focused editing page.
+- Removed the redundant active-zone summary, empty result view, simulated workflow labels, and duplicate conversation controls.
+- Added a compact, accessible tool strip for selection, rectangle, brush, lasso, polygon, ellipse, eraser, pan, zoom, undo, and redo.
+- Added functional retouch presets for visual styles, backgrounds, detail enhancement, lighting, cleanup, and color grading.
+- Included the selected preset in the native Codex Image Gen handoff while preserving the user request and selected regions.
+- Improved keyboard labels, pressed states, focus feedback, control sizes, responsive density, and compact overflow behavior.
+- Removed the screenshots, animated capture, and video inherited from `0.2.0-beta`; new release media will be produced separately.
+
 ## 0.2.0-beta - 2026-07-26
 
 - Shipped the **MVP beta** visual redesign around the three-step Zone, Request, and Send flow.

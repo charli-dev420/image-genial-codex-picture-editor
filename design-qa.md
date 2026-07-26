@@ -1,19 +1,17 @@
-# Design QA — Codex Image Editor MVP beta
+# Design QA — Codex Image Editor 0.2.1-beta
 
 ## Visual source and evidence
 
 - Source of truth: the user-selected DAWWWCORE mockup supplied in the task. It was used for visual comparison and is intentionally not committed.
-- Implementation capture: `docs/media/codex-image-editor-mvp-beta.png`.
-- Workflow demo: `docs/media/codex-image-editor-flow.gif`.
-- Public desktop proof: `assets/codex-image-editor-proof.png`.
-- Public short demo: `docs/media/codex-image-editor-demo-courte.mp4`.
+- The screenshots, animated capture, and video inherited from `0.2.0-beta` are intentionally not included in this release.
+- Browser-host captures used during implementation remain local review artifacts and are not part of the package.
 - Density normalization: the reference and implementation were compared at equal width without upscaling the implementation.
-- Tested state: `daw-core-banner.png`, one selected correction zone named “Détails du sujet”, high priority, and the request “Améliorer les détails sans modifier le texte”.
+- Tested state: `daw-core-banner.png`, one selected correction zone, the “Amélioration des détails” preset, and the request “Améliorer”.
 
 ## Fidelity review
 
-- Typography: condensed industrial hierarchy, uppercase step labels, and readable command text match the selected direction.
-- Spacing and composition: header, three-step rail, large blueprint canvas, floating toolbar, and command deck preserve the reference structure.
+- Typography: condensed industrial hierarchy and readable command text match the selected direction.
+- Spacing and composition: compact header, large blueprint canvas, floating toolbar, preset selector, request field, and one primary action fit on one continuous page.
 - Color and surfaces: near-black/navy workspace, copper hierarchy, cyan selection feedback, thin technical borders, and restrained glow are consistent.
 - Imagery: the authentic DAWWWCORE unicorn artwork is sharp, uncropped, and visually dominant.
 - Copy: generic subject language deliberately replaces logo-specific wording so the editor works with any image.
@@ -21,24 +19,24 @@
 ## Interaction review
 
 - Zone creation works with the real canvas gesture and returns automatically to selection.
-- Zone name, type, priority, and request persist after editing.
-- Demande exposes the primary request first and keeps references/precision in optional disclosures.
-- Lancer Image Gen sends exactly one `ui/message` handoff and transitions to Envoi.
-- Envoi stays quiet until a real artifact is returned.
-- Conversation Codex remains available as a disclosure instead of duplicating the main action.
+- Rectangle, brush, lasso, polygon, ellipse, eraser, pan, zoom, undo, and redo remain reachable with accessible labels.
+- Secondary tools live in one compact overflow menu that closes after selection.
+- Presets append a concrete direction to the native request instead of changing only presentation state.
+- Lancer Image Gen sends exactly one `ui/message` handoff without navigating to a separate request or result screen.
+- Conversation Codex remains available without duplicating the main action.
 
 ## Comparison history
 
 1. Initial comparison found missing automatic image hydration, a collapsed short-height canvas, literal icon escapes, and a zone-picker overlay. These were fixed.
 2. The second comparison found tool ordering/selection ambiguity and an overly tall narrow layout. Fluent icon mapping, tool order, automatic selection, and responsive clamps were corrected.
-3. Final comparison found no actionable P0, P1, or P2 visual issue. Accepted P3 differences are the authentic DAWWWCORE mark and a slightly more compact command deck.
+3. The `0.2.1-beta` pass removed the step rail, active-zone summary, empty result page, duplicate conversation copy, and simulated workflow labels.
+4. Final comparison found no actionable P0, P1, or P2 visual issue. Accepted P3 differences are the authentic DAWWWCORE mark and the compact overflow used at narrow widths.
 
 ## Privacy and quality gates
 
-- Repository media excludes host chrome and absolute local paths.
-- Generated media contains no embedded image metadata.
-- The public desktop proof and MP4 are cropped to exclude account, project, terminal, and local-path data from the source recording.
+- No demonstration image, GIF, or video is included in `0.2.1-beta`.
+- Functional PNG assets are covered by the repository privacy scan.
 - Browser console errors and warnings: none in the final flow.
-- Core states verified: Zone, Demande, Envoi, conversation disclosure, native handoff.
+- Core states verified: one-page editor, region tools, preset direction, conversation link, and native handoff.
 
 final result: passed

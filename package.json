@@ -1,6 +1,6 @@
 {
   "name": "image-genial-codex-picture-editor",
-  "version": "0.2.0-beta",
+  "version": "0.2.1-beta",
   "private": true,
   "description": "Focused conversation-native image editing for Codex native Image Gen.",
   "license": "UNLICENSED",

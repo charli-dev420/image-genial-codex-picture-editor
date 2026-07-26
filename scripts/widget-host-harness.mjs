@@ -61,7 +61,7 @@ function notify(method, params) {
 }
 
 const initialized = (async () => {
-  await send("initialize", { clientInfo: { name: "widget-host-harness", version: "0.2.0" } });
+  await send("initialize", { clientInfo: { name: "widget-host-harness", version: "0.2.1" } });
   notify("notifications/initialized");
   const listed = await send("tools/list");
   const renderTool = listed.tools.find((tool) => tool.name === "get_editor_state");

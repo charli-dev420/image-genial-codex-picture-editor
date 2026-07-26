@@ -14,11 +14,10 @@ const required = [
   "class=\"brand-logo\"",
   "__PLUGIN_LOGO_DATA_URL__",
   "__BLUEPRINT_SURFACE_DATA_URL__",
-  "data-editor-view-button=\"edit\"",
-  "data-editor-view-button=\"prepare\"",
-  "data-editor-view-button=\"review\"",
   "id=\"workflowSummary\"",
   "id=\"importButton\"",
+  "aria-label=\"Outils de zone\"",
+  "aria-label=\"Affichage et historique\"",
   "id=\"layerPicker\"",
   "id=\"zoneList\"",
   "id=\"referenceFile\"",
@@ -38,8 +37,10 @@ const required = [
   "id=\"precisionPanel\"",
   "id=\"zoneSelectionHint\"",
   "id=\"zoneEditor\"",
-  "id=\"zoneSummaryBar\"",
-  "id=\"zoneThumbnail\"",
+  "id=\"zoneTechnicalControls\"",
+  "id=\"editPreset\"",
+  "id=\"handoffFeedback\"",
+  "Retouche de l’image entière",
   "class=\"primary primary-imagegen\"",
   "id=\"precisionEditor\"",
   "id=\"precisionX\"",
@@ -99,6 +100,7 @@ const required = [
   "create_retry_request",
   "launchNativeImageGen",
   "prepareGenerationRequestFromWidget",
+  "effectiveUserRequest",
   "syncSelectedShapeDraft",
   "ui/initialize",
   "ui/notifications/tool-input",
@@ -111,9 +113,7 @@ const required = [
   "window.openai?.toolOutput",
   "body[data-active-view=\"edit\"] .shell",
   "@media (max-height: 900px)",
-  "<span>Zone</span>",
-  "<span>Demande</span>",
-  "<span>Envoi</span>"
+  "state.editorView = 'edit';"
 ];
 
 const banned = [
@@ -144,6 +144,11 @@ const banned = [
   "id=\"shareEditorContext\"",
   "class=\"workflow\"",
   "class=\"step\"",
+  "class=\"editor-tabs\"",
+  "class=\"zone-summary-bar\"",
+  "data-editor-view-button",
+  "function switchEditorView",
+  "switchEditorView('review')",
   "class=\"quick-actions\"",
   "class=\"conversation-log\"",
   "<footer"

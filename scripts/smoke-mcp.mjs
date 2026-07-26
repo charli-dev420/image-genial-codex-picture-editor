@@ -74,7 +74,7 @@ function wait(id) {
 }
 
 try {
-  const init = await send("initialize", { clientInfo: { name: "smoke", version: "0.2.0" } });
+  const init = await send("initialize", { clientInfo: { name: "smoke", version: "0.2.1" } });
   if (init.serverInfo?.name !== "codex-image-editor") throw new Error("wrong server name");
   notify("notifications/initialized");
 
