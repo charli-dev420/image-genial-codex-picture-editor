@@ -8,6 +8,7 @@
 - Added functional retouch presets for visual styles, backgrounds, detail enhancement, lighting, cleanup, and color grading.
 - Included the selected preset in the native Codex Image Gen handoff while preserving the user request and selected regions.
 - Improved keyboard labels, pressed states, focus feedback, control sizes, responsive density, and compact overflow behavior.
+- Fixed Windows CLI discovery so local deployment uses the active PATH `codex.cmd` before the older Desktop fallback and can execute `codex plugin add`.
 - Removed the screenshots, animated capture, and video inherited from `0.2.0-beta`; new release media will be produced separately.
 
 ## 0.2.0-beta - 2026-07-26

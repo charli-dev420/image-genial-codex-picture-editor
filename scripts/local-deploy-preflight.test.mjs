@@ -7,6 +7,7 @@ import {
   PLUGIN_NAME,
   SUPPORTED_NODE_RANGE,
   createPreflightReport,
+  inspectCodexHost,
   writeMarketplaceEntry,
   writePreflightReport
 } from "./local-deploy-preflight.mjs";
@@ -53,6 +54,12 @@ assert.equal(ready.releaseReady, false);
 assert.equal(ready.host.pluginManagementAvailable, true);
 assert.equal(ready.host.pluginCommandAvailable, false);
 assert.ok(ready.host.manualGates.some((gate) => gate.includes("desktop")));
+
+const installCapableHost = inspectCodexHost(commandRunner({ pluginAddAvailable: true, authenticated: true }));
+assert.equal(installCapableHost.pluginManagementAvailable, true);
+assert.equal(installCapableHost.pluginCommandAvailable, true);
+assert.equal(installCapableHost.cliAuthenticated, true);
+assert.equal(installCapableHost.manualGates.some((gate) => gate.includes("does not expose codex plugin add")), false);
 
 const reportPath = path.join(tmp, "reports", "preflight.json");
 writePreflightReport(reportPath, ready);
@@ -127,7 +134,13 @@ function writePluginFixture(pluginRoot, version) {
   writeFileSync(path.join(pluginRoot, "package.json"), JSON.stringify({ name: PLUGIN_NAME, engines: { node: SUPPORTED_NODE_RANGE } }, null, 2));
 }
 
-function commandRunner({ gitStatus = "", dirtyRepository = "", baselineManifest = fixtureManifest("0.1.0") } = {}) {
+function commandRunner({
+  gitStatus = "",
+  dirtyRepository = "",
+  baselineManifest = fixtureManifest("0.1.0"),
+  pluginAddAvailable = false,
+  authenticated = false
+} = {}) {
   return (command, args) => {
     const joined = args.join(" ");
     if (command === "git" && joined.includes(" status --porcelain")) {
@@ -136,8 +149,19 @@ function commandRunner({ gitStatus = "", dirtyRepository = "", baselineManifest 
     }
     if (command === "git" && joined.includes(" show HEAD:.codex-plugin/plugin.json")) return { status: 0, stdout: JSON.stringify(baselineManifest), stderr: "", error: "" };
     if (command === "codex" && args[0] === "--help") return { status: 0, stdout: "Commands:\n  plugin\n", stderr: "", error: "" };
-    if (command === "codex" && args[0] === "plugin") return { status: 0, stdout: "Commands:\n  marketplace\n", stderr: "", error: "" };
-    if (command === "codex" && args[0] === "login") return { status: 1, stdout: "", stderr: "Not logged in", error: "" };
+    if (command === "codex" && args[0] === "plugin") {
+      return {
+        status: 0,
+        stdout: pluginAddAvailable ? "Commands:\n  add          Install a plugin\n  marketplace  Manage marketplaces\n" : "Commands:\n  marketplace\n",
+        stderr: "",
+        error: ""
+      };
+    }
+    if (command === "codex" && args[0] === "login") {
+      return authenticated
+        ? { status: 0, stdout: "Logged in", stderr: "", error: "" }
+        : { status: 1, stdout: "", stderr: "Not logged in", error: "" };
+    }
     return { status: 0, stdout: "", stderr: "", error: "" };
   };
 }

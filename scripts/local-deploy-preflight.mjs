@@ -31,15 +31,37 @@ export function expectedMarketplaceEntry() {
 
 function executableFor(command) {
   if (command !== "codex" || process.platform !== "win32") return command;
-  const candidates = [
-    process.env.CODEX_CLI_PATH,
-    process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, "OpenAI", "Codex", "bin", "codex.exe")
-  ].filter(Boolean);
-  return candidates.find((candidate) => existsSync(candidate)) || command;
+  const configured = process.env.CODEX_CLI_PATH;
+  if (configured && existsSync(configured)) return configured;
+  const npmShim = process.env.APPDATA ? path.join(process.env.APPDATA, "npm", "codex.cmd") : "";
+  return npmShim && existsSync(npmShim) ? npmShim : command;
 }
 
 export function runSystemCommand(command, args) {
-  const result = spawnSync(executableFor(command), args, { encoding: "utf8", windowsHide: true });
+  const executable = executableFor(command);
+  const useWindowsCommandShim = command === "codex"
+    && process.platform === "win32"
+    && !/\.exe$/i.test(executable);
+  const invocation = useWindowsCommandShim
+    ? {
+        executable: process.env.ComSpec || "cmd.exe",
+        args: ["/d", "/s", "/c", /\.(cmd|bat)$/i.test(executable) ? executable : "codex.cmd", ...args]
+      }
+    : { executable, args };
+  let result = spawnSync(invocation.executable, invocation.args, { encoding: "utf8", windowsHide: true });
+  if (
+    command === "codex"
+    && process.platform === "win32"
+    && executable === command
+    && (result.error || (args[0] === "--help" && result.status !== 0))
+  ) {
+    const desktopFallback = process.env.LOCALAPPDATA
+      ? path.join(process.env.LOCALAPPDATA, "OpenAI", "Codex", "bin", "codex.exe")
+      : "";
+    if (desktopFallback && existsSync(desktopFallback)) {
+      result = spawnSync(desktopFallback, args, { encoding: "utf8", windowsHide: true });
+    }
+  }
   return {
     status: typeof result.status === "number" ? result.status : 1,
     stdout: result.stdout || "",
