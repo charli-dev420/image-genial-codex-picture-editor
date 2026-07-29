@@ -1,73 +1,92 @@
-# Image Genial Codex Picture Editor
+# Image Genial for Codex
 
-**v0.2.1-beta — MVP beta**
+**A conversation-native image-editing workspace for precise masked changes, protected regions and explicit human review.**
 
-> Préparer et réviser des demandes de retouche précises, directement dans une conversation Codex.
+[![Status: beta](https://img.shields.io/badge/status-beta-F97316)](#current-status)
+[![Codex plugin](https://img.shields.io/badge/Codex-local%20plugin-111827)](#installation)
+[![Source available](https://img.shields.io/badge/licence-source--available-2563EB)](#licence)
 
-Image Genial Codex Picture Editor transforme une demande de retouche en une page unique : sélectionner ou peindre une zone si nécessaire, choisir un preset, décrire le changement, puis remettre la demande structurée à Codex. L’éditeur fonctionne avec tout type d’image et garde les fonctions secondaires dans un menu compact.
+Image Genial turns an ambiguous editing request into a structured, reviewable handoff for Codex Image Gen. Select what may change, protect what must remain untouched, describe the intended result, then review the real generated artefact before accepting it.
 
-## Pourquoi ce projet
+```text
+source image
+→ editable / excluded / protected regions
+→ structured Image Gen request
+→ native Codex handoff
+→ before / after review
+→ accept, reject or refine
+```
 
-Une retouche d’image devient vite ambiguë : une région doit changer, une autre doit rester intacte, une référence doit être respectée et le résultat doit pouvoir être revu. Le plugin ajoute une étape d’édition structurée dans le fil Codex avant l’appel à Image Gen.
+> Image Genial does not replace the native Image Gen engine. It prepares the request, preserves constraints and manages review inside the Codex conversation.
 
-Le plugin est conversation-native : l’image, les contraintes, le handoff et la revue restent associés à la conversation. Il prépare le contexte pour Codex ; il ne remplace jamais le moteur Image Gen natif.
+## Why it is useful
 
-## Parcours principal
+Image-editing prompts quickly become ambiguous: one region must change, another must remain identical, a reference must be respected and the result must be reviewed. Image Genial makes those constraints visible and explicit before generation.
 
-1. **Image** — travailler sur l’image entière ou sélectionner une zone avec le rectangle, le pinceau, le lasso, le polygone ou l’ellipse.
-2. **Direction** — choisir si utile un preset de style, de fond ou d’effet, puis décrire librement la retouche.
-3. **Envoi** — remettre la demande exacte à la conversation Codex par le handoff Image Gen natif.
-4. **Revue** — enregistrer uniquement un artefact dont l’origine est `codex-image-gen`, puis l’accepter, le refuser ou préparer une relance plus étroite.
+### Main capabilities
 
-Le lien **Conversation Codex** reste disponible pour les compléments sans dupliquer l’action principale ni quitter la page.
+- Draw or select regions with brush, lasso, polygon, rectangle and ellipse tools.
+- Mark regions as `include`, `exclude` or `protect`.
+- Add safety margins, feathering, grids and snapping.
+- Apply presets for style, background, lighting, cleanup and grading.
+- Build a structured `$imagegen` request without direct Images API calls.
+- Hand the request back to Codex through the native MCP Apps `ui/message` path.
+- Review genuine `codex-image-gen` artefacts and accept, reject or prepare a narrower retry.
+- Keep source images, prompts and workspace state local to the selected workspace.
 
-## Capacités
+## Typical workflow
 
-- Canvas d’annotation avec sélection, pinceau, lasso, polygone, rectangle, ellipse, gomme, déplacement et zoom.
-- Presets de styles, arrière-plans, détails, éclairage, nettoyage et étalonnage transmis dans la demande native.
-- Calques de correction, protection, erreur et référence.
-- Zones `include`, `exclude` et `protect` avec validation, marge de sécurité, feathering, grille et snap.
-- Request Builder pour les consignes, rôles d’images, contraintes et export `$imagegen`.
-- Handoff natif par MCP Apps `ui/message`.
-- Artifact Bridge pour l’origine, les candidats, l’acceptation, le refus et les versions.
-- Revue avant/après, diagnostic des zones protégées et préparation d’une relance.
+1. **Open an image** and choose whole-image editing or a precise selection.
+2. **Protect important areas** that must not be changed.
+3. **Describe the edit** and optionally apply a preset.
+4. **Send the structured request** to the current Codex conversation.
+5. **Review the real result** before accepting it or refining the request.
 
-## Frontière Image Gen native
+## Current status
 
-- Aucun appel direct à une Images API.
-- Aucune clé API, BYOK, CLI de secours, API d’image externe ou backend cloud.
-- Aucun résultat de génération ou état de progression simulé en production.
-- Le serveur MCP conserve l’état local, valide la demande, prépare le handoff et versionne les artefacts réels.
-- La génération est exécutée uniquement par Codex via le chemin natif `image_gen` / `$imagegen`.
+**v0.2.1-beta — working MVP beta.**
 
-## Aperçu local
+Passing automated gates as of 27 July 2026:
 
-Prérequis : Git, Python et Node `>=22 <25`.
+- privacy and secret scanning;
+- widget syntax and interaction contract;
+- request persistence and native handoff;
+- region validation and protected-area handling;
+- artefact origin, review, rejection and retry flows;
+- plugin manifest validation and local deployment preflight.
+
+The remaining host-level release gate is an observed end-to-end acceptance of a real Image Gen artefact through the Artifact Bridge. The repository therefore does not claim production certification.
+
+## Local preview
+
+Requirements: Git, Python and Node.js `>=22 <25`.
 
 ```powershell
 npm run test
-npm run harness:widget -- --port 4318 --image "C:\path\to\image.png" --request "Améliorer uniquement les détails sélectionnés"
+npm run harness:widget -- --port 4318 --image "C:\path\to\image.png" --request "Improve only the selected details"
 ```
 
-Ouvrir `http://127.0.0.1:4318/`. Le harness vérifie l’expérience du widget et le contrat `ui/message` ; il ne simule pas un artefact Image Gen.
+Open `http://127.0.0.1:4318/`.
 
-## Installation par le marketplace personnel
+The harness validates the widget experience and the `ui/message` contract. It deliberately does not simulate a generated Image Gen artefact.
 
-Lancer le préflight en lecture seule :
+## Installation
+
+Run the read-only preflight first:
 
 ```powershell
 npm run preflight:local-deploy
 ```
 
-Une fois la révision publiée sur `origin/main`, déployer la révision commitée :
+After the reviewed revision is available locally, deploy it to the personal marketplace:
 
 ```powershell
 .\scripts\deploy-local.ps1 -Apply -InstallPlugin
 ```
 
-Le script synchronise le bundle, valide le plugin, ajoute un cachebuster local, met à jour atomiquement l’entrée du marketplace personnel et écrit un rapport dans `%USERPROFILE%\.agents\plugins\reports\`.
+The script validates the plugin, synchronises the bundle, updates the personal marketplace entry atomically and writes a report to `%USERPROFILE%\.agents\plugins\reports\`.
 
-Voir [Déploiement local](docs/LOCAL_DEPLOYMENT.md) pour le gate desktop complet.
+See [Local deployment](docs/LOCAL_DEPLOYMENT.md) for the complete desktop gate.
 
 ## Validation
 
@@ -76,40 +95,46 @@ npm run privacy:check
 npm run test
 npm run check
 npm run preflight:local-deploy
-python <chemin-plugin-creator>\scripts\validate_plugin.py .
+python <plugin-creator-path>\scripts\validate_plugin.py .
 ```
 
-Au 27 juillet 2026, `npm run privacy:check`, `npm run test`, `npm run check` et le validateur officiel du manifeste sont passants. Les contrôles automatisés couvrent :
+The automated checks cover:
 
-- les secrets et chemins personnels dans les textes comme dans les données binaires ;
-- l’interdiction des API d’image directes et du réseau externe ;
-- la syntaxe du widget, le contrat d’interaction et les ressources MCP Apps ;
-- l’hydratation initiale, les zones, la persistance et le handoff natif ;
-- l’origine des artefacts, la revue, le refus et la relance ;
-- le manifeste et le préflight du déploiement local.
+- personal paths and secrets in text and binary files;
+- prohibition of direct image APIs and external fallback services;
+- widget hydration, tools, regions and persistence;
+- native handoff and one-message emission;
+- artefact provenance and review state;
+- manifest and local-deployment contracts.
 
-La passe browser locale confirme la page unique, l’ouverture et la fermeture du menu d’outils, l’application d’un preset et l’émission d’un seul message natif. Elle ne suffit pas à certifier l’enregistrement, puis l’acceptation d’un artefact réel par l’Artifact Bridge. Ce dernier passage reste le gate hôte avant toute revendication « production certifiée ».
+See the [public release checklist](docs/PUBLIC_RELEASE.md), [marketplace sheet](docs/MARKETPLACE.md) and [design review](design-qa.md).
 
-Voir la [checklist de release](docs/PUBLIC_RELEASE.md), la [fiche marketplace](docs/MARKETPLACE.md) et la [revue design](design-qa.md).
+## Native Image Gen boundary
 
-## Confidentialité
+- No direct Images API call.
+- No API key, BYOK flow, external image service or cloud backend.
+- No simulated production result or fake generation progress.
+- The MCP server stores local state, validates requests and versions real artefacts.
+- Generation runs only through the native Codex `image_gen` / `$imagegen` path.
 
-Le paquet `0.2.1-beta` ne contient aucune capture ni vidéo de démonstration. Les seuls PNG livrés sont les ressources graphiques fonctionnelles du plugin. L’état runtime est conservé dans `.codex-image-editor/` dans le workspace sélectionné et reste ignoré par Git.
+## Privacy
 
-Ne publiez pas les images sources privées, prompts, artefacts générés ou états de workspace. Voir la [politique de sécurité](SECURITY.md).
+Runtime state is stored in `.codex-image-editor/` inside the selected workspace and remains ignored by Git.
 
-## Structure
+Do not publish private source images, prompts, generated artefacts or workspace state. See [SECURITY.md](SECURITY.md).
+
+## Repository layout
 
 ```text
-.codex-plugin/plugin.json        manifeste et page marketplace
-.mcp.json                        déclaration du serveur MCP
-assets/                          marque et surfaces graphiques du plugin
-mcp/server.mjs                   état, validation et handoff local
-mcp/image-editor-widget.html     interface d’édition sur une page
-scripts/                         contrats, confidentialité, smoke et déploiement
-skills/image-editor/SKILL.md     workflow d’édition Codex native
+.codex-plugin/plugin.json        plugin manifest and marketplace page
+.mcp.json                        MCP server declaration
+assets/                          brand and functional assets
+mcp/server.mjs                   local state, validation and native handoff
+mcp/image-editor-widget.html     single-page editing interface
+scripts/                         validation, privacy, smoke and deployment tools
+skills/image-editor/SKILL.md     native Codex editing workflow
 ```
 
 ## Licence
 
-Le dépôt est public et source-available, mais n’est pas distribué sous une licence open source. Voir [LICENSE](LICENSE).
+This repository is public and source-available, but it is not distributed under an open-source licence. See [LICENSE](LICENSE) before reuse or redistribution.
